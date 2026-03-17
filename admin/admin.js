@@ -1,5 +1,5 @@
 // ============================================================
-//   KANYE LUXURY 360 — ADMIN BACKEND · Full Engine
+//   KANYE CONCIERGE 360 — ADMIN BACKEND · Full Engine
 // ============================================================
 
 // ── DATA LAYER ───────────────────────────────────────────
@@ -460,7 +460,7 @@ function viewInquiry(id) {
     modal.querySelector('#detail-status').innerHTML   = badgeHTML(i.status);
     modal.querySelector('#detail-date').textContent   = formatDate(i.createdAt);
     const emailBtn = modal.querySelector('#detail-email-btn');
-    if (emailBtn) emailBtn.href = 'mailto:' + i.email + '?subject=Kanye Luxury 360 — Following Up';
+    if (emailBtn) emailBtn.href = 'mailto:' + i.email + '?subject=Kanye Concierge 360 — Following Up';
     openModal('modal-inquiry-detail');
 }
 

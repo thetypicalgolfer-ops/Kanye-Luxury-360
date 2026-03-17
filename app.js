@@ -1,5 +1,5 @@
 /* ============================================================
-   KANYE LUXURY 360 — ANIMATIONS & INTERACTIONS
+   KANYE CONCIERGE 360 — ANIMATIONS & INTERACTIONS
    ============================================================ */
 
 gsap.registerPlugin(ScrollTrigger);
