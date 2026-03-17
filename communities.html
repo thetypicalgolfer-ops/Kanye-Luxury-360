@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities | Kanye Luxury 360</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-hero { height:36vh; min-height:260px; display:flex; align-items:flex-end; background:linear-gradient(rgba(27,27,26,0.5),rgba(27,27,26,0.82)), url('img-fredericksburg.png') center/cover; padding:3rem var(--gutter); }
+        .comm-full { padding:8rem var(--gutter); }
+        .comm-full-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:5rem; }
+        .comm-full-card { background:var(--cream); padding:0; position:relative; aspect-ratio:4/3; overflow:hidden; cursor:none; }
+        .comm-full-card img { width:100%; height:100%; object-fit:cover; transition:transform 0.9s var(--ease-cinema); }
+        .comm-full-card:hover img { transform:scale(1.05); }
+        .comm-full-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(27,27,26,0.82) 0%,transparent 60%); }
+        .comm-full-info { position:absolute; bottom:0; left:0; right:0; padding:2.5rem; }
+        @media(max-width:700px) { .comm-full-grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
+        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Luxury <span>360°</span></a>
+        <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="properties.html">Properties</a></li><li><a href="communities.html">Communities</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul>
+        <a href="contact.html" class="nav-cta btn" style="border-color:var(--charcoal);color:var(--charcoal);">Consultation</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html" class="nav-mobile-cta">Private Consultation</a>
+    </div>
+    <div class="page-hero"><div>
+        <span class="section-eyebrow">Our Markets</span>
+        <h1 class="section-headline" style="color:var(--ivory);">Communities<br><em>We Serve</em></h1>
+    </div></div>
+    <section class="comm-full">
+        <div class="max-w">
+            <span class="section-eyebrow reveal">Texas Hill Country & San Antonio</span>
+            <h2 class="section-headline reveal">Find Your<br><em>Region</em></h2>
+            <p class="section-sub reveal">Our expertise spans the most coveted communities in Greater San Antonio, the Texas Hill Country, and beyond. Each market is distinct — and so is our approach within it.</p>
+            <div class="comm-full-grid">
+                <a href="properties.html?area=dominion" class="comm-full-card reveal"><img src="img-dominion.png" alt="Dominion"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">San Antonio</div><div class="community-name">The Dominion</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">San Antonio's most exclusive gated community. Guard-gated estates, golf, and a standard of living unlike anywhere in the region.</p></div></a>
+                <a href="properties.html?area=alamo-heights" class="comm-full-card reveal"><img src="img-alamo-heights.png" alt="Alamo Heights"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">San Antonio</div><div class="community-name">Alamo Heights</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">Historic prestige meets modern architecture. A coveted 78209 address with walkable lifestyle and established schools.</p></div></a>
+                <a href="properties.html?area=boerne" class="comm-full-card reveal"><img src="img-boerne.png" alt="Boerne"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">Hill Country</div><div class="community-name">Boerne</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">Ranches, acreage, and refined estates set against the rolling cedar hills of the Texas corridor.</p></div></a>
+                <a href="properties.html?area=new-braunfels" class="comm-full-card reveal"><img src="img-new-braunfels.png" alt="New Braunfels"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">Hill Country</div><div class="community-name">New Braunfels</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">A fast-growing Hill Country destination blending river lifestyle with sophisticated residential development.</p></div></a>
+                <a href="properties.html?area=stone-oak" class="comm-full-card reveal"><img src="img-stone-oak.png" alt="Stone Oak"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">San Antonio</div><div class="community-name">Stone Oak</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">North San Antonio's premier master-planned community featuring luxury custom homes and premier amenities.</p></div></a>
+                <a href="properties.html?area=fredericksburg" class="comm-full-card reveal"><img src="img-fredericksburg.png" alt="Fredericksburg"><div class="comm-full-overlay"></div><div class="comm-full-info"><div class="community-region">Hill Country</div><div class="community-name">Fredericksburg</div><p class="community-desc" style="max-height:none; opacity:0.75; font-size:0.85rem; color:rgba(253,250,246,0.7);">Wine country estates, vineyard tracts, and heritage ranches in the heart of the Texas Hill Country wine trail.</p></div></a>
+            </div>
+        </div>
+    </section>
+    <footer><div class="footer-inner max-w"><div class="footer-logo">Kanye Luxury <span>360°</span></div><ul class="footer-links"><li><a href="properties.html">Properties</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul><div class="footer-copy">© 2026 Kanye Luxury 360</div></div></footer>
+    <script src="app.js"></script>
+</body>
+</html>

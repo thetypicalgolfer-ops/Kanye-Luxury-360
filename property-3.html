@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hill Country Legacy Ranch | Kanye Luxury 360</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pd-gallery {
+            display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr;
+            height: 80vh; gap: 4px; background: var(--charcoal);
+        }
+        .pd-gallery-main { grid-row: span 2; overflow: hidden; }
+        .pd-gallery-thumb { overflow: hidden; }
+        .pd-gallery img { width: 100%; height: 100%; object-fit: cover; }
+        .pd-body { padding: 6rem var(--gutter); display: grid; grid-template-columns: 1.4fr 0.6fr; gap: 6rem; }
+        .pd-meta { border-left: 1px solid var(--border); padding-left: 3rem; position: sticky; top: 8rem; align-self: start; }
+        .pd-price { font-family: var(--serif); font-size: 2.5rem; font-weight: 300; color: var(--charcoal); margin-bottom: 0.5rem; }
+        .pd-specs { display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap; }
+        .pd-spec { display: flex; flex-direction: column; }
+        .pd-spec-val { font-family: var(--serif); font-size: 1.4rem; color: var(--charcoal); }
+        .pd-spec-lbl { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage); margin-top: 0.2rem; }
+        .pd-desc { font-size: 1rem; line-height: 1.8; color: var(--sage); font-weight: 300; }
+        .pd-features { list-style: none; margin-top: 2.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .pd-features li { font-size: 0.85rem; color: var(--charcoal); display: flex; gap: 0.75rem; }
+        .pd-features li::before { content: '→'; color: var(--bronze); }
+        .pd-inquiry { background: var(--charcoal); padding: 2.5rem; margin-top: 3rem; }
+        .pd-inquiry h3 { font-family: var(--serif); font-size: 1.5rem; color: var(--ivory); font-weight: 300; margin-bottom: 1.5rem; }
+        .pd-inquiry-form { display: flex; flex-direction: column; gap: 0.8rem; }
+        .pd-inquiry input, .pd-inquiry textarea { background: rgba(255,255,255,0.07); border: 1px solid rgba(216,204,188,0.2); padding: 0.8rem 1rem; color: var(--ivory); font-family: var(--sans); font-size: 0.85rem; font-weight: 300; outline: none; width: 100%; }
+        .pd-inquiry textarea { height: 90px; resize: none; }
+        .pd-inquiry button { background: var(--bronze); border: none; color: var(--ivory); padding: 0.9rem; font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; width: 100%; cursor: pointer; }
+        @media(max-width:900px) { .pd-body { grid-template-columns: 1fr; } .pd-meta { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 3rem; } .pd-gallery { grid-template-columns: 1fr; height: auto; } .pd-gallery-main { height: 55vw; } .pd-gallery-thumb { height: 30vw; } }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
+        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Luxury <span>360°</span></a>
+        <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="properties.html">Properties</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul>
+        <a href="contact.html" class="nav-cta btn" style="border-color:var(--charcoal); color:var(--charcoal);">Inquire</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html" class="nav-mobile-cta">Private Consultation</a>
+    </div>
+
+    <div class="pd-gallery">
+        <div class="pd-gallery-main">
+            <img src="img-estate-2.png?v=6" alt="Main View">
+        </div>
+        <div class="pd-gallery-thumb"><img src="img-texas-countryside.png" alt="Secondary View"></div>
+        <div class="pd-gallery-thumb"><img src="img-texas-ranch-home.png" alt="Exterior View"></div>
+    </div>
+
+    <div class="pd-body max-w">
+        <div class="pd-main reveal">
+            <span class="section-eyebrow">Boerne · Hill Country, TX</span>
+            <h1 class="section-headline">Hill Country<br><em>Legacy Ranch</em></h1>
+            <div class="pd-specs">
+                <div class="pd-spec"><span class="pd-spec-val">4</span><span class="pd-spec-lbl">Bedrooms</span></div>
+                <div class="pd-spec"><span class="pd-spec-val">3.5</span><span class="pd-spec-lbl">Bathrooms</span></div>
+                <div class="pd-spec"><span class="pd-spec-val">340</span><span class="pd-spec-lbl">Acres</span></div>
+                <div class="pd-spec"><span class="pd-spec-val">Yes</span><span class="pd-spec-lbl">Ag Exempt</span></div>
+            </div>
+            <p class="pd-desc">A sprawling 340-acre legacy property situated in the highly coveted Boerne ranch corridor. Offering rolling topography, majestic live oak coverage, and sweeping sunset views, this ranch is perfectly positioned as either a high-end recreational retreat or a long-term family holding.</p>
+            <p class="pd-desc" style="margin-top:1.5rem;">The property includes a sophisticated main residence built with authentic Hill Country limestone, extensive equestrian facilities, and significant surface water features. With high fencing and meticulous land management practices in place, the ranch also maintains an active wildlife exemption.</p>
+            <ul class="pd-features" style="margin-top:2.5rem;">
+                <li>340 high-fenced acres with Ag/Wildlife exemption</li>
+                <li>Limestone main residence with wraparound porches</li>
+                <li>Equestrian barn and caretaker facilities</li>
+                <li>Live water features and stocked ponds</li>
+                <li>Miles of improved topography roads</li>
+                <li>Minutes to Boerne Main Street</li>
+            </ul>
+        </div>
+        <div class="pd-meta reveal">
+            <div class="pd-price">$6,800,000</div>
+            <span class="section-eyebrow" style="margin-bottom:0;">Ranch Land</span>
+            <div class="pd-inquiry">
+                <h3>Request Private Showing</h3>
+                <div class="pd-inquiry-form">
+                    <input type="text" placeholder="Your Name">
+                    <input type="email" placeholder="Email Address">
+                    <input type="tel" placeholder="Phone">
+                    <textarea placeholder="Questions or preferences…"></textarea>
+                    <button>Schedule a Private Tour</button>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem;">
+                <a href="properties.html" class="btn btn-outline btn-arrow" style="width:100%; justify-content:center;">Back to Listings</a>
+            </div>
+        </div>
+    </div>
+
+    <footer><div class="footer-inner max-w">
+        <div class="footer-logo">Kanye Luxury <span>360°</span></div>
+        <ul class="footer-links"><li><a href="properties.html">Properties</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul>
+        <div class="footer-copy">© 2026 Kanye Luxury 360</div>
+    </div></footer>
+    <script src="app.js"></script>
+</body>
+</html>

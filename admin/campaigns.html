@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaigns | Kanye Luxury 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-page="campaigns">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div><div class="sidebar-brand-logo">Kanye Luxury <span>360°</span></div><div class="sidebar-brand-tag">Agent Portal</div></div></div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item active"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="analytics.html" class="nav-item"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Marketing Campaigns</div>
+            </div>
+            <div class="header-right">
+                <button class="btn header-btn" onclick="openModal('modal-add-campaign')">+ New Campaign</button>
+                <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
+            </div>
+        </header>
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Marketing</div>
+                    <h1 class="page-title">Campaigns</h1>
+                    <p class="page-subtitle">Deploy, track, and manage your outbound marketing campaigns.</p>
+                </div>
+            </div>
+
+            <!-- Campaign quick metrics -->
+            <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:2rem">
+                <div class="metric-card">
+                    <div class="metric-label">Live Campaigns</div>
+                    <div class="metric-value" id="c-metric-live">—</div>
+                    <div class="metric-trend up">Running now</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Sent</div>
+                    <div class="metric-value" id="c-metric-sent">—</div>
+                    <div class="metric-trend">Across all campaigns</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg Open Rate</div>
+                    <div class="metric-value" id="c-metric-open">—</div>
+                    <div class="metric-trend up">Industry avg: 21%</div>
+                </div>
+            </div>
+
+            <div class="campaign-grid" id="campaigns-grid"></div>
+        </div>
+    </main>
+</div>
+
+<!-- CREATE CAMPAIGN MODAL -->
+<div class="modal-overlay" id="modal-add-campaign" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="page-eyebrow" style="margin-bottom:0.25rem">New Campaign</div>
+                <div class="modal-title">Create Campaign</div>
+            </div>
+            <button class="modal-close" onclick="closeModal('modal-add-campaign')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="campaign-form">
+                <div style="display:flex;flex-direction:column;gap:1.25rem">
+                    <div class="form-group">
+                        <label class="form-label">Campaign Name *</label>
+                        <input id="c-name" class="form-control" placeholder="e.g. Spring Estate Launch" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Campaign Type</label>
+                        <select id="c-type" class="form-control">
+                            <option value="Email Blast">Email Blast</option>
+                            <option value="Social Media">Social Media</option>
+                            <option value="Direct Mailer">Direct Mailer</option>
+                            <option value="Open House Event">Open House Event</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target Audience</label>
+                        <select id="c-audience" class="form-control">
+                            <option value="All Leads">All Leads</option>
+                            <option value="Buyer Leads">Buyer Leads</option>
+                            <option value="Seller Leads">Seller Leads</option>
+                            <option value="Ranch Buyers">Ranch / Land Buyers</option>
+                            <option value="Investors">Investors</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes / Goal</label>
+                        <textarea id="c-notes" class="form-control" placeholder="Describe the goal of this campaign…"></textarea>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.75rem">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-campaign')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save as Draft</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="admin.js"></script>
+</body>
+</html>

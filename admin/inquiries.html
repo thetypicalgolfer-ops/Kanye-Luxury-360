@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inquiries | Kanye Luxury 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-page="inquiries">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div><div class="sidebar-brand-logo">Kanye Luxury <span>360°</span></div><div class="sidebar-brand-tag">Agent Portal</div></div></div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item active"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="analytics.html" class="nav-item"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Client Inquiries</div>
+            </div>
+            <div class="header-right">
+                <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
+            </div>
+        </header>
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Lead Management</div>
+                    <h1 class="page-title">Client Inquiries</h1>
+                    <p class="page-subtitle">All contact form submissions — click any row to view full details.</p>
+                </div>
+            </div>
+
+            <!-- Status filter chips -->
+            <div class="filter-bar" style="gap:0.6rem;margin-bottom:1.5rem">
+                <button class="filter-chip active" data-inq-filter="All">All</button>
+                <button class="filter-chip" data-inq-filter="New">New</button>
+                <button class="filter-chip" data-inq-filter="Contacted">Contacted</button>
+                <button class="filter-chip" data-inq-filter="Warm Lead">Warm Lead</button>
+                <button class="filter-chip" data-inq-filter="Hot Lead">Hot Lead</button>
+                <button class="filter-chip" data-inq-filter="In Escrow">In Escrow</button>
+                <button class="filter-chip" data-inq-filter="Closed">Closed</button>
+            </div>
+
+            <div class="section-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Intent</th>
+                                <th>Budget</th>
+                                <th>Status</th>
+                                <th>Received</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiries-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- INQUIRY DETAIL MODAL -->
+<div class="modal-overlay" id="modal-inquiry-detail" style="display:none">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="page-eyebrow" style="margin-bottom:0.2rem">Inquiry Detail</div>
+                <div class="modal-title" id="detail-name">Client</div>
+            </div>
+            <button class="modal-close" onclick="closeModal('modal-inquiry-detail')">×</button>
+        </div>
+        <div class="modal-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem 2rem;margin-bottom:1.5rem">
+                <div><div class="form-label" style="margin-bottom:0.3rem">Email</div><div id="detail-email" style="font-size:0.9rem"></div></div>
+                <div><div class="form-label" style="margin-bottom:0.3rem">Phone</div><div id="detail-phone" style="font-size:0.9rem"></div></div>
+                <div><div class="form-label" style="margin-bottom:0.3rem">Intent</div><div id="detail-intent" style="font-size:0.9rem"></div></div>
+                <div><div class="form-label" style="margin-bottom:0.3rem">Budget</div><div id="detail-budget" style="font-size:0.9rem"></div></div>
+                <div><div class="form-label" style="margin-bottom:0.3rem">Status</div><div id="detail-status"></div></div>
+                <div><div class="form-label" style="margin-bottom:0.3rem">Received</div><div id="detail-date" style="font-size:0.85rem;color:var(--text-secondary)"></div></div>
+            </div>
+            <div class="form-label" style="margin-bottom:0.5rem">Message</div>
+            <div id="detail-msg" style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;padding:1rem 1.25rem;background:var(--bg-primary);border:1px solid var(--border);border-left:3px solid var(--bronze)"></div>
+            <div style="margin-top:1.5rem">
+                <div class="form-label" style="margin-bottom:0.5rem">Update Status</div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Contacted')">Contacted</button>
+                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Warm Lead')">Warm Lead</button>
+                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Hot Lead')">Hot Lead</button>
+                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('In Escrow')">In Escrow</button>
+                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Closed')">Closed</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-inquiry-detail')">Close</button>
+            <a id="detail-email-btn" href="mailto:" class="btn btn-primary">✉ Send Email</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="admin.js"></script>
+<style>
+.filter-chip { background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); padding:0.4rem 1.1rem; font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+.filter-chip:hover { border-color:var(--bronze); color:var(--bronze); }
+.filter-chip.active { background:var(--bronze); border-color:var(--bronze); color:var(--ivory); }
+</style>
+</body>
+</html>

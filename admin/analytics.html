@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics | Kanye Luxury 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-page="analytics">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div><div class="sidebar-brand-logo">Kanye Luxury <span>360°</span></div><div class="sidebar-brand-tag">Agent Portal</div></div></div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="analytics.html" class="nav-item active"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Analytics</div>
+            </div>
+            <div class="header-right">
+                <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
+            </div>
+        </header>
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Performance</div>
+                    <h1 class="page-title">Portfolio Analytics</h1>
+                    <p class="page-subtitle">Monitor sales velocity, lead pipeline, and marketing performance.</p>
+                </div>
+            </div>
+
+            <!-- KPI counters -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Total Portfolio Value</div>
+                    <div class="metric-value" id="a-total-vol-num">$0M</div>
+                    <div class="metric-trend up">All active listings</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg Listing Price</div>
+                    <div class="metric-value" id="a-avg-price-num">$0M</div>
+                    <div class="metric-trend">Per property</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Inquiries</div>
+                    <div class="metric-value" id="a-inquiries-num">0</div>
+                    <div class="metric-trend up">Across all listings</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Conversion Rate</div>
+                    <div class="metric-value" id="a-conv-rate-num">0%</div>
+                    <div class="metric-trend">New → Active</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Lead Pipeline by Stage</div>
+                    </div>
+                    <div class="section-card-body">
+                        <div class="chart-container" style="height:260px"><canvas id="pipeline-chart"></canvas></div>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Listings by Status</div>
+                    </div>
+                    <div class="section-card-body">
+                        <div id="status-breakdown"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listing performance table -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="section-card-title">Listing Performance</div>
+                    <a href="listings.html" style="font-size:0.78rem;color:var(--bronze)">Manage Listings →</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Listed</th>
+                                <th>Page Views</th>
+                                <th>Interest</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listing-perf-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div id="toast-container" class="toast-container"></div>
+<script src="admin.js"></script>
+</body>
+</html>

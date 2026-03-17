@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (id) {
+            window.location.href = "property-" + id + ".html";
+        } else {
+            window.location.href = "properties.html";
+        }
+    </script>
+</body>
+</html>

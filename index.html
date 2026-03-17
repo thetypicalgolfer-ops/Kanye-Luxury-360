@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanye Luxury 360 | Luxury Ranch & Estate Real Estate | Texas Hill Country</title>
+    <meta name="description" content="Private representation for luxury estates, ranches, and landmark land across Greater San Antonio, the Texas Hill Country, and surrounding regions.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-ring" id="cursor-ring"></div>
+    </div>
+
+    <!-- ──────────────── NAV ──────────────── -->
+    <nav class="nav" id="nav">
+        <a href="index.html" class="nav-logo">Kanye Luxury <span>360°</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="communities.html">Communities</a></li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="nav-cta btn btn-outline">Private Consultation</a>
+        <a href="admin/login.html" class="nav-agent-login" title="Agent Portal">⬡ Agent</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="communities.html">Communities</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html" class="nav-mobile-cta">Private Consultation</a>
+        <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
+    </div>
+
+
+    <!-- ──────────── 01. HERO ──────────── -->
+    <section class="hero" id="home">
+        <div class="hero-media" id="hero-media">
+            <img
+                src="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                alt="Luxury Texas Estate"
+                loading="eager"
+            >
+        </div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="hero-tag" id="hero-tag">Texas Hill Country · San Antonio · Hill Country</div>
+            <h1 class="hero-headline" id="hero-headline">
+                Luxury Ranch<br>Real Estate,<br><em>Reimagined</em>
+            </h1>
+            <p class="hero-sub" id="hero-sub">
+                Modern estates, legacy land, and exceptional private representation across Greater San Antonio and the Texas Hill Country.
+            </p>
+            <div class="hero-ctas" id="hero-ctas">
+                <a href="properties.html" class="btn btn-dark btn-arrow">View Featured Properties</a>
+                <a href="contact.html" class="btn btn-light">Schedule Consultation</a>
+            </div>
+        </div>
+
+        <div class="hero-scroll">
+            <div class="hero-scroll-line"></div>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- ──────────── 02. FEATURED PROPERTIES ──────────── -->
+    <section class="properties-section" id="properties">
+        <div class="max-w">
+            <div class="properties-header">
+                <div>
+                    <span class="section-eyebrow reveal">Featured Properties</span>
+                    <h2 class="section-headline reveal">Exceptional<br><em>Estates</em></h2>
+                </div>
+                <div>
+                    <p class="section-sub reveal" style="margin-top:0;">A curated selection of the most distinguished residential and ranch properties currently available across our markets.</p>
+                    <a href="properties.html" class="btn btn-outline btn-arrow reveal" style="margin-top:1.5rem;">View All Listings</a>
+                </div>
+            </div>
+
+            <div class="property-grid">
+                <!-- Card 1 — Large Feature -->
+                <a href="property-1.html" class="property-card reveal">
+                    <span class="pc-tag">Just Listed</span>
+                    <div class="pc-img">
+                        <img src="img-estate-1.png?v=7" alt="The Dominion Estate">
+                    </div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">The Dominion · San Antonio, TX</div>
+                        <div class="pc-name">Limestone & Steel<br>Contemporary Estate</div>
+                        <div class="pc-details">
+                            <span>5 Beds</span>
+                            <span>6 Baths</span>
+                            <span>7,200 sq ft</span>
+                            <span>1.2 Acres</span>
+                            <span class="pc-price">$4,250,000</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="property-2.html" class="property-card reveal">
+                    <span class="pc-tag" style="background:var(--sage);">Active</span>
+                    <div class="pc-img">
+                        <img src="img-estate-3.png?v=7" alt="Alamo Heights Modern Home">
+                    </div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Alamo Heights · San Antonio, TX</div>
+                        <div class="pc-name">Architectural<br>Modern Home</div>
+                        <div class="pc-details">
+                            <span>4 Beds</span>
+                            <span>4.5 Baths</span>
+                            <span class="pc-price">$2,895,000</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="property-3.html" class="property-card reveal">
+                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
+                    <div class="pc-img">
+                        <img src="img-estate-2.png?v=6" alt="Boerne Hill Country Ranch">
+                    </div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Boerne · Texas Hill Country</div>
+                        <div class="pc-name">Hill Country<br>Legacy Ranch</div>
+                        <div class="pc-details">
+                            <span>4 Bed Homestead</span>
+                            <span>340 Acres</span>
+                            <span class="pc-price">$6,800,000</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 03. BRAND / VALUE ──────────── -->
+    <section class="brand-section" id="about-preview">
+        <div class="brand-image" id="brand-image">
+            <img src="img-brand.png?v=4" alt="Luxury Interior">
+        </div>
+        <div class="brand-copy">
+            <span class="section-eyebrow reveal">Private Representation</span>
+            <h2 class="section-headline reveal">Intelligence Meets<br><em>Influence</em></h2>
+            <p class="section-sub reveal">We operate at the intersection of architectural sensibility, market intelligence, and discreet client experience. Our representation is not volume-driven — it is precision-driven.</p>
+            <a href="about.html" class="btn btn-light btn-arrow reveal" style="margin-top:2.5rem;">Our Approach</a>
+            <div class="brand-stats" id="brand-stats">
+                <div>
+                    <span class="stat-num" data-target="1.2" data-prefix="$" data-suffix="B+" data-decimal="1">$1.2B+</span>
+                    <span class="stat-lbl">In Private Sales</span>
+                </div>
+                <div>
+                    <span class="stat-num" data-target="18" data-suffix="yr">18yr</span>
+                    <span class="stat-lbl">Market Experience</span>
+                </div>
+                <div>
+                    <span class="stat-num" data-target="97" data-suffix="%">97%</span>
+                    <span class="stat-lbl">Client Retention</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 04. LIFESTYLE SECTION ──────────── -->
+    <section class="lifestyle-section" id="lifestyle">
+        <div class="max-w">
+            <span class="section-eyebrow reveal">Architecture · Land · Legacy</span>
+            <h2 class="section-headline reveal">The Texas Hill Country<br><em>Way of Life</em></h2>
+            <p class="section-sub reveal">Some properties are more than addresses. They are ranches handed down through generations, hilltops with unobstructed views, and homes where architecture meets the land in perfect conversation.</p>
+        </div>
+        <div class="lifestyle-grid">
+            <div class="lifestyle-item reveal">
+                <img src="img-estate-3.png?v=4" alt="Pool Estate">
+                <div class="lifestyle-overlay"></div>
+                <div class="lifestyle-caption">
+                    <small>Outdoor Living</small>
+                    Architecture<br>& Water
+                </div>
+            </div>
+            <div class="lifestyle-item reveal">
+                <img src="img-texas-ranch-home.png?v=4" alt="Luxury Texas Ranch Estate">
+                <div class="lifestyle-overlay"></div>
+                <div class="lifestyle-caption">
+                    <small>Luxury Ranch Estates</small>
+                    Refined<br>Texas Living
+                </div>
+            </div>
+            <div class="lifestyle-item reveal">
+                <img src="img-texas-countryside.png?v=4" alt="Texas Hill Country">
+                <div class="lifestyle-overlay"></div>
+                <div class="lifestyle-caption">
+                    <small>Land &amp; Acreage</small>
+                    Legacy<br>Ranch Living
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 05. BUYERS / SELLERS / LAND ──────────── -->
+    <section class="services-section" id="services">
+        <div class="max-w">
+            <span class="section-eyebrow reveal">Our Services</span>
+            <h2 class="section-headline reveal">Strategic<br><em>Representation</em></h2>
+
+            <div class="services-tabs" role="tablist" style="margin-top:3rem;">
+                <button class="service-tab active" role="tab" data-tab="buyers">Buyers</button>
+                <button class="service-tab" role="tab" data-tab="sellers">Sellers</button>
+                <button class="service-tab" role="tab" data-tab="land">Landowners</button>
+            </div>
+
+            <div class="service-panel active" id="tab-buyers">
+                <div class="service-panel-img">
+                    <img src="img-buyers.png?v=6?v=4" alt="Luxury Buyers Representation">
+                </div>
+                <div class="service-panel-content">
+                    <h3 class="section-headline">Finding the Right<br><em>Property</em></h3>
+                    <p class="section-sub">Access to on-market and off-market listings not found anywhere else. Curated to your lifestyle, investment goals, and vision.</p>
+                    <ul class="service-list">
+                        <li>Off-market and pre-market access through our private network</li>
+                        <li>Dedicated buyer consultation and lifestyle assessment</li>
+                        <li>Expert negotiation on your behalf</li>
+                        <li>Comprehensive due diligence support</li>
+                        <li>Relocation and market orientation for incoming clients</li>
+                    </ul>
+                    <a href="buy.html" class="btn btn-dark btn-arrow" style="margin-top:2.5rem;">Learn More</a>
+                </div>
+            </div>
+
+            <div class="service-panel" id="tab-sellers">
+                <div class="service-panel-img">
+                    <img src="img-sellers.png?v=4" alt="Luxury Sellers Representation">
+                </div>
+                <div class="service-panel-content">
+                    <h3 class="section-headline">Elevated<br><em>Presentation</em></h3>
+                    <p class="section-sub">Your property deserves more than a lockbox and a listing. We provide a full-service marketing approach built for discerning buyers.</p>
+                    <ul class="service-list">
+                        <li>Editorial-quality photography and cinematic video</li>
+                        <li>Precision pricing informed by deep market data</li>
+                        <li>Targeted outreach to qualified buyer networks</li>
+                        <li>Discreet off-market listings available</li>
+                        <li>White-glove transaction management</li>
+                    </ul>
+                    <a href="sell.html" class="btn btn-dark btn-arrow" style="margin-top:2.5rem;">Learn More</a>
+                </div>
+            </div>
+
+            <div class="service-panel" id="tab-land">
+                <div class="service-panel-img">
+                    <img src="img-landowners.png?v=4" alt="Texas Ranch Land">
+                </div>
+                <div class="service-panel-content">
+                    <h3 class="section-headline">Ranch &<br><em>Land Advisory</em></h3>
+                    <p class="section-sub">From Hill Country acreage to working cattle ranches, we understand land differently than most. We represent it accordingly.</p>
+                    <ul class="service-list">
+                        <li>Acreage valuation and comparable analysis</li>
+                        <li>Land development potential assessment</li>
+                        <li>Water rights, mineral rights, and easement guidance</li>
+                        <li>Ranch acquisition and legacy planning</li>
+                        <li>Conservation easement familiarity</li>
+                    </ul>
+                    <a href="properties.html" class="btn btn-dark btn-arrow" style="margin-top:2.5rem;">View Land Listings</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 06. COMMUNITIES ──────────── -->
+    <section class="communities-section" id="communities">
+        <div class="max-w">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:2rem; margin-bottom:0;">
+                <div>
+                    <span class="section-eyebrow reveal">Our Markets</span>
+                    <h2 class="section-headline reveal">Communities<br><em>We Serve</em></h2>
+                </div>
+                <a href="communities.html" class="btn btn-outline btn-arrow reveal" style="margin-bottom:0.5rem;">All Communities</a>
+            </div>
+        </div>
+        <div class="communities-grid" style="margin-top:4rem;">
+            <a href="communities.html?area=dominion" class="community-card reveal">
+                <img src="img-dominion.png?v=4" alt="The Dominion">
+                <div class="community-overlay"></div>
+                <div class="community-info">
+                    <div class="community-region">San Antonio</div>
+                    <div class="community-name">The Dominion</div>
+                    <div class="community-desc">San Antonio's most prestigious gated enclave. Estates from $1.5M to $20M+.</div>
+                </div>
+            </a>
+            <a href="communities.html?area=alamo-heights" class="community-card reveal">
+                <img src="img-alamo-heights.png?v=4" alt="Alamo Heights">
+                <div class="community-overlay"></div>
+                <div class="community-info">
+                    <div class="community-region">San Antonio</div>
+                    <div class="community-name">Alamo Heights</div>
+                    <div class="community-desc">Historic prestige meets modern architecture in one of the city's most coveted zip codes.</div>
+                </div>
+            </a>
+            <a href="communities.html?area=boerne" class="community-card reveal">
+                <img src="img-boerne.png?v=4" alt="Boerne Hill Country">
+                <div class="community-overlay"></div>
+                <div class="community-info">
+                    <div class="community-region">Hill Country</div>
+                    <div class="community-name">Boerne</div>
+                    <div class="community-desc">Ranches, acreage, and refined estates set against the rolling cedar hills of the Texas corridor.</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ──────────── 07. JOURNAL ──────────── -->
+    <section class="journal-section" id="journal">
+        <div class="max-w">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:2rem;">
+                <div>
+                    <span class="section-eyebrow reveal">Market Intelligence</span>
+                    <h2 class="section-headline reveal">Journal &<br><em>Insights</em></h2>
+                </div>
+                <a href="journal.html" class="btn btn-outline btn-arrow reveal">All Articles</a>
+            </div>
+
+            <div class="journal-grid">
+                <a href="article-1.html" class="journal-card reveal" style="display:block;">
+                    <div class="jc-img">
+                        <img src="img-journal-1.png?v=4" alt="Hill Country Land">
+                    </div>
+                    <div class="jc-cat">Market Insight</div>
+                    <h3 class="jc-title">Why Texas Hill Country Land Values Are on a Generational Climb</h3>
+                    <p class="jc-excerpt">From remote work migration to preservation demand, the forces reshaping the Hill Country land market are structural, not cyclical.</p>
+                    <div class="jc-date">March 12, 2026</div>
+                </a>
+                <a href="article-2.html" class="journal-card reveal" style="display:block;">
+                    <div class="jc-img">
+                        <img src="img-journal-2.png?v=4" alt="Boerne Ranch">
+                    </div>
+                    <div class="jc-cat">Neighborhood Guide</div>
+                    <h3 class="jc-title">Boerne: The Quiet Capital of Texas Luxury Ranching</h3>
+                    <p class="jc-excerpt">A comprehensive look at why discerning buyers from Austin and beyond are relocating to Boerne's premier ranch corridor.</p>
+                    <div class="jc-date">February 28, 2026</div>
+                </a>
+                <a href="article-3.html" class="journal-card reveal" style="display:block;">
+                    <div class="jc-img">
+                        <img src="img-brand.png?v=4" alt="Architecture">
+                    </div>
+                    <div class="jc-cat">Architecture</div>
+                    <h3 class="jc-title">Limestone &amp; Steel: The Material Language of Modern Texas Homes</h3>
+                    <p class="jc-excerpt">How the most sophisticated architects and buyers are blending raw Hill Country materiality with precision-engineered modern design.</p>
+                    <div class="jc-date">February 14, 2026</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 08. ABOUT AGENT ──────────── -->
+    <section class="about-section" id="agent">
+        <div class="about-copy">
+            <span class="section-eyebrow reveal">Private Representation</span>
+            <h2 class="section-headline reveal">Known for the Deals<br>Most Agents<br><em>Never See</em></h2>
+            <p class="section-sub reveal">A trusted advisor to high-net-worth buyers, sellers, and family offices navigating the Greater San Antonio and Hill Country luxury property markets for over 18 years.</p>
+            <p class="about-body reveal">Our approach is grounded in relationships, not volume. We work with a select number of clients annually, ensuring that every engagement receives the strategic attention, market depth, and discretion it deserves.</p>
+            <div class="about-credentials reveal">
+                <span class="credential">Licensed REALTOR®</span>
+                <span class="credential">Luxury Certified</span>
+                <span class="credential">Ranch & Land Specialist</span>
+                <span class="credential">Top 1% Texas</span>
+            </div>
+            <a href="about.html" class="btn btn-light btn-arrow reveal" style="margin-top:2.5rem;">Full Story</a>
+        </div>
+        <div class="about-portrait reveal">
+            <div class="about-portrait-accent"></div>
+            <img src="img-agent.png?v=2" alt="Kanye Luxury 360 Agent">
+        </div>
+    </section>
+
+    <!-- ──────────── 09. TESTIMONIALS ──────────── -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="max-w">
+            <span class="section-eyebrow reveal">Client Results</span>
+            <h2 class="section-headline reveal">Words from<br><em>Our Clients</em></h2>
+            <div class="testimonials-track">
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-text">"We had looked for over two years on our own. Within six months of working with Kanye Luxury 360, we closed on a 280-acre Hill Country property that never hit the market."</div>
+                    <div class="testimonial-author"><strong>James & Patricia W.</strong>Ranch Acquisition · Boerne, TX</div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-text">"The way they presented our Dominion estate was unlike anything I had seen. Professional, refined, and absolutely strategic. We closed above ask within 18 days."</div>
+                    <div class="testimonial-author"><strong>The Morales Family</strong>Estate Sale · The Dominion</div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-text">"They understood the property's architectural significance and found a buyer who genuinely valued it. Not just a transaction — a considered match."</div>
+                    <div class="testimonial-author"><strong>Robert A.</strong>Architectural Modern · Alamo Heights</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── 10. FINAL CTA & FORM ──────────── -->
+    <section class="cta-section" id="contact">
+        <div class="cta-bg">
+            <img src="estate_alamo_modern_1773668211378.png?v=4" alt="Texas Estate">
+        </div>
+        <div class="cta-content max-w">
+            <div class="cta-copy">
+                <span class="section-eyebrow reveal" style="color:var(--bronze);">Let's Begin</span>
+                <h2 class="section-headline reveal">Let's Find the Right<br>Property — or the<br><em>Right Buyer</em></h2>
+                <p class="section-sub reveal" style="color:var(--limestone);">Whether you are relocating from out of state, seeking a legacy ranch, or ready to strategically position a luxury property for sale — we are prepared to serve at the highest level.</p>
+                <div class="reveal" style="margin-top:3rem; display:flex; flex-direction:column; gap:1.25rem;">
+                    <div style="display:flex; align-items:center; gap:1rem; font-size:0.82rem; color:var(--limestone);">
+                        <span style="color:var(--bronze); font-size:1rem;">→</span> Luxury &amp; Ranch Homes
+                    </div>
+                    <div style="display:flex; align-items:center; gap:1rem; font-size:0.82rem; color:var(--limestone);">
+                        <span style="color:var(--bronze); font-size:1rem;">→</span> Land &amp; Acreage Acquisitions
+                    </div>
+                    <div style="display:flex; align-items:center; gap:1rem; font-size:0.82rem; color:var(--limestone);">
+                        <span style="color:var(--bronze); font-size:1rem;">→</span> Private Seller Representation
+                    </div>
+                    <div style="display:flex; align-items:center; gap:1rem; font-size:0.82rem; color:var(--limestone);">
+                        <span style="color:var(--bronze); font-size:1rem;">→</span> Off-Market Opportunities
+                    </div>
+                </div>
+            </div>
+            <form class="lead-form reveal" onsubmit="return false;">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="f-name">Full Name</label>
+                        <input type="text" id="f-name" placeholder="Your name">
+                    </div>
+                    <div class="form-field">
+                        <label for="f-email">Email</label>
+                        <input type="email" id="f-email" placeholder="your@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="f-phone">Phone</label>
+                        <input type="tel" id="f-phone" placeholder="(210) 000-0000">
+                    </div>
+                    <div class="form-field">
+                        <label for="f-intent">I am looking to…</label>
+                        <select id="f-intent">
+                            <option value="">Select</option>
+                            <option value="buy">Purchase a property</option>
+                            <option value="sell">Sell my property</option>
+                            <option value="land">Acquire land/ranch</option>
+                            <option value="invest">Investment inquiry</option>
+                            <option value="relocate">Relocating to Texas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="f-message">Message</label>
+                    <textarea id="f-message" placeholder="Tell us about your goals, timeline, and any specific requirements…"></textarea>
+                </div>
+                <button type="submit" class="form-submit">Request Private Consultation</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ──────────── FOOTER ──────────── -->
+    <footer>
+        <div class="footer-inner max-w">
+            <div class="footer-logo">Kanye Luxury <span>360°</span></div>
+            <ul class="footer-links">
+                <li><a href="properties.html">Properties</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li><a href="buy.html">Buy</a></li>
+                <li><a href="sell.html">Sell</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="journal.html">Journal</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="footer-copy">© 2026 Kanye Luxury 360. Greater San Antonio · Texas Hill Country.</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

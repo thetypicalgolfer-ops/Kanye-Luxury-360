@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Kanye Luxury 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-page="dashboard">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div>
+                <div class="sidebar-brand-logo">Kanye Luxury <span>360°</span></div>
+                <div class="sidebar-brand-tag">Agent Portal</div>
+            </div>
+        </div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="analytics.html" class="nav-item"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Dashboard</div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <span class="header-search-icon">🔍</span>
+                    <input type="text" placeholder="Search listings, leads…" onkeydown="if(event.key==='Enter'&&this.value) window.location='listings.html'">
+                </div>
+                <a href="listings.html" class="btn header-btn">+ New Listing</a>
+                <div class="user-profile" onclick="window.location='../index.html'">
+                    <div class="avatar-initials">KL</div>
+                    <span class="user-name">Agent</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Overview</div>
+                    <h1 class="page-title" id="greeting">Good evening, Agent</h1>
+                    <p class="page-subtitle">Here's what's happening across your portfolio today.</p>
+                </div>
+                <div class="page-actions">
+                    <a href="inquiries.html" class="btn btn-secondary">View Inquiries</a>
+                    <a href="campaigns.html" class="btn btn-primary">+ Campaign</a>
+                </div>
+            </div>
+
+            <!-- KPI METRICS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Active Listings</div>
+                    <div class="metric-value" id="metric-listings">0</div>
+                    <div class="metric-trend up">↑ On Market Now</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Portfolio Value</div>
+                    <div class="metric-value" id="metric-volume-num">$0M</div>
+                    <div class="metric-trend up">↑ Combined Listings</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Active Leads</div>
+                    <div class="metric-value" id="metric-leads">0</div>
+                    <div class="metric-trend">Hot + Warm Pipeline</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Live Campaigns</div>
+                    <div class="metric-value" id="metric-campaigns">0</div>
+                    <div class="metric-trend up">→ Currently Running</div>
+                </div>
+            </div>
+
+            <!-- CHART + MINI LISTINGS -->
+            <div style="display:grid;grid-template-columns:1.65fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Inquiry Activity — Last 7 Months</div>
+                        <a href="analytics.html" style="font-size:0.78rem;color:var(--bronze)">Full Report →</a>
+                    </div>
+                    <div class="section-card-body">
+                        <div class="chart-container" style="height:260px"><canvas id="activity-chart"></canvas></div>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Recent Listings</div>
+                        <a href="listings.html" style="font-size:0.78rem;color:var(--bronze)">View All →</a>
+                    </div>
+                    <div style="padding:0">
+                        <table class="data-table">
+                            <tbody id="recent-listings-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT INQUIRIES -->
+            <div class="section-card">
+                <div class="section-card-header">
+                    <div class="section-card-title">Recent Inquiries</div>
+                    <a href="inquiries.html" style="font-size:0.78rem;color:var(--bronze)">View All →</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Intent</th>
+                                <th>Budget</th>
+                                <th>Status</th>
+                                <th>Received</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-inquiries-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div id="toast-container" class="toast-container"></div>
+<script src="admin.js"></script>
+</body>
+</html>

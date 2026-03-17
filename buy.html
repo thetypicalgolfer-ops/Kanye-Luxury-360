@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy | Kanye Luxury 360</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-hero-dark { min-height:45vh; display:flex; align-items:flex-end; background:linear-gradient(rgba(27,27,26,0.3),rgba(27,27,26,0.4)), url('img-buyers.png?v=6') center/cover; padding:4rem var(--gutter); }
+        .hero-split { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; padding: 6rem var(--gutter); background: var(--ivory); }
+        .hero-split-img { aspect-ratio: 4/5; overflow: hidden; border: 1px solid var(--border); }
+        .hero-split-img img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-split-text { padding-top: 2rem; }
+        .process-steps { padding:8rem var(--gutter); background:var(--cream); }
+        @media(max-width:1000px){ .hero-split { grid-template-columns: 1fr; gap:3rem; } .hero-split-img { order: -1; aspect-ratio: 16/9; } }
+        .steps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; margin-top:5rem; }
+        .step { padding-top:2rem; border-top:1px solid var(--border); }
+        .step-num { font-family:var(--serif); font-size:3rem; font-weight:300; color:var(--limestone); }
+        .step-title { font-family:var(--serif); font-size:1.3rem; font-weight:400; margin:0.5rem 0; }
+        .step-desc { font-size:0.85rem; color:var(--sage); line-height:1.7; font-weight:300; }
+        @media(max-width:900px){ .steps-grid { grid-template-columns:repeat(2,1fr); } }
+        @media(max-width:500px){ .steps-grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
+        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Luxury <span>360°</span></a>
+        <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="properties.html">Properties</a></li><li><a href="buy.html">Buy</a></li><li><a href="sell.html">Sell</a></li><li><a href="contact.html">Contact</a></li></ul>
+        <a href="contact.html" class="nav-cta btn" style="border-color:var(--charcoal);color:var(--charcoal);">Consultation</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html" class="nav-mobile-cta">Private Consultation</a>
+    </div>
+    <div class="page-hero-dark">
+        <div>
+            <span class="section-eyebrow">Services</span>
+            <h1 class="section-headline" style="color:var(--ivory);">Exclusive<br><em>Buyer Advisory</em></h1>
+        </div>
+    </div>
+
+    <section class="hero-split">
+        <div class="hero-split-img reveal">
+            <img src="img-estate-1.png" alt="Luxury Architectural Interior">
+        </div>
+        <div class="hero-split-text reveal">
+            <span class="section-eyebrow">The Strategy</span>
+            <h2 class="section-headline">Finding the<br><em>Right Property</em></h2>
+            <p style="font-size:1.1rem; color:var(--sage); margin-top:1.5rem; line-height:1.75; font-weight:300;">Access to on-market and off-market listings, guided by someone who understands the Texas luxury market like few others can.</p>
+            <p style="font-size:0.9rem; color:var(--charcoal); margin-top:1.5rem; line-height:1.8; font-weight:300;">Our advisory goes beyond the simple transaction. We provide market analysis, architectural consultation, and lifestyle alignment for every estate we represent. In a market where the best properties often never hit the open market, our network is your greatest asset.</p>
+            <div style="display:flex; gap:1.2rem; margin-top:2.5rem; flex-wrap:wrap;">
+                <a href="properties.html" class="btn btn-dark btn-arrow">Browse Collection</a>
+                <a href="contact.html?intent=buy" class="btn btn-outline">Speak with an Advisor</a>
+            </div>
+        </div>
+    </section>
+    <section class="process-steps">
+        <div class="max-w">
+            <span class="section-eyebrow reveal">The Buyer Process</span>
+            <h2 class="section-headline reveal">How We<br><em>Represent You</em></h2>
+            <div class="steps-grid">
+                <div class="step reveal"><div class="step-num">01</div><h3 class="step-title">Private Consultation</h3><p class="step-desc">We begin every engagement with a thorough conversation about your lifestyle, investment goals, preferred communities, and timeline.</p></div>
+                <div class="step reveal"><div class="step-num">02</div><h3 class="step-title">Curated Property Access</h3><p class="step-desc">Beyond what is publicly listed, we leverage our private network to surface off-market opportunities aligned precisely with your criteria.</p></div>
+                <div class="step reveal"><div class="step-num">03</div><h3 class="step-title">Due Diligence Support</h3><p class="step-desc">Inspections, appraisals, surveys, and legal reviews — we coordinate the entire due diligence process so nothing is overlooked.</p></div>
+                <div class="step reveal"><div class="step-num">04</div><h3 class="step-title">Strategic Negotiation</h3><p class="step-desc">Our negotiation is informed by market depth and driven by your interests. We advocate firmly and intelligently at every stage of the transaction.</p></div>
+            </div>
+            <div style="margin-top:5rem; text-align:center;" class="reveal">
+                <a href="contact.html" class="btn btn-dark btn-arrow">Start Your Search</a>
+            </div>
+        </div>
+    </section>
+    <footer><div class="footer-inner max-w"><div class="footer-logo">Kanye Luxury <span>360°</span></div><ul class="footer-links"><li><a href="properties.html">Properties</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul><div class="footer-copy">© 2026 Kanye Luxury 360</div></div></footer>
+    <script src="app.js"></script>
+</body>
+</html>

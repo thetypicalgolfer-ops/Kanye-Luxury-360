@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings | Kanye Luxury 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+/* ── SETTINGS SPECIFIC CSS ───────────────────────────────── */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+@media(max-width: 800px) { .settings-layout { grid-template-columns: 1fr; } }
+.settings-menu {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+.settings-menu-btn {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.settings-menu-btn:last-child { border-bottom: none; }
+.settings-menu-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+.settings-menu-btn.active {
+    color: var(--text-primary);
+    background: rgba(164,124,72,0.08);
+    border-left: 3px solid var(--bronze);
+    padding-left: calc(1.25rem - 3px);
+    font-weight: 500;
+}
+.settings-panel { display: none; }
+.settings-panel.active { display: block; animation: fadeSlideIn 0.3s forwards; }
+
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border-light);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info h4 { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.2rem; }
+.toggle-info p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+/* Custom Checkbox Toggle */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transition: 0.3s;
+}
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--text-secondary);
+    border-radius: 50%;
+    transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--bronze); border-color: var(--bronze); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); background: #fff; }
+
+.integration-card {
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background: var(--bg-card);
+}
+.integration-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--bronze);
+}
+</style>
+</head>
+<body data-page="settings">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div><div class="sidebar-brand-logo">Kanye Luxury <span>360°</span></div><div class="sidebar-brand-tag">Agent Portal</div></div></div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="analytics.html" class="nav-item"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item active"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Settings</div>
+            </div>
+            <div class="header-right">
+                <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
+            </div>
+        </header>
+        
+        <div class="page-content">
+            <div class="page-header" style="margin-bottom:2rem">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Preferences</div>
+                    <h1 class="page-title">Portal Settings</h1>
+                    <p class="page-subtitle">Manage your account, notifications, and integrations.</p>
+                </div>
+            </div>
+
+            <div class="settings-layout">
+                <!-- Left Menu -->
+                <div class="settings-menu">
+                    <button class="settings-menu-btn active" data-target="panel-profile">Profile & Brand</button>
+                    <button class="settings-menu-btn" data-target="panel-notifications">Notifications</button>
+                    <button class="settings-menu-btn" data-target="panel-integrations">Integrations</button>
+                    <button class="settings-menu-btn" data-target="panel-security">Security</button>
+                </div>
+
+                <!-- Right Content -->
+                <div class="settings-content">
+                    
+                    <!-- Profile Panel -->
+                    <div class="settings-panel active" id="panel-profile">
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Profile Information</div>
+                            </div>
+                            <div class="section-card-body">
+                                <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-light)">
+                                    <div class="avatar-initials" style="width:72px;height:72px;font-size:1.5rem">KL</div>
+                                    <div>
+                                        <button class="btn btn-secondary btn-sm" style="margin-bottom:0.5rem">Change Photo</button>
+                                        <div style="font-size:0.75rem;color:var(--text-secondary)">JPG or PNG, max 2MB.</div>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name</label>
+                                        <input class="form-control" id="setting-fname" value="Kanye" type="text">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name</label>
+                                        <input class="form-control" id="setting-lname" value="West" type="text">
+                                    </div>
+                                    <div class="form-group form-full">
+                                        <label class="form-label">Public Email</label>
+                                        <input class="form-control" value="contact@kanyeluxury360.com" type="email">
+                                    </div>
+                                    <div class="form-group form-full">
+                                        <label class="form-label">Agent Bio</label>
+                                        <textarea class="form-control">Leading luxury real estate expert specializing in legacy estates and architectural masterpieces.</textarea>
+                                    </div>
+                                </div>
+                                <div style="margin-top:1.5rem">
+                                    <button class="btn btn-primary" id="save-profile-btn">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Panel -->
+                    <div class="settings-panel" id="panel-notifications">
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Email Notifications</div>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>New Inquiries</h4>
+                                        <p>Get notified immediately when a new lead submits a contact form.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Campaign Summaries</h4>
+                                        <p>Receive a weekly digest of marketing campaign performance.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Listing Expiring Alerts</h4>
+                                        <p>Alerts when active listings are 7 days away from expiration.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integrations Panel -->
+                    <div class="settings-panel" id="panel-integrations">
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Connected Services</div>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="integration-card">
+                                    <div class="integration-icon">MLS</div>
+                                    <div style="flex-grow:1">
+                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">SABOR MLS</div>
+                                        <div style="font-size:0.8rem;color:var(--text-secondary)">Sync listings automatically. Last sync: Today, 8:42 AM.</div>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm">Disconnect</button>
+                                </div>
+                                <div class="integration-card">
+                                    <div class="integration-icon" style="color:#00bd59">M</div>
+                                    <div style="flex-grow:1">
+                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Mailchimp</div>
+                                        <div style="font-size:0.8rem;color:var(--text-secondary)">Not connected.</div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm">Connect</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Panel -->
+                    <div class="settings-panel" id="panel-security">
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Change Password</div>
+                            </div>
+                            <div class="section-card-body">
+                                <div class="form-grid">
+                                    <div class="form-group form-full">
+                                        <label class="form-label">Current Password</label>
+                                        <input class="form-control" type="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">New Password</label>
+                                        <input class="form-control" type="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Confirm Password</label>
+                                        <input class="form-control" type="password">
+                                    </div>
+                                </div>
+                                <div style="margin-top:1.5rem">
+                                    <button class="btn btn-primary">Update Password</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div id="toast-container" class="toast-container"></div>
+<script src="admin.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Settings Tabs Logic
+    const buttons = document.querySelectorAll('.settings-menu-btn');
+    const panels = document.querySelectorAll('.settings-panel');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+        });
+    });
+});
+</script>
+</body>
+</html>

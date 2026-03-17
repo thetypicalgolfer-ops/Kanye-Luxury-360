@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties | Kanye Luxury 360</title>
+    <meta name="description" content="Browse luxury homes, ranches, and estates across Greater San Antonio and the Texas Hill Country.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-hero {
+            height: 55vh; min-height: 400px;
+            display: flex; align-items: flex-end;
+            background: linear-gradient(rgba(27,27,26,0.5), rgba(27,27,26,0.8)),
+                url('img-buyers.png?v=6?v=4') center/cover;
+            padding: 5rem var(--gutter);
+        }
+        .filter-bar {
+            padding: 2rem var(--gutter);
+            border-bottom: 1px solid var(--border);
+            display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+            background: var(--ivory);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .filter-select {
+            font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.1em;
+            padding: 0.65rem 1.2rem; border: 1px solid var(--border);
+            background: transparent; color: var(--charcoal);
+            appearance: none; cursor: pointer; min-width: 150px;
+        }
+        .all-listings { padding: 5rem var(--gutter); }
+        .listings-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+        }
+        @media(max-width:1000px) { .listings-grid { grid-template-columns: repeat(2,1fr); } }
+        @media(max-width:600px)  { .listings-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
+        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Luxury <span>360°</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="communities.html">Communities</a></li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="nav-cta btn" style="border-color:var(--charcoal); color:var(--charcoal);">Private Consultation</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html" class="nav-mobile-cta">Private Consultation</a>
+    </div>
+
+    <div class="page-hero">
+        <div>
+            <span class="section-eyebrow">Luxury Properties</span>
+            <h1 class="section-headline" style="color:var(--ivory);">Featured<br><em>Listings</em></h1>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <select class="filter-select"><option>All Property Types</option><option>Luxury Home</option><option>Ranch & Land</option><option>Modern Estate</option></select>
+        <select class="filter-select"><option>All Locations</option><option>The Dominion</option><option>Alamo Heights</option><option>Boerne</option><option>Stone Oak</option></select>
+        <select class="filter-select"><option>Any Price</option><option>$1M–$2M</option><option>$2M–$5M</option><option>$5M+</option></select>
+        <select class="filter-select"><option>Any Size</option><option>Under 5 Acres</option><option>5–100 Acres</option><option>100+ Acres</option></select>
+    </div>
+
+    <section class="all-listings">
+        <div class="max-w">
+            <div class="listings-grid">
+                <a href="property-1.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <span class="pc-tag">Just Listed</span>
+                    <div class="pc-img"><img src="img-estate-1.png?v=7" alt="Estate"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">The Dominion · San Antonio</div>
+                        <div class="pc-name">Limestone & Steel Estate</div>
+                        <div class="pc-details"><span>5 Bd</span><span>6 Ba</span><span>7,200 sf</span><span class="pc-price">$4,250,000</span></div>
+                    </div>
+                </a>
+                <a href="property-2.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <span class="pc-tag" style="background:var(--sage);">Active</span>
+                    <div class="pc-img"><img src="img-estate-3.png?v=7" alt="Home"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Alamo Heights · San Antonio</div>
+                        <div class="pc-name">Architectural Modern</div>
+                        <div class="pc-details"><span>4 Bd</span><span>4.5 Ba</span><span>4,800 sf</span><span class="pc-price">$2,895,000</span></div>
+                    </div>
+                </a>
+                <a href="property-3.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
+                    <div class="pc-img"><img src="img-estate-2.png?v=6" alt="Ranch"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Boerne · Hill Country</div>
+                        <div class="pc-name">Hill Country Legacy Ranch</div>
+                        <div class="pc-details"><span>4 Bd</span><span>340 Ac</span><span class="pc-price">$6,800,000</span></div>
+                    </div>
+                </a>
+                <a href="property-4.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <div class="pc-img"><img src="img-stone-oak.png?v=6" alt="Estate"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Stone Oak · San Antonio</div>
+                        <div class="pc-name">Hillside Contemporary</div>
+                        <div class="pc-details"><span>4 Bd</span><span>3 Ba</span><span>3,950 sf</span><span class="pc-price">$1,950,000</span></div>
+                    </div>
+                </a>
+                <a href="property-5.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <span class="pc-tag" style="background:var(--sage);">Active</span>
+                    <div class="pc-img"><img src="img-new-braunfels.png?v=6" alt="Luxury"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">New Braunfels · TX</div>
+                        <div class="pc-name">Riverside Contemporary</div>
+                        <div class="pc-details"><span>5 Bd</span><span>5 Ba</span><span>5,400 sf</span><span class="pc-price">$3,200,000</span></div>
+                    </div>
+                </a>
+                <a href="property-6.html" class="property-card reveal" style="min-height:380px; position:relative;">
+                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
+                    <div class="pc-img"><img src="img-fredericksburg.png?v=6" alt="Land"></div>
+                    <div class="pc-overlay"></div>
+                    <div class="pc-content">
+                        <div class="pc-location">Fredericksburg · TX</div>
+                        <div class="pc-name">Vineyard Tract — 120 Acres</div>
+                        <div class="pc-details"><span>120 Ac</span><span>Water Rights</span><span class="pc-price">$3,800,000</span></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer><div class="footer-inner max-w">
+        <div class="footer-logo">Kanye Luxury <span>360°</span></div>
+        <ul class="footer-links"><li><a href="properties.html">Properties</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul>
+        <div class="footer-copy">© 2026 Kanye Luxury 360</div>
+    </div></footer>
+    <script src="app.js"></script>
+</body>
+</html>
