@@ -17,56 +17,6 @@
             margin-bottom: 1.8rem;
         }
 
-        /* ── Scroll Hint ──────────────────────────────── */
-        .scroll-hint {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.6rem;
-            animation: scrollFadeIn 1.5s ease 1.2s both;
-            z-index: 5;
-            cursor: pointer;
-        }
-        .scroll-hint-line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, transparent, var(--bronze));
-        }
-        .scroll-hint-text {
-            font-family: var(--sans);
-            font-size: 0.58rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: rgba(253,250,246,0.4);
-        }
-        .scroll-hint-arrow {
-            width: 18px;
-            height: 18px;
-            color: var(--bronze);
-            animation: scrollPulse 2s ease-in-out infinite;
-        }
-        @keyframes scrollPulse {
-            0%, 100% { transform: translateY(0); opacity: 0.6; }
-            50% { transform: translateY(6px); opacity: 1; }
-        }
-        @keyframes scrollFadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        /* Hide when user scrolls */
-        .scroll-hint.hidden {
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-        @media (max-width: 768px) {
-            .scroll-hint { bottom: 1rem; }
-            .about-section { padding-bottom: 5rem !important; }
-        }
 
         /* ══════════════════════════════════════════════════
            VIDEO SHOWCASE
@@ -465,12 +415,6 @@
             <img src="img-agent.png?v=2" alt="Kanye Concierge 360 Agent"
                  style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;">
         </div>
-        <!-- Scroll indicator -->
-        <div class="scroll-hint" id="scroll-hint">
-            <div class="scroll-hint-line"></div>
-            <span class="scroll-hint-text">Scroll</span>
-            <svg class="scroll-hint-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        </div>
     </section>
 
     <!-- ──────────── FULL STORY ──────────── -->
@@ -630,51 +574,6 @@
     </footer>
     <script src="app.js"></script>
     <script>
-    // ── Scroll hint: click to bouncy-snap to next section ──
-    (function(){
-        var hint = document.getElementById('scroll-hint');
-        var target = document.getElementById('about-story');
-        if (!hint || !target) return;
-
-        var animating = false;
-
-        // Click to bounce-scroll
-        hint.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (animating) return;
-            animating = true;
-
-            var targetY = target.getBoundingClientRect().top + window.scrollY;
-            var startY = window.scrollY;
-            var diff = targetY - startY;
-            var duration = 900;
-            var start = null;
-
-            function bounce(t) {
-                return 1 - Math.pow(2, -8 * t) * Math.cos(4.5 * Math.PI * t);
-            }
-
-            function step(ts) {
-                if (!start) start = ts;
-                var elapsed = ts - start;
-                var progress = Math.min(elapsed / duration, 1);
-                window.scrollTo(0, startY + diff * bounce(progress));
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    animating = false;
-                    hint.classList.add('hidden');
-                }
-            }
-            requestAnimationFrame(step);
-        });
-
-        // Also hide on manual scroll (but not during animation)
-        window.addEventListener('scroll', function() {
-            if (!animating && window.scrollY > 200) hint.classList.add('hidden');
-        }, {passive:true});
-    })();
 
     // ── VIDEO PLAYER ──────────────────────────────────
     var vid = document.getElementById('main-video');
