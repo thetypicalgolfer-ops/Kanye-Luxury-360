@@ -29,6 +29,7 @@
             gap: 0.6rem;
             animation: scrollFadeIn 1.5s ease 1.2s both;
             z-index: 5;
+            cursor: pointer;
         }
         .scroll-hint-line {
             width: 1px;
@@ -62,8 +63,14 @@
             transition: opacity 0.5s ease;
             pointer-events: none;
         }
-        @media (max-width: 600px) {
-            .scroll-hint { bottom: 1.5rem; }
+        @media (max-width: 768px) {
+            .scroll-hint {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin: 3rem auto 0;
+            }
         }
 
         /* ══════════════════════════════════════════════════
@@ -472,7 +479,7 @@
     </section>
 
     <!-- ──────────── FULL STORY ──────────── -->
-    <section style="background:var(--cream); padding:8rem var(--gutter);">
+    <section id="about-story" style="background:var(--cream); padding:8rem var(--gutter);">
         <div class="max-w" style="max-width:820px; margin:0 auto;">
             <span class="section-eyebrow reveal">The Story Behind the Practice</span>
             <h2 class="section-headline reveal" style="margin-bottom:3.5rem;">A Career Shaped<br>by <em>Leadership</em></h2>
@@ -628,14 +635,43 @@
     </footer>
     <script src="app.js"></script>
     <script>
-    // ── Scroll hint hide ──────────────────────────────
+    // ── Scroll hint: click to bouncy-snap to next section ──
     (function(){
         var hint = document.getElementById('scroll-hint');
-        if (!hint) return;
+        var target = document.getElementById('about-story');
+        if (!hint || !target) return;
+
+        // Hide on scroll
         var hidden = false;
         window.addEventListener('scroll', function() {
             if (!hidden && window.scrollY > 80) { hint.classList.add('hidden'); hidden = true; }
         }, {passive:true});
+
+        // Bouncy snap scroll on click
+        hint.addEventListener('click', function() {
+            var targetY = target.getBoundingClientRect().top + window.scrollY;
+            var startY = window.scrollY;
+            var diff = targetY - startY;
+            var duration = 900;
+            var start = null;
+
+            function bounce(t) {
+                // Spring easing: overshoots then settles
+                var p = 1 - Math.pow(2, -8 * t) * Math.cos(4.5 * Math.PI * t);
+                return p;
+            }
+
+            function step(ts) {
+                if (!start) start = ts;
+                var elapsed = ts - start;
+                var progress = Math.min(elapsed / duration, 1);
+                var ease = bounce(progress);
+                window.scrollTo(0, startY + diff * ease);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+            hint.classList.add('hidden');
+        });
     })();
 
     // ── VIDEO PLAYER ──────────────────────────────────
