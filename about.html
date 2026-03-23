@@ -64,13 +64,8 @@
             pointer-events: none;
         }
         @media (max-width: 768px) {
-            .scroll-hint {
-                position: relative;
-                bottom: auto;
-                left: auto;
-                transform: none;
-                margin: 3rem auto 0;
-            }
+            .scroll-hint { bottom: 1rem; }
+            .about-section { padding-bottom: 5rem !important; }
         }
 
         /* ══════════════════════════════════════════════════
@@ -641,14 +636,15 @@
         var target = document.getElementById('about-story');
         if (!hint || !target) return;
 
-        // Hide on scroll
-        var hidden = false;
-        window.addEventListener('scroll', function() {
-            if (!hidden && window.scrollY > 80) { hint.classList.add('hidden'); hidden = true; }
-        }, {passive:true});
+        var animating = false;
 
-        // Bouncy snap scroll on click
-        hint.addEventListener('click', function() {
+        // Click to bounce-scroll
+        hint.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (animating) return;
+            animating = true;
+
             var targetY = target.getBoundingClientRect().top + window.scrollY;
             var startY = window.scrollY;
             var diff = targetY - startY;
@@ -656,22 +652,28 @@
             var start = null;
 
             function bounce(t) {
-                // Spring easing: overshoots then settles
-                var p = 1 - Math.pow(2, -8 * t) * Math.cos(4.5 * Math.PI * t);
-                return p;
+                return 1 - Math.pow(2, -8 * t) * Math.cos(4.5 * Math.PI * t);
             }
 
             function step(ts) {
                 if (!start) start = ts;
                 var elapsed = ts - start;
                 var progress = Math.min(elapsed / duration, 1);
-                var ease = bounce(progress);
-                window.scrollTo(0, startY + diff * ease);
-                if (progress < 1) requestAnimationFrame(step);
+                window.scrollTo(0, startY + diff * bounce(progress));
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    animating = false;
+                    hint.classList.add('hidden');
+                }
             }
             requestAnimationFrame(step);
-            hint.classList.add('hidden');
         });
+
+        // Also hide on manual scroll (but not during animation)
+        window.addEventListener('scroll', function() {
+            if (!animating && window.scrollY > 200) hint.classList.add('hidden');
+        }, {passive:true});
     })();
 
     // ── VIDEO PLAYER ──────────────────────────────────
