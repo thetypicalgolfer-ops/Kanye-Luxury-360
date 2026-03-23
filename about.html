@@ -9,39 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        .about-pillars {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-            margin-top: 5rem;
-        }
-        .pillar-num {
-            font-family: var(--serif);
-            font-size: 3.5rem;
-            font-weight: 300;
-            color: var(--bronze);
-            line-height: 1;
-            margin-bottom: 1.2rem;
-        }
-        .pillar-title {
-            font-family: var(--serif);
-            font-size: 1.4rem;
-            font-weight: 400;
-            color: var(--charcoal);
-            margin-bottom: 0.75rem;
-        }
-        .pillar-text {
-            font-size: 0.88rem;
+        .about-prose {
+            font-size: 1.05rem;
+            line-height: 2;
             color: var(--sage);
-            line-height: 1.8;
             font-weight: 300;
-        }
-        @media (max-width: 1000px) {
-            .about-pillars { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
-        }
-        @media (max-width: 600px) {
-            .about-pillars { grid-template-columns: 1fr; gap: 2rem; }
-            .max-w[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; gap: 3rem !important; }
+            margin-bottom: 1.8rem;
         }
     </style>
 </head>
@@ -85,7 +58,6 @@
             <span class="section-eyebrow reveal">Our Story</span>
             <h1 class="section-headline reveal" style="color:var(--ivory);">Built on Conviction,<br>Driven by<br><em>Excellence</em></h1>
             <p class="section-sub reveal" style="color:var(--limestone);">Kanye Concierge 360 was founded on a simple conviction: luxury real estate clients deserve a fundamentally different level of service — one built on relationships, discretion, and genuine market mastery.</p>
-            <p class="about-body reveal">Behind that philosophy is a career shaped by high-level leadership, global business experience, and a deep understanding of what it means to operate at the highest levels. After more than 15 years with Delta Air Lines — where he managed corporate portfolios exceeding $340M and consistently delivered top-tier performance — he developed a disciplined, strategic approach to complex negotiations, client advisory, and long-term relationship building.</p>
             <div class="about-credentials reveal">
                 <span class="credential">Licensed REALTOR®</span>
                 <span class="credential">Certified Luxury Home Specialist</span>
@@ -102,64 +74,30 @@
         </div>
     </section>
 
-    <!-- ──────────── THE PRACTICE ──────────── -->
+    <!-- ──────────── FULL STORY ──────────── -->
     <section style="background:var(--cream); padding:8rem var(--gutter);">
-        <div class="max-w" style="display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;">
-            <div>
-                <span class="section-eyebrow reveal">The Practice</span>
-                <h2 class="section-headline reveal">Today, That Same<br>Mindset Defines<br><em>Everything We Do</em></h2>
-            </div>
-            <div>
-                <p class="reveal" style="font-size:1rem; line-height:2; color:var(--sage); font-weight:300;">This is not a high-volume brokerage. It is a private advisory practice, selectively serving buyers, sellers, and landowners across the Greater San Antonio and Texas Hill Country markets.</p>
-                <p class="reveal" style="font-size:1rem; line-height:2; color:var(--sage); font-weight:300; margin-top:1.5rem;">Every client relationship is approached with intention, backed by data-driven insight, and guided by a clear understanding of both market dynamics and individual goals.</p>
-            </div>
-        </div>
-    </section>
+        <div class="max-w" style="max-width:820px; margin:0 auto;">
+            <span class="section-eyebrow reveal">The Story Behind the Practice</span>
+            <h2 class="section-headline reveal" style="margin-bottom:3.5rem;">A Career Shaped<br>by <em>Leadership</em></h2>
 
-    <!-- ──────────── APPROACH ──────────── -->
-    <section style="background:var(--charcoal); padding:8rem var(--gutter);">
-        <div class="max-w" style="max-width:800px; text-align:center;">
-            <span class="section-eyebrow reveal" style="color:var(--limestone);">The Approach</span>
-            <h2 class="section-headline reveal" style="color:var(--ivory);">Calm, Consultative,<br><em>Results-Driven</em></h2>
-            <p class="reveal" style="font-size:1.05rem; line-height:2; color:rgba(216,204,188,0.7); font-weight:300; margin-top:2.5rem;">Known for a calm, consultative style, he brings clarity to complex transactions and confidence to critical decisions — whether advising on a luxury home, a strategic investment, or a significant land acquisition.</p>
-            <p class="reveal" style="font-size:1.05rem; line-height:2; color:rgba(216,204,188,0.7); font-weight:300; margin-top:1.5rem;">His global perspective, business acumen, and commitment to excellence create an experience that is both highly personal and results-driven.</p>
-        </div>
-    </section>
+            <p class="reveal about-prose">Behind that philosophy is a career shaped by high-level leadership, global business experience, and a deep understanding of what it means to operate at the highest levels. After more than 15 years with Delta Air Lines — where he managed corporate portfolios exceeding $340M and consistently delivered top-tier performance — he developed a disciplined, strategic approach to complex negotiations, client advisory, and long-term relationship building.</p>
 
-    <!-- ──────────── PILLARS ──────────── -->
-    <section style="background:var(--cream); padding:8rem var(--gutter);">
-        <div class="max-w">
-            <span class="section-eyebrow reveal">What Sets Us Apart</span>
-            <h2 class="section-headline reveal">Our<br><em>Principles</em></h2>
-            <div class="about-pillars">
-                <div class="reveal">
-                    <div class="pillar-num">01</div>
-                    <h3 class="pillar-title">Precision Over Volume</h3>
-                    <p class="pillar-text">We intentionally limit the number of clients we serve. Every engagement receives our total focus, full resources, and undivided attention.</p>
-                </div>
-                <div class="reveal">
-                    <div class="pillar-num">02</div>
-                    <h3 class="pillar-title">Strategic Intelligence</h3>
-                    <p class="pillar-text">Our analysis is grounded in deep local data, off-market intelligence, and a disciplined approach shaped by 15+ years of managing high-value portfolios.</p>
-                </div>
-                <div class="reveal">
-                    <div class="pillar-num">03</div>
-                    <h3 class="pillar-title">Discreet by Design</h3>
-                    <p class="pillar-text">Not every property should be publicly listed. We specialize in confidential representation for buyers and sellers who value privacy above all else.</p>
-                </div>
-                <div class="reveal">
-                    <div class="pillar-num">04</div>
-                    <h3 class="pillar-title">Relationship-First</h3>
-                    <p class="pillar-text">We don't chase transactions. We build long-term advisory relationships grounded in trust, transparency, and a genuine commitment to our clients' goals.</p>
-                </div>
-            </div>
+            <div class="reveal" style="width:60px; height:1px; background:var(--bronze); margin:3rem 0;"></div>
+
+            <p class="reveal about-prose" style="font-family:var(--serif); font-size:1.6rem; font-weight:300; line-height:1.5; color:var(--charcoal); font-style:italic;">Today, that same mindset defines Kanye Concierge 360.</p>
+
+            <div class="reveal" style="width:60px; height:1px; background:var(--bronze); margin:3rem 0;"></div>
+
+            <p class="reveal about-prose">This is not a high-volume brokerage. It is a private advisory practice, selectively serving buyers, sellers, and landowners across the Greater San Antonio and Texas Hill Country markets. Every client relationship is approached with intention, backed by data-driven insight, and guided by a clear understanding of both market dynamics and individual goals.</p>
+
+            <p class="reveal about-prose">Known for a calm, consultative style, he brings clarity to complex transactions and confidence to critical decisions — whether advising on a luxury home, a strategic investment, or a significant land acquisition. His global perspective, business acumen, and commitment to excellence create an experience that is both highly personal and results-driven.</p>
         </div>
     </section>
 
     <!-- ──────────── CLOSING STATEMENT ──────────── -->
     <section style="background:var(--charcoal); padding:8rem var(--gutter);">
         <div class="max-w" style="max-width:760px; text-align:center;">
-            <div class="reveal" style="font-family:var(--serif); font-size:2.2rem; font-weight:300; color:var(--ivory); line-height:1.4; font-style:italic;">
+            <div class="reveal" style="font-family:var(--serif); font-size:2.2rem; font-weight:300; color:var(--ivory); line-height:1.45; font-style:italic;">
                 "At Kanye Concierge 360, every engagement is treated as if it is the only one on the desk — because for our clients, it is."
             </div>
             <div class="reveal" style="width:60px; height:1px; background:var(--bronze); margin:2.5rem auto;"></div>
