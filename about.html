@@ -65,6 +65,234 @@
         @media (max-width: 600px) {
             .scroll-hint { bottom: 1.5rem; }
         }
+
+        /* ══════════════════════════════════════════════════
+           VIDEO SHOWCASE
+        ══════════════════════════════════════════════════ */
+        .video-section {
+            background: #0a0a09;
+            padding: 8rem var(--gutter);
+        }
+        .video-player {
+            position: relative;
+            max-width: 420px;
+            margin: 0 auto;
+            border: 1px solid rgba(164,124,72,0.2);
+            background: #000;
+            overflow: hidden;
+        }
+        .video-player video {
+            width: 100%;
+            display: block;
+            aspect-ratio: 9/16;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        /* Poster / play overlay */
+        .video-poster {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: opacity 0.6s ease;
+        }
+        .video-poster.hidden { opacity: 0; pointer-events: none; }
+        .video-play-btn {
+            width: 72px; height: 72px;
+            color: var(--bronze);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .video-poster:hover .video-play-btn { transform: scale(1.12); color: #d4a94f; }
+        .video-play-btn svg { width: 100%; height: 100%; }
+        .video-play-label {
+            font-family: var(--sans);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(253,250,246,0.5);
+        }
+        /* Custom controls */
+        .video-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .video-player:hover .video-controls,
+        .video-player.playing .video-controls { opacity: 1; }
+        .vc-btn {
+            background: none; border: none; color: rgba(253,250,246,0.7);
+            cursor: pointer; padding: 4px; display: flex; align-items: center;
+            transition: color 0.2s;
+        }
+        .vc-btn:hover { color: var(--bronze); }
+        .vc-progress {
+            flex: 1; height: 4px; background: rgba(255,255,255,0.15);
+            border-radius: 2px; cursor: pointer; overflow: hidden;
+        }
+        .vc-progress-fill {
+            height: 100%; width: 0%; background: var(--bronze);
+            border-radius: 2px; transition: width 0.1s linear;
+        }
+        .vc-time {
+            font-family: var(--sans); font-size: 0.65rem;
+            color: rgba(253,250,246,0.5); min-width: 32px; text-align: right;
+        }
+        @media (max-width: 600px) {
+            .video-player { max-width: 100%; border: none; }
+            .video-controls { opacity: 1; }
+        }
+
+        /* ══════════════════════════════════════════════════
+           PLAYLIST
+        ══════════════════════════════════════════════════ */
+        .playlist-section {
+            background: var(--charcoal);
+            padding: 8rem var(--gutter);
+        }
+        .playlist {
+            background: #181817;
+            border: 1px solid rgba(216,204,188,0.1);
+            overflow: hidden;
+        }
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(216,204,188,0.08);
+        }
+        .playlist-brand {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--bronze);
+        }
+        .playlist-count {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(216,204,188,0.35);
+        }
+        /* Track rows */
+        .pl-track {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(216,204,188,0.05);
+        }
+        .pl-track:hover { background: rgba(164,124,72,0.06); }
+        .pl-track.active { background: rgba(164,124,72,0.08); }
+        .pl-track.active .pl-track-title { color: var(--bronze); }
+        .pl-track-num {
+            width: 28px; text-align: center;
+            font-size: 0.82rem; color: rgba(216,204,188,0.3);
+        }
+        .pl-track.playing .pl-num-text { display: none; }
+        .pl-track.playing .pl-eq { display: flex; }
+        .pl-eq {
+            display: none;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+        .pl-eq span {
+            width: 3px;
+            background: var(--bronze);
+            border-radius: 1px;
+            animation: eqBounce 0.6s ease-in-out infinite alternate;
+        }
+        .pl-eq span:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .pl-eq span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+        .pl-eq span:nth-child(3) { height: 4px; animation-delay: 0.3s; }
+        @keyframes eqBounce {
+            0% { transform: scaleY(0.4); }
+            100% { transform: scaleY(1); }
+        }
+        .pl-track-info { flex: 1; min-width: 0; }
+        .pl-track-title {
+            font-size: 0.9rem; font-weight: 500;
+            color: var(--ivory); white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .pl-track-artist {
+            font-size: 0.72rem; color: rgba(216,204,188,0.4); margin-top: 2px;
+        }
+        .pl-track-duration {
+            font-size: 0.75rem; color: rgba(216,204,188,0.3);
+            font-variant-numeric: tabular-nums;
+        }
+        /* Player bar */
+        .playlist-player {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid rgba(216,204,188,0.08);
+            background: #141413;
+        }
+        .pl-now-playing { margin-bottom: 0.8rem; }
+        .pl-now-title {
+            font-size: 0.88rem; font-weight: 500; color: var(--ivory);
+        }
+        .pl-now-artist {
+            font-size: 0.7rem; color: rgba(216,204,188,0.4); margin-top: 2px;
+        }
+        .pl-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .pl-ctrl-btn {
+            background: none; border: none;
+            color: rgba(253,250,246,0.5); cursor: pointer;
+            display: flex; align-items: center; padding: 4px;
+            transition: color 0.2s;
+        }
+        .pl-ctrl-btn:hover { color: var(--bronze); }
+        .pl-ctrl-play {
+            width: 48px; height: 48px;
+            border: 1.5px solid rgba(164,124,72,0.4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--bronze);
+            transition: all 0.3s ease;
+        }
+        .pl-ctrl-play:hover {
+            border-color: var(--bronze);
+            background: rgba(164,124,72,0.1);
+            transform: scale(1.08);
+        }
+        .pl-progress-row {
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .pl-time {
+            font-size: 0.65rem; color: rgba(216,204,188,0.35);
+            min-width: 30px; font-variant-numeric: tabular-nums;
+        }
+        .pl-time:last-child { text-align: right; }
+        .pl-progress {
+            flex: 1; height: 4px; background: rgba(255,255,255,0.1);
+            border-radius: 2px; cursor: pointer; overflow: hidden;
+        }
+        .pl-progress-fill {
+            height: 100%; width: 0%; background: var(--bronze);
+            border-radius: 2px; transition: width 0.15s linear;
+        }
     </style>
 </head>
 <body>
@@ -160,6 +388,83 @@
         </div>
     </section>
 
+    <!-- ──────────── VIDEO SHOWCASE ──────────── -->
+    <section class="video-section">
+        <div class="max-w" style="text-align:center;">
+            <span class="section-eyebrow reveal" style="color:var(--limestone);">Behind the Brand</span>
+            <h2 class="section-headline reveal" style="color:var(--ivory); margin-bottom:3rem;">See the<br><em>Vision</em></h2>
+            <div class="video-player reveal" id="video-player">
+                <div class="video-poster" id="video-poster" onclick="playVideo()">
+                    <div class="video-play-btn">
+                        <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="31" stroke="currentColor" stroke-width="1.5"/><polygon points="26,20 26,44 46,32" fill="currentColor"/></svg>
+                    </div>
+                    <div class="video-play-label">Play Film</div>
+                </div>
+                <video id="main-video" preload="metadata" playsinline webkit-playsinline>
+                    <source src="Media-Assets/kanye-web.mp4" type="video/mp4">
+                </video>
+                <div class="video-controls" id="video-controls">
+                    <button class="vc-btn" id="vc-playpause" onclick="toggleVideo()">
+                        <svg id="vc-play-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><polygon points="6,3 6,21 20,12"/></svg>
+                        <svg id="vc-pause-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                    </button>
+                    <div class="vc-progress" id="vc-progress" onclick="seekVideo(event)">
+                        <div class="vc-progress-fill" id="vc-fill"></div>
+                    </div>
+                    <span class="vc-time" id="vc-time">0:00</span>
+                    <button class="vc-btn" onclick="toggleFullscreen()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ──────────── MUSIC PLAYLIST ──────────── -->
+    <section class="playlist-section">
+        <div class="max-w" style="max-width:700px; margin:0 auto;">
+            <span class="section-eyebrow reveal" style="color:var(--limestone);">The Soundtrack</span>
+            <h2 class="section-headline reveal" style="color:var(--ivory); margin-bottom:3rem;">Listen to the<br><em>Experience</em></h2>
+            <div class="playlist reveal">
+                <div class="playlist-header">
+                    <div class="playlist-brand">KC 360° Playlist</div>
+                    <div class="playlist-count" id="pl-count">1 Track</div>
+                </div>
+                <div class="playlist-tracks" id="playlist-tracks">
+                    <div class="pl-track active" data-src="Media-Assets/More Than a Key.mp3" onclick="playTrack(this)">
+                        <div class="pl-track-num"><span class="pl-num-text">1</span><span class="pl-eq"><span></span><span></span><span></span></span></div>
+                        <div class="pl-track-info">
+                            <div class="pl-track-title">More Than a Key</div>
+                            <div class="pl-track-artist">Kanye Concierge 360</div>
+                        </div>
+                        <div class="pl-track-duration" id="pl-dur-0">--:--</div>
+                    </div>
+                </div>
+                <div class="playlist-player" id="playlist-player">
+                    <div class="pl-now-playing">
+                        <div class="pl-now-title" id="pl-now-title">More Than a Key</div>
+                        <div class="pl-now-artist" id="pl-now-artist">Kanye Concierge 360</div>
+                    </div>
+                    <div class="pl-controls">
+                        <button class="pl-ctrl-btn" onclick="plPrev()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/></svg></button>
+                        <button class="pl-ctrl-btn pl-ctrl-play" id="pl-play-btn" onclick="plToggle()">
+                            <svg id="pl-icon-play" viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><polygon points="6,3 6,21 20,12"/></svg>
+                            <svg id="pl-icon-pause" viewBox="0 0 24 24" fill="currentColor" width="22" height="22" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+                        </button>
+                        <button class="pl-ctrl-btn" onclick="plNext()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5,4 15,12 5,20"/><rect x="17" y="4" width="2" height="16"/></svg></button>
+                    </div>
+                    <div class="pl-progress-row">
+                        <span class="pl-time" id="pl-cur-time">0:00</span>
+                        <div class="pl-progress" id="pl-progress" onclick="plSeek(event)">
+                            <div class="pl-progress-fill" id="pl-fill"></div>
+                        </div>
+                        <span class="pl-time" id="pl-total-time">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
                     <footer>
         <div class="footer-inner max-w">
             <div class="footer-logo">Kanye Concierge <span>360°</span></div>
@@ -177,18 +482,144 @@
     </footer>
     <script src="app.js"></script>
     <script>
-    // Hide scroll hint on scroll
+    // ── Scroll hint hide ──────────────────────────────
     (function(){
         var hint = document.getElementById('scroll-hint');
         if (!hint) return;
         var hidden = false;
         window.addEventListener('scroll', function() {
-            if (!hidden && window.scrollY > 80) {
-                hint.classList.add('hidden');
-                hidden = true;
-            }
+            if (!hidden && window.scrollY > 80) { hint.classList.add('hidden'); hidden = true; }
         }, {passive:true});
     })();
+
+    // ── VIDEO PLAYER ──────────────────────────────────
+    var vid = document.getElementById('main-video');
+    var poster = document.getElementById('video-poster');
+    var vPlayer = document.getElementById('video-player');
+
+    function playVideo() {
+        if (!vid) return;
+        poster.classList.add('hidden');
+        vPlayer.classList.add('playing');
+        vid.play();
+        updatePlayPauseIcon();
+    }
+    function toggleVideo() {
+        if (!vid) return;
+        if (vid.paused) { vid.play(); poster.classList.add('hidden'); vPlayer.classList.add('playing'); }
+        else vid.pause();
+        updatePlayPauseIcon();
+    }
+    function updatePlayPauseIcon() {
+        var playI = document.getElementById('vc-play-icon');
+        var pauseI = document.getElementById('vc-pause-icon');
+        if (vid.paused) { playI.style.display=''; pauseI.style.display='none'; }
+        else { playI.style.display='none'; pauseI.style.display=''; }
+    }
+    if (vid) {
+        vid.addEventListener('click', toggleVideo);
+        vid.addEventListener('pause', function(){ updatePlayPauseIcon(); vPlayer.classList.remove('playing'); });
+        vid.addEventListener('play', function(){ updatePlayPauseIcon(); vPlayer.classList.add('playing'); });
+        vid.addEventListener('timeupdate', function(){
+            var fill = document.getElementById('vc-fill');
+            var time = document.getElementById('vc-time');
+            if (vid.duration) fill.style.width = (vid.currentTime/vid.duration*100)+'%';
+            var m = Math.floor(vid.currentTime/60), s = Math.floor(vid.currentTime%60);
+            time.textContent = m+':'+(s<10?'0':'')+s;
+        });
+        vid.addEventListener('ended', function(){
+            poster.classList.remove('hidden');
+            vPlayer.classList.remove('playing');
+            updatePlayPauseIcon();
+        });
+    }
+    function seekVideo(e) {
+        var bar = document.getElementById('vc-progress');
+        var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+        if (vid.duration) vid.currentTime = pct * vid.duration;
+    }
+    function toggleFullscreen() {
+        var el = document.getElementById('video-player');
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+
+    // ── PLAYLIST ──────────────────────────────────────
+    var plAudio = new Audio();
+    var plTracks = document.querySelectorAll('.pl-track');
+    var plIdx = 0;
+
+    // Load duration on page load
+    plTracks.forEach(function(t, i) {
+        var tmp = new Audio(t.dataset.src);
+        tmp.addEventListener('loadedmetadata', function(){
+            var durEl = document.getElementById('pl-dur-'+i);
+            if (durEl) durEl.textContent = fmtTime(tmp.duration);
+        });
+    });
+
+    function fmtTime(s) {
+        if (!s || isNaN(s)) return '0:00';
+        var m = Math.floor(s/60), sec = Math.floor(s%60);
+        return m+':'+(sec<10?'0':'')+sec;
+    }
+
+    function playTrack(el) {
+        var idx = Array.from(plTracks).indexOf(el);
+        if (idx === -1) return;
+        plIdx = idx;
+        plTracks.forEach(function(t){ t.classList.remove('active','playing'); });
+        el.classList.add('active','playing');
+        plAudio.src = el.dataset.src;
+        plAudio.play();
+        document.getElementById('pl-now-title').textContent = el.querySelector('.pl-track-title').textContent;
+        document.getElementById('pl-now-artist').textContent = el.querySelector('.pl-track-artist').textContent;
+        plUpdateIcons(true);
+    }
+
+    function plToggle() {
+        if (!plAudio.src || plAudio.src === window.location.href) {
+            // Nothing loaded — play first track
+            playTrack(plTracks[0]);
+            return;
+        }
+        if (plAudio.paused) { plAudio.play(); plTracks[plIdx].classList.add('playing'); }
+        else { plAudio.pause(); plTracks[plIdx].classList.remove('playing'); }
+        plUpdateIcons(!plAudio.paused);
+    }
+    function plPrev() {
+        plIdx = (plIdx - 1 + plTracks.length) % plTracks.length;
+        playTrack(plTracks[plIdx]);
+    }
+    function plNext() {
+        plIdx = (plIdx + 1) % plTracks.length;
+        playTrack(plTracks[plIdx]);
+    }
+    function plUpdateIcons(playing) {
+        document.getElementById('pl-icon-play').style.display = playing ? 'none' : '';
+        document.getElementById('pl-icon-pause').style.display = playing ? '' : 'none';
+    }
+
+    plAudio.addEventListener('timeupdate', function(){
+        document.getElementById('pl-fill').style.width = plAudio.duration ? (plAudio.currentTime/plAudio.duration*100)+'%' : '0%';
+        document.getElementById('pl-cur-time').textContent = fmtTime(plAudio.currentTime);
+        document.getElementById('pl-total-time').textContent = fmtTime(plAudio.duration);
+    });
+    plAudio.addEventListener('ended', function(){
+        plTracks[plIdx].classList.remove('playing');
+        plUpdateIcons(false);
+        // Auto-next if more tracks
+        if (plTracks.length > 1) plNext();
+    });
+    plAudio.addEventListener('pause', function(){ plUpdateIcons(false); plTracks[plIdx].classList.remove('playing'); });
+    plAudio.addEventListener('play', function(){ plUpdateIcons(true); plTracks[plIdx].classList.add('playing'); });
+
+    function plSeek(e) {
+        var bar = document.getElementById('pl-progress');
+        var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+        if (plAudio.duration) plAudio.currentTime = pct * plAudio.duration;
+    }
     </script>
 </body>
 </html>
