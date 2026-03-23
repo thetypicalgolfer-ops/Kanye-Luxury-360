@@ -56,12 +56,19 @@ const mobileMenu = document.getElementById('nav-mobile-menu');
 if (hamburger && mobileMenu) {
     const navLogo = document.querySelector('.nav-logo');
 
+    // Wrap menu contents in a scrollable inner div
+    if (!mobileMenu.querySelector('.nav-mobile-menu-inner')) {
+        const inner = document.createElement('div');
+        inner.className = 'nav-mobile-menu-inner';
+        while (mobileMenu.firstChild) inner.appendChild(mobileMenu.firstChild);
+        mobileMenu.appendChild(inner);
+    }
+
     hamburger.addEventListener('click', () => {
         const isOpen = mobileMenu.classList.toggle('open');
         hamburger.classList.toggle('open', isOpen);
         hamburger.style.color = isOpen ? 'var(--charcoal)' : '';
         document.body.style.overflow = isOpen ? 'hidden' : '';
-        // Keep logo visible against the ivory menu overlay
         if (navLogo) navLogo.style.color = isOpen ? 'var(--charcoal)' : '';
     });
 
