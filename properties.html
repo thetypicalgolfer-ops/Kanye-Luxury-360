@@ -80,75 +80,35 @@
         </div>
     </div>
 
-    <div class="filter-bar">
-        <select class="filter-select"><option>All Property Types</option><option>Luxury Home</option><option>Ranch & Land</option><option>Modern Estate</option></select>
-        <select class="filter-select"><option>All Locations</option><option>The Dominion</option><option>Alamo Heights</option><option>Boerne</option><option>Stone Oak</option></select>
-        <select class="filter-select"><option>Any Price</option><option>$1M–$2M</option><option>$2M–$5M</option><option>$5M+</option></select>
-        <select class="filter-select"><option>Any Size</option><option>Under 5 Acres</option><option>5–100 Acres</option><option>100+ Acres</option></select>
+    <div class="filter-bar" id="properties-filter-bar">
+        <select class="filter-select" id="filter-type">
+            <option value="">All Property Types</option>
+            <option value="Luxury Home">Luxury Home</option>
+            <option value="Ranch & Land">Ranch & Land</option>
+            <option value="Waterfront">Waterfront</option>
+        </select>
+        <select class="filter-select" id="filter-location">
+            <option value="">All Locations</option>
+        </select>
+        <select class="filter-select" id="filter-price">
+            <option value="">Any Price</option>
+            <option value="0-2000000">Under $2M</option>
+            <option value="2000000-5000000">$2M – $5M</option>
+            <option value="5000000-999999999">$5M+</option>
+        </select>
+        <select class="filter-select" id="filter-status">
+            <option value="">Any Status</option>
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+            <option value="Off-Market">Off-Market</option>
+            <option value="Sold">Sold</option>
+        </select>
     </div>
 
     <section class="all-listings">
         <div class="max-w">
-            <div class="listings-grid">
-                <a href="property-1.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <span class="pc-tag">Just Listed</span>
-                    <div class="pc-img"><img src="img-estate-1.png?v=7" alt="Estate"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">The Dominion · San Antonio</div>
-                        <div class="pc-name">Limestone & Steel Estate</div>
-                        <div class="pc-details"><span>5 Bd</span><span>6 Ba</span><span>7,200 sf</span><span class="pc-price">$4,250,000</span></div>
-                    </div>
-                </a>
-                <a href="property-2.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <span class="pc-tag" style="background:var(--sage);">Active</span>
-                    <div class="pc-img"><img src="img-estate-3.png?v=7" alt="Home"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Alamo Heights · San Antonio</div>
-                        <div class="pc-name">Architectural Modern</div>
-                        <div class="pc-details"><span>4 Bd</span><span>4.5 Ba</span><span>4,800 sf</span><span class="pc-price">$2,895,000</span></div>
-                    </div>
-                </a>
-                <a href="property-3.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
-                    <div class="pc-img"><img src="img-estate-2.png?v=6" alt="Ranch"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Boerne · Hill Country</div>
-                        <div class="pc-name">Hill Country Legacy Ranch</div>
-                        <div class="pc-details"><span>4 Bd</span><span>340 Ac</span><span class="pc-price">$6,800,000</span></div>
-                    </div>
-                </a>
-                <a href="property-4.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <div class="pc-img"><img src="img-stone-oak.png?v=6" alt="Estate"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Stone Oak · San Antonio</div>
-                        <div class="pc-name">Hillside Contemporary</div>
-                        <div class="pc-details"><span>4 Bd</span><span>3 Ba</span><span>3,950 sf</span><span class="pc-price">$1,950,000</span></div>
-                    </div>
-                </a>
-                <a href="property-5.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <span class="pc-tag" style="background:var(--sage);">Active</span>
-                    <div class="pc-img"><img src="img-new-braunfels.png?v=6" alt="Luxury"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">New Braunfels · TX</div>
-                        <div class="pc-name">Riverside Contemporary</div>
-                        <div class="pc-details"><span>5 Bd</span><span>5 Ba</span><span>5,400 sf</span><span class="pc-price">$3,200,000</span></div>
-                    </div>
-                </a>
-                <a href="property-6.html" class="property-card reveal" style="min-height:380px; position:relative;">
-                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
-                    <div class="pc-img"><img src="img-fredericksburg.png?v=6" alt="Land"></div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Fredericksburg · TX</div>
-                        <div class="pc-name">Vineyard Tract — 120 Acres</div>
-                        <div class="pc-details"><span>120 Ac</span><span>Water Rights</span><span class="pc-price">$3,800,000</span></div>
-                    </div>
-                </a>
+            <div class="listings-grid" id="properties-listings-grid">
+                <!-- Dynamically populated from admin listings (localStorage) -->
             </div>
         </div>
     </section>
@@ -168,6 +128,7 @@
             <div class="footer-copy">© 2026 Kanye Concierge 360. Greater San Antonio · Texas Hill Country.</div>
         </div>
     </footer>
+    <script src="listings-render.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

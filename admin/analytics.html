@@ -34,6 +34,10 @@
                 <div class="header-page-title">Analytics</div>
             </div>
             <div class="header-right">
+                <div class="export-group">
+                    <button class="btn header-btn" onclick="exportAnalyticsCSV()">⬇ Export CSV</button>
+                    <button class="btn header-btn" onclick="exportAnalyticsPDF()">📄 Export PDF</button>
+                </div>
                 <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
             </div>
         </header>
@@ -70,8 +74,8 @@
                 </div>
             </div>
 
-            <!-- Charts -->
-            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+            <!-- Row 1: Pipeline + Listings Status -->
+            <div class="ana-row">
                 <div class="section-card">
                     <div class="section-card-header">
                         <div class="section-card-title">Lead Pipeline by Stage</div>
@@ -85,7 +89,49 @@
                         <div class="section-card-title">Listings by Status</div>
                     </div>
                     <div class="section-card-body">
-                        <div id="status-breakdown"></div>
+                        <div class="chart-container" style="height:260px"><canvas id="status-pie-chart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Lead Sources Doughnut + Source Breakdown Bars -->
+            <div class="ana-row">
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Lead Sources</div>
+                        <div style="font-size:0.72rem;color:var(--text-dim)">Where inquiries come from</div>
+                    </div>
+                    <div class="section-card-body">
+                        <div class="chart-container" style="height:280px"><canvas id="source-chart"></canvas></div>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Source Breakdown</div>
+                        <div style="font-size:0.72rem;color:var(--text-dim)">Ranked by volume</div>
+                    </div>
+                    <div class="section-card-body" id="source-breakdown" style="padding:0.5rem 0"></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Intent Breakdown + Budget Distribution -->
+            <div class="ana-row">
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Inquiry Intent</div>
+                        <div style="font-size:0.72rem;color:var(--text-dim)">What clients are looking for</div>
+                    </div>
+                    <div class="section-card-body">
+                        <div class="chart-container" style="height:260px"><canvas id="intent-chart"></canvas></div>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <div class="section-card-title">Budget Distribution</div>
+                        <div style="font-size:0.72rem;color:var(--text-dim)">Client budget ranges</div>
+                    </div>
+                    <div class="section-card-body">
+                        <div class="chart-container" style="height:260px"><canvas id="budget-chart"></canvas></div>
                     </div>
                 </div>
             </div>
@@ -117,5 +163,13 @@
 </div>
 <div id="toast-container" class="toast-container"></div>
 <script src="admin.js"></script>
+<style>
+.ana-row {
+    display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;
+}
+@media(max-width:900px) { .ana-row { grid-template-columns:1fr; } }
+.export-group { display:flex; gap:0.5rem; }
+.export-group .header-btn { font-size:0.72rem; padding:0.5rem 1rem; }
+</style>
 </body>
 </html>

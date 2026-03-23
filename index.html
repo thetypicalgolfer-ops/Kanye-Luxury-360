@@ -109,62 +109,8 @@
                 </div>
             </div>
 
-            <div class="property-grid">
-                <!-- Card 1 — Large Feature -->
-                <a href="property-1.html" class="property-card reveal">
-                    <span class="pc-tag">Just Listed</span>
-                    <div class="pc-img">
-                        <img src="img-estate-1.png?v=7" alt="The Dominion Estate">
-                    </div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">The Dominion · San Antonio, TX</div>
-                        <div class="pc-name">Limestone & Steel<br>Contemporary Estate</div>
-                        <div class="pc-details">
-                            <span>5 Beds</span>
-                            <span>6 Baths</span>
-                            <span>7,200 sq ft</span>
-                            <span>1.2 Acres</span>
-                            <span class="pc-price">$4,250,000</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 2 -->
-                <a href="property-2.html" class="property-card reveal">
-                    <span class="pc-tag" style="background:var(--sage);">Active</span>
-                    <div class="pc-img">
-                        <img src="img-estate-3.png?v=7" alt="Alamo Heights Modern Home">
-                    </div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Alamo Heights · San Antonio, TX</div>
-                        <div class="pc-name">Architectural<br>Modern Home</div>
-                        <div class="pc-details">
-                            <span>4 Beds</span>
-                            <span>4.5 Baths</span>
-                            <span class="pc-price">$2,895,000</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 3 -->
-                <a href="property-3.html" class="property-card reveal">
-                    <span class="pc-tag" style="background:var(--saddle);">Ranch Land</span>
-                    <div class="pc-img">
-                        <img src="img-estate-2.png?v=6" alt="Boerne Hill Country Ranch">
-                    </div>
-                    <div class="pc-overlay"></div>
-                    <div class="pc-content">
-                        <div class="pc-location">Boerne · Texas Hill Country</div>
-                        <div class="pc-name">Hill Country<br>Legacy Ranch</div>
-                        <div class="pc-details">
-                            <span>4 Bed Homestead</span>
-                            <span>340 Acres</span>
-                            <span class="pc-price">$6,800,000</span>
-                        </div>
-                    </div>
-                </a>
+            <div class="property-grid" id="exceptional-estates-grid">
+                <!-- Dynamically populated from admin listings (localStorage) -->
             </div>
         </div>
     </section>
@@ -537,6 +483,7 @@
         </div>
     </footer>
 
+    <script src="listings-render.js"></script>
     <script src="app.js"></script>
 </body>
 

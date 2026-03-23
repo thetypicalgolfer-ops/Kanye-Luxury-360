@@ -60,10 +60,12 @@
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th style="width:36px"></th>
                                 <th>Property</th>
                                 <th>Price</th>
                                 <th>Specs</th>
                                 <th>Status</th>
+                                <th>Visibility</th>
                                 <th>Tag</th>
                                 <th>Listed</th>
                                 <th>Actions</th>
@@ -129,6 +131,47 @@
                         </select>
                     </div>
                     <div class="form-group form-full">
+                        <label class="form-label">Where should this listing appear?</label>
+                        <div class="visibility-toggle vis-toggle-3">
+                            <label class="vis-option" data-vis="exceptional">
+                                <input type="radio" name="l-visibility" value="exceptional">
+                                <span class="vis-icon">⭐</span>
+                                <span class="vis-text">
+                                    <strong>Exceptional Estates</strong>
+                                    <small>Featured on homepage hero section only</small>
+                                </span>
+                            </label>
+                            <label class="vis-option active" data-vis="listings">
+                                <input type="radio" name="l-visibility" value="listings" checked>
+                                <span class="vis-icon">📋</span>
+                                <span class="vis-text">
+                                    <strong>Listings Page</strong>
+                                    <small>Appears on the properties page only</small>
+                                </span>
+                            </label>
+                            <label class="vis-option" data-vis="both">
+                                <input type="radio" name="l-visibility" value="both">
+                                <span class="vis-icon">🏠</span>
+                                <span class="vis-text">
+                                    <strong>Both</strong>
+                                    <small>Exceptional Estates + Listings page</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group form-full">
+                        <label class="form-label">Property Photos</label>
+                        <div class="photo-upload-zone" id="photo-drop-zone">
+                            <div class="photo-drop-content" id="photo-drop-content">
+                                <div class="photo-drop-icon">📸</div>
+                                <div class="photo-drop-text">Drag & drop photos here</div>
+                                <div class="photo-drop-sub">or click to browse · JPG, PNG, WebP · Max 5 photos</div>
+                            </div>
+                            <input type="file" id="photo-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none">
+                        </div>
+                        <div class="photo-preview-grid" id="photo-preview-grid"></div>
+                    </div>
+                    <div class="form-group form-full">
                         <label class="form-label">Description</label>
                         <textarea id="l-desc" class="form-control" placeholder="Describe the property in detail…"></textarea>
                     </div>
@@ -142,41 +185,237 @@
     </div>
 </div>
 
-<!-- LISTING DETAIL MODAL -->
-<div class="modal-overlay" id="modal-listing-detail" style="display:none">
+<!-- EDIT LISTING MODAL -->
+<div class="modal-overlay" id="modal-edit-listing" style="display:none">
     <div class="modal modal-large">
         <div class="modal-header">
-            <div class="modal-title">Listing Detail</div>
-            <button class="modal-close" onclick="closeModal('modal-listing-detail')">×</button>
+            <div class="modal-title">Edit Listing</div>
+            <button class="modal-close" onclick="closeModal('modal-edit-listing')">×</button>
         </div>
         <div class="modal-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
-                <img id="ld-image" src="" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--border)" onerror="this.style.display='none'">
-                <div>
-                    <div id="ld-status" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap"></div>
-                    <div class="page-eyebrow" style="margin-bottom:0.5rem">Property</div>
-                    <div id="ld-title" style="font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-bottom:0.4rem;line-height:1.3"></div>
-                    <div id="ld-location" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem"></div>
-                    <div style="font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--bronze);margin-bottom:0.75rem" id="ld-price"></div>
-                    <div id="ld-specs" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem"></div>
-                    <div id="ld-desc" style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;border-top:1px solid var(--border);padding-top:1rem"></div>
-                    <div id="ld-date" style="font-size:0.75rem;color:var(--text-dim);margin-top:1rem"></div>
+            <div class="form-grid">
+                <div class="form-group form-full">
+                    <label class="form-label">Property Title *</label>
+                    <input id="e-title" class="form-control" placeholder="Property title" required>
+                </div>
+                <div class="form-group form-full">
+                    <label class="form-label">Location *</label>
+                    <input id="e-location" class="form-control" placeholder="Location">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Asking Price ($) *</label>
+                    <input id="e-price" class="form-control" type="number" placeholder="4250000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="e-status" class="form-control">
+                        <option>Active</option><option>Pending</option><option>Off-Market</option><option>Sold</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bedrooms</label>
+                    <input id="e-beds" class="form-control" type="number" placeholder="5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bathrooms</label>
+                    <input id="e-baths" class="form-control" type="number" step="0.5" placeholder="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Square Footage</label>
+                    <input id="e-sqft" class="form-control" type="number" placeholder="7200">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Acres</label>
+                    <input id="e-acres" class="form-control" type="number" step="0.1" placeholder="1.2">
+                </div>
+                <div class="form-group form-full">
+                    <label class="form-label">Tag / Label</label>
+                    <select id="e-tag" class="form-control">
+                        <option>Just Listed</option><option>Active</option><option>Ranch Land</option>
+                        <option>Waterfront</option><option>Under Contract</option><option>Off-Market</option><option>Sold</option>
+                    </select>
+                </div>
+                <div class="form-group form-full">
+                    <label class="form-label">Where should this listing appear?</label>
+                    <div class="visibility-toggle vis-toggle-3">
+                        <label class="edit-vis-option vis-option" data-vis="exceptional">
+                            <input type="radio" name="e-visibility" value="exceptional">
+                            <span class="vis-icon">⭐</span>
+                            <span class="vis-text">
+                                <strong>Exceptional Estates</strong>
+                                <small>Featured on homepage hero section only</small>
+                            </span>
+                        </label>
+                        <label class="edit-vis-option vis-option active" data-vis="listings">
+                            <input type="radio" name="e-visibility" value="listings" checked>
+                            <span class="vis-icon">📋</span>
+                            <span class="vis-text">
+                                <strong>Listings Page</strong>
+                                <small>Appears on the properties page only</small>
+                            </span>
+                        </label>
+                        <label class="edit-vis-option vis-option" data-vis="both">
+                            <input type="radio" name="e-visibility" value="both">
+                            <span class="vis-icon">🏠</span>
+                            <span class="vis-text">
+                                <strong>Both</strong>
+                                <small>Exceptional Estates + Listings page</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group form-full">
+                    <label class="form-label">Property Photos</label>
+                    <div class="photo-preview-grid" id="edit-photo-preview" style="margin-bottom:0.75rem"></div>
+                    <div class="photo-upload-zone" id="edit-photo-drop-zone">
+                        <div class="photo-drop-content">
+                            <div class="photo-drop-icon">📸</div>
+                            <div class="photo-drop-text">Drag & drop new photos or click to browse</div>
+                            <div class="photo-drop-sub">JPG, PNG, WebP · Max 5 photos total</div>
+                        </div>
+                        <input type="file" id="edit-photo-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none">
+                    </div>
+                </div>
+                <div class="form-group form-full">
+                    <label class="form-label">Description</label>
+                    <textarea id="e-desc" class="form-control" placeholder="Describe the property…"></textarea>
                 </div>
             </div>
+            <div id="e-date" style="font-size:0.72rem;color:var(--text-dim);margin-top:1rem"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('modal-listing-detail')">Close</button>
-            <a href="../properties.html" class="btn btn-primary" target="_blank">View on Website</a>
+            <button class="btn btn-secondary" onclick="closeModal('modal-edit-listing')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveListingEdit()">Save Changes</button>
         </div>
     </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script src="admin.js"></script>
 <style>
 .filter-chip { background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); padding:0.4rem 1.1rem; font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .filter-chip:hover { border-color:var(--bronze); color:var(--bronze); }
 .filter-chip.active { background:var(--bronze); border-color:var(--bronze); color:var(--ivory); }
+
+/* ── VISIBILITY TOGGLE ─────────────────────────────────── */
+.visibility-toggle { display:flex; gap:0.75rem; }
+.vis-option {
+    flex:1; display:flex; align-items:center; gap:0.75rem;
+    background:var(--bg-primary); border:1px solid var(--border);
+    padding:1rem 1.2rem; cursor:pointer; transition:all 0.25s;
+    position:relative;
+}
+.vis-option input { display:none; }
+.vis-option:hover { border-color:rgba(164,124,72,0.4); }
+.vis-option.active { border-color:var(--bronze); background:rgba(164,124,72,0.08); }
+.vis-option.active::after {
+    content:'✓'; position:absolute; top:0.5rem; right:0.75rem;
+    color:var(--bronze); font-size:0.8rem; font-weight:600;
+}
+.vis-icon { font-size:1.5rem; }
+.vis-text { display:flex; flex-direction:column; gap:0.15rem; }
+.vis-text strong { font-size:0.82rem; font-weight:500; color:var(--text-primary); }
+.vis-text small { font-size:0.7rem; color:var(--text-secondary); }
+
+/* ── PHOTO UPLOAD ZONE ─────────────────────────────────── */
+.photo-upload-zone {
+    border:2px dashed var(--border); background:var(--bg-primary);
+    padding:2.5rem 1rem; text-align:center; cursor:pointer;
+    transition:all 0.3s; position:relative;
+}
+.photo-upload-zone:hover,
+.photo-upload-zone.drag-over {
+    border-color:var(--bronze); background:rgba(164,124,72,0.06);
+}
+.photo-upload-zone.drag-over { transform:scale(1.01); }
+.photo-drop-icon { font-size:2.2rem; margin-bottom:0.5rem; opacity:0.7; }
+.photo-drop-text { font-size:0.88rem; color:var(--text-primary); font-weight:500; margin-bottom:0.3rem; }
+.photo-drop-sub { font-size:0.72rem; color:var(--text-secondary); }
+
+/* ── PHOTO PREVIEW GRID ────────────────────────────────── */
+.photo-preview-grid {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+    gap:0.75rem; margin-top:0.75rem;
+}
+.photo-preview-item {
+    position:relative; aspect-ratio:4/3; border:1px solid var(--border);
+    overflow:hidden; background:var(--bg-primary);
+    animation:photoFadeIn 0.3s ease forwards;
+}
+.photo-preview-item img {
+    width:100%; height:100%; object-fit:cover;
+}
+.photo-preview-item .photo-remove {
+    position:absolute; top:4px; right:4px;
+    background:rgba(0,0,0,0.7); border:none; color:#fff;
+    width:22px; height:22px; font-size:0.7rem;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.2s;
+}
+.photo-preview-item:hover .photo-remove { opacity:1; }
+.photo-preview-item.primary::after {
+    content:'COVER'; position:absolute; bottom:0; left:0; right:0;
+    background:var(--bronze); color:var(--ivory);
+    font-size:0.55rem; letter-spacing:0.15em; text-align:center;
+    padding:2px 0; font-weight:600;
+}
+@keyframes photoFadeIn {
+    from { opacity:0; transform:scale(0.9); }
+    to { opacity:1; transform:scale(1); }
+}
+
+/* ── DRAG HANDLE ───────────────────────────────────────── */
+.drag-handle {
+    cursor:grab; color:var(--text-dim); font-size:1rem;
+    padding:0.3rem 0.5rem; user-select:none; transition:color 0.2s;
+    display:flex; align-items:center;
+}
+.drag-handle:hover { color:var(--bronze); }
+.drag-handle:active { cursor:grabbing; }
+.drag-handle svg { width:16px; height:16px; }
+.sortable-ghost {
+    opacity:0.4 !important;
+    background:rgba(164,124,72,0.1) !important;
+}
+.sortable-chosen {
+    background:var(--bg-hover) !important;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+.sortable-drag {
+    background:var(--bg-card) !important;
+    border:1px solid var(--bronze) !important;
+}
+
+/* ── 3-OPTION VISIBILITY TOGGLE ────────────────────────── */
+.vis-toggle-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.6rem; }
+@media (max-width:700px) { .vis-toggle-3 { grid-template-columns:1fr; } }
+
+/* ── VISIBILITY BADGE ──────────────────────────────────── */
+.vis-badge {
+    display:inline-flex; align-items:center; gap:0.3rem;
+    font-size:0.68rem; letter-spacing:0.05em; text-transform:uppercase;
+    padding:0.25rem 0.65rem; font-weight:500;
+}
+.vis-badge.vis-exceptional { background:rgba(164,124,72,0.2); color:#d4a94f; border:1px solid rgba(164,124,72,0.35); }
+.vis-badge.vis-listings { background:rgba(110,116,98,0.15); color:var(--sage); border:1px solid rgba(110,116,98,0.25); }
+.vis-badge.vis-both { background:rgba(76,175,129,0.15); color:#4caf81; border:1px solid rgba(76,175,129,0.25); }
+
+/* ── DETAIL GALLERY ────────────────────────────────────── */
+.detail-gallery {
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(80px,1fr));
+    gap:0.5rem; margin-top:0.5rem;
+}
+.detail-gallery img {
+    width:100%; aspect-ratio:4/3; object-fit:cover;
+    border:1px solid var(--border); cursor:pointer; transition:border-color 0.2s;
+}
+.detail-gallery img:hover { border-color:var(--bronze); }
+
+/* ── RESPONSIVE VISIBILITY TOGGLE ──────────────────────── */
+@media (max-width:600px) {
+    .visibility-toggle { flex-direction:column; }
+}
 </style>
 </body>
 </html>

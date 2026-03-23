@@ -30,24 +30,17 @@
         <header class="top-header">
             <div class="header-left">
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-                <div class="header-page-title">Marketing Campaigns</div>
+                <div class="header-page-title">Campaigns</div>
             </div>
             <div class="header-right">
-                <button class="btn header-btn" onclick="openModal('modal-add-campaign')">+ New Campaign</button>
+                <button class="btn btn-primary" onclick="openCampaignWizard()">+ New Campaign</button>
                 <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
             </div>
         </header>
         <div class="page-content">
-            <div class="page-header">
-                <div class="page-header-text">
-                    <div class="page-eyebrow">Marketing</div>
-                    <h1 class="page-title">Campaigns</h1>
-                    <p class="page-subtitle">Deploy, track, and manage your outbound marketing campaigns.</p>
-                </div>
-            </div>
 
-            <!-- Campaign quick metrics -->
-            <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:2rem">
+            <!-- Metrics row -->
+            <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem">
                 <div class="metric-card">
                     <div class="metric-label">Live Campaigns</div>
                     <div class="metric-value" id="c-metric-live">—</div>
@@ -65,31 +58,240 @@
                 </div>
             </div>
 
-            <div class="campaign-grid" id="campaigns-grid"></div>
+            <!-- Filter pills -->
+            <div class="camp-filters">
+                <button class="camp-filter active" data-filter="all">All</button>
+                <button class="camp-filter" data-filter="Live">Live</button>
+                <button class="camp-filter" data-filter="Draft">Drafts</button>
+                <button class="camp-filter" data-filter="Paused">Paused</button>
+                <button class="camp-filter" data-filter="Completed">Completed</button>
+            </div>
+
+            <!-- Campaign list -->
+            <div class="camp-list" id="camp-list"></div>
+
+            <!-- Empty state -->
+            <div class="camp-empty" id="camp-empty" style="display:none">
+                <div class="camp-empty-icon">📮</div>
+                <div class="camp-empty-title">No campaigns yet</div>
+                <div class="camp-empty-sub">Create your first campaign to start reaching your audience.</div>
+                <button class="btn btn-primary" onclick="openCampaignWizard()" style="margin-top:1rem">+ New Campaign</button>
+            </div>
+
+            <!-- Filtered empty state -->
+            <div class="camp-empty" id="camp-filter-empty" style="display:none">
+                <div class="camp-empty-icon">🔍</div>
+                <div class="camp-empty-title">No matches</div>
+                <div class="camp-empty-sub">No campaigns match this filter.</div>
+            </div>
+
         </div>
     </main>
 </div>
 
-<!-- CREATE CAMPAIGN MODAL -->
-<div class="modal-overlay" id="modal-add-campaign" style="display:none">
-    <div class="modal">
+<!-- CAMPAIGN DETAIL SLIDE PANEL -->
+<div class="camp-panel-overlay" id="camp-panel-overlay" onclick="closeCampaignPanel()"></div>
+<div class="camp-panel" id="camp-panel">
+    <div class="camp-panel-header">
+        <button class="camp-panel-back" onclick="closeCampaignPanel()">← Back</button>
+        <div class="camp-panel-actions-top" id="cp-actions-top"></div>
+    </div>
+    <div class="camp-panel-body">
+        <div class="camp-panel-status" id="cp-status"></div>
+        <h2 class="camp-panel-title" id="cp-title"></h2>
+        <div class="camp-panel-meta">
+            <div class="camp-panel-meta-item"><span class="camp-panel-label">Type</span><span id="cp-type"></span></div>
+            <div class="camp-panel-meta-item"><span class="camp-panel-label">Audience</span><span id="cp-audience"></span></div>
+            <div class="camp-panel-meta-item"><span class="camp-panel-label">Created</span><span id="cp-date"></span></div>
+        </div>
+        <div class="camp-panel-notes" id="cp-notes"></div>
+
+        <div class="camp-panel-section">
+            <div class="camp-panel-section-title">Performance</div>
+            <div class="camp-panel-stats">
+                <div class="camp-panel-stat">
+                    <div class="camp-panel-stat-value" id="cp-sent">0</div>
+                    <div class="camp-panel-stat-label">Sent</div>
+                </div>
+                <div class="camp-panel-stat">
+                    <div class="camp-panel-stat-value" id="cp-opens">0</div>
+                    <div class="camp-panel-stat-label">Opens</div>
+                </div>
+                <div class="camp-panel-stat">
+                    <div class="camp-panel-stat-value" id="cp-clicks">0</div>
+                    <div class="camp-panel-stat-label">Clicks</div>
+                </div>
+                <div class="camp-panel-stat">
+                    <div class="camp-panel-stat-value" id="cp-engagement">0%</div>
+                    <div class="camp-panel-stat-label">Engagement</div>
+                </div>
+            </div>
+            <div class="camp-panel-bar-wrap">
+                <div class="camp-panel-bar-label">
+                    <span>Engagement Rate</span>
+                    <strong id="cp-eng-pct">0%</strong>
+                </div>
+                <div class="campaign-engagement-bar" style="height:8px;border-radius:4px">
+                    <div class="campaign-engagement-fill" id="cp-eng-bar" style="width:0%;border-radius:4px;transition:width 0.8s cubic-bezier(0.22,1,0.36,1)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="camp-panel-actions" id="cp-actions"></div>
+    </div>
+</div>
+
+<!-- CAMPAIGN CREATION WIZARD -->
+<div class="modal-overlay" id="modal-campaign-wizard" style="display:none">
+    <div class="modal" style="max-width:520px">
         <div class="modal-header">
             <div>
                 <div class="page-eyebrow" style="margin-bottom:0.25rem">New Campaign</div>
-                <div class="modal-title">Create Campaign</div>
+                <div class="modal-title" id="wizard-title">What type of campaign?</div>
             </div>
-            <button class="modal-close" onclick="closeModal('modal-add-campaign')">×</button>
+            <button class="modal-close" onclick="closeModal('modal-campaign-wizard')">×</button>
         </div>
         <div class="modal-body">
-            <form id="campaign-form">
+            <!-- Step indicators -->
+            <div class="wizard-steps">
+                <div class="wizard-step active" data-step="1"><span class="wizard-step-num">1</span><span class="wizard-step-label">Type</span></div>
+                <div class="wizard-step-line"></div>
+                <div class="wizard-step" data-step="2"><span class="wizard-step-num">2</span><span class="wizard-step-label">Details</span></div>
+                <div class="wizard-step-line"></div>
+                <div class="wizard-step" data-step="3"><span class="wizard-step-num">3</span><span class="wizard-step-label">Audience</span></div>
+                <div class="wizard-step-line"></div>
+                <div class="wizard-step" data-step="4"><span class="wizard-step-num">4</span><span class="wizard-step-label">Review</span></div>
+            </div>
+
+            <!-- Step 1: Type -->
+            <div class="wizard-panel active" id="wiz-step-1">
+                <p class="wizard-hint">Choose the type of campaign you'd like to run.</p>
+                <div class="wizard-type-grid">
+                    <label class="wizard-type-card">
+                        <input type="radio" name="wiz-type" value="Email Blast" checked>
+                        <div class="wizard-type-icon">✉</div>
+                        <div class="wizard-type-name">Email Blast</div>
+                        <div class="wizard-type-desc">Send to your contact list</div>
+                    </label>
+                    <label class="wizard-type-card">
+                        <input type="radio" name="wiz-type" value="Social Media">
+                        <div class="wizard-type-icon">📱</div>
+                        <div class="wizard-type-name">Social Media</div>
+                        <div class="wizard-type-desc">Instagram, Facebook & more</div>
+                    </label>
+                    <label class="wizard-type-card">
+                        <input type="radio" name="wiz-type" value="Direct Mailer">
+                        <div class="wizard-type-icon">📬</div>
+                        <div class="wizard-type-name">Direct Mailer</div>
+                        <div class="wizard-type-desc">Physical print campaign</div>
+                    </label>
+                    <label class="wizard-type-card">
+                        <input type="radio" name="wiz-type" value="Open House Event">
+                        <div class="wizard-type-icon">🏡</div>
+                        <div class="wizard-type-name">Open House</div>
+                        <div class="wizard-type-desc">In-person event promotion</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 2: Details -->
+            <div class="wizard-panel" id="wiz-step-2">
+                <p class="wizard-hint">Give your campaign a name and describe its goal.</p>
                 <div style="display:flex;flex-direction:column;gap:1.25rem">
                     <div class="form-group">
                         <label class="form-label">Campaign Name *</label>
-                        <input id="c-name" class="form-control" placeholder="e.g. Spring Estate Launch" required>
+                        <input id="wiz-name" class="form-control" placeholder="e.g. Spring Estate Launch" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Goal / Notes</label>
+                        <textarea id="wiz-notes" class="form-control" rows="3" placeholder="What's the goal? e.g. Generate buyer interest for new listing…"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Audience -->
+            <div class="wizard-panel" id="wiz-step-3">
+                <p class="wizard-hint">Who should this campaign reach?</p>
+                <div class="wizard-audience-list">
+                    <label class="wizard-audience-option">
+                        <input type="radio" name="wiz-audience" value="All Leads" checked>
+                        <div class="wizard-audience-info">
+                            <div class="wizard-audience-name">All Leads</div>
+                            <div class="wizard-audience-desc">Your entire contact list</div>
+                        </div>
+                    </label>
+                    <label class="wizard-audience-option">
+                        <input type="radio" name="wiz-audience" value="Buyer Leads">
+                        <div class="wizard-audience-info">
+                            <div class="wizard-audience-name">Buyer Leads</div>
+                            <div class="wizard-audience-desc">Contacts looking to purchase</div>
+                        </div>
+                    </label>
+                    <label class="wizard-audience-option">
+                        <input type="radio" name="wiz-audience" value="Seller Leads">
+                        <div class="wizard-audience-info">
+                            <div class="wizard-audience-name">Seller Leads</div>
+                            <div class="wizard-audience-desc">Contacts looking to sell</div>
+                        </div>
+                    </label>
+                    <label class="wizard-audience-option">
+                        <input type="radio" name="wiz-audience" value="Ranch Buyers">
+                        <div class="wizard-audience-info">
+                            <div class="wizard-audience-name">Ranch / Land Buyers</div>
+                            <div class="wizard-audience-desc">Ranch and acreage seekers</div>
+                        </div>
+                    </label>
+                    <label class="wizard-audience-option">
+                        <input type="radio" name="wiz-audience" value="Investors">
+                        <div class="wizard-audience-info">
+                            <div class="wizard-audience-name">Investors</div>
+                            <div class="wizard-audience-desc">Investment-focused contacts</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Step 4: Review -->
+            <div class="wizard-panel" id="wiz-step-4">
+                <p class="wizard-hint">Review your campaign before saving.</p>
+                <div class="wizard-review">
+                    <div class="wizard-review-row"><span class="wizard-review-label">Type</span><span id="wiz-rev-type"></span></div>
+                    <div class="wizard-review-row"><span class="wizard-review-label">Name</span><span id="wiz-rev-name"></span></div>
+                    <div class="wizard-review-row"><span class="wizard-review-label">Audience</span><span id="wiz-rev-audience"></span></div>
+                    <div class="wizard-review-row"><span class="wizard-review-label">Notes</span><span id="wiz-rev-notes" class="wizard-review-notes"></span></div>
+                </div>
+            </div>
+
+            <!-- Wizard navigation -->
+            <div class="wizard-nav">
+                <button type="button" class="btn btn-secondary" id="wiz-back" onclick="wizardBack()" style="visibility:hidden">Back</button>
+                <button type="button" class="btn btn-primary" id="wiz-next" onclick="wizardNext()">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT CAMPAIGN MODAL -->
+<div class="modal-overlay" id="modal-edit-campaign" style="display:none">
+    <div class="modal" style="max-width:480px">
+        <div class="modal-header">
+            <div>
+                <div class="page-eyebrow" style="margin-bottom:0.25rem">Edit</div>
+                <div class="modal-title">Update Campaign</div>
+            </div>
+            <button class="modal-close" onclick="closeModal('modal-edit-campaign')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="edit-campaign-form">
+                <input type="hidden" id="ec-id">
+                <div style="display:flex;flex-direction:column;gap:1.25rem">
+                    <div class="form-group">
+                        <label class="form-label">Campaign Name *</label>
+                        <input id="ec-name" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Campaign Type</label>
-                        <select id="c-type" class="form-control">
+                        <select id="ec-type" class="form-control">
                             <option value="Email Blast">Email Blast</option>
                             <option value="Social Media">Social Media</option>
                             <option value="Direct Mailer">Direct Mailer</option>
@@ -98,7 +300,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Target Audience</label>
-                        <select id="c-audience" class="form-control">
+                        <select id="ec-audience" class="form-control">
                             <option value="All Leads">All Leads</option>
                             <option value="Buyer Leads">Buyer Leads</option>
                             <option value="Seller Leads">Seller Leads</option>
@@ -108,12 +310,12 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Notes / Goal</label>
-                        <textarea id="c-notes" class="form-control" placeholder="Describe the goal of this campaign…"></textarea>
+                        <textarea id="ec-notes" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.75rem">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-campaign')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save as Draft</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-campaign')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
         </div>

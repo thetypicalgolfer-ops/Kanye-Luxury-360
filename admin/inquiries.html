@@ -33,6 +33,7 @@
                 <div class="header-page-title">Client Inquiries</div>
             </div>
             <div class="header-right">
+                <button class="btn header-btn" onclick="openModal('modal-add-inquiry')">+ Add Inquiry</button>
                 <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
             </div>
         </header>
@@ -65,6 +66,7 @@
                                 <th>Intent</th>
                                 <th>Budget</th>
                                 <th>Status</th>
+                                <th style="width:40px"></th>
                                 <th>Received</th>
                                 <th>Update</th>
                             </tr>
@@ -77,41 +79,208 @@
     </main>
 </div>
 
-<!-- INQUIRY DETAIL MODAL -->
-<div class="modal-overlay" id="modal-inquiry-detail" style="display:none">
-    <div class="modal">
+<!-- ADD INQUIRY MODAL -->
+<div class="modal-overlay" id="modal-add-inquiry" style="display:none">
+    <div class="modal modal-large">
         <div class="modal-header">
-            <div>
-                <div class="page-eyebrow" style="margin-bottom:0.2rem">Inquiry Detail</div>
-                <div class="modal-title" id="detail-name">Client</div>
-            </div>
-            <button class="modal-close" onclick="closeModal('modal-inquiry-detail')">×</button>
+            <div class="modal-title">New Client Inquiry</div>
+            <button class="modal-close" onclick="closeModal('modal-add-inquiry')">×</button>
         </div>
         <div class="modal-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem 2rem;margin-bottom:1.5rem">
-                <div><div class="form-label" style="margin-bottom:0.3rem">Email</div><div id="detail-email" style="font-size:0.9rem"></div></div>
-                <div><div class="form-label" style="margin-bottom:0.3rem">Phone</div><div id="detail-phone" style="font-size:0.9rem"></div></div>
-                <div><div class="form-label" style="margin-bottom:0.3rem">Intent</div><div id="detail-intent" style="font-size:0.9rem"></div></div>
-                <div><div class="form-label" style="margin-bottom:0.3rem">Budget</div><div id="detail-budget" style="font-size:0.9rem"></div></div>
-                <div><div class="form-label" style="margin-bottom:0.3rem">Status</div><div id="detail-status"></div></div>
-                <div><div class="form-label" style="margin-bottom:0.3rem">Received</div><div id="detail-date" style="font-size:0.85rem;color:var(--text-secondary)"></div></div>
+            <form id="inquiry-form">
+                <div class="inq-modal-grid">
+                    <div class="inq-modal-section">
+                        <div class="inq-section-label">👤 Client Information</div>
+                        <div class="form-group">
+                            <label class="form-label">Full Name *</label>
+                            <input id="iq-name" class="form-control" placeholder="e.g. Michael & Elena Vance" required>
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Email *</label>
+                                <input id="iq-email" class="form-control" type="email" placeholder="email@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input id="iq-phone" class="form-control" type="tel" placeholder="(210) 555-0000">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inq-modal-section">
+                        <div class="inq-section-label">🏠 Inquiry Details</div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Intent</label>
+                                <select id="iq-intent" class="form-control">
+                                    <option>Purchase a property</option>
+                                    <option>Sell my property</option>
+                                    <option>Acquire land or ranch</option>
+                                    <option>Investment inquiry</option>
+                                    <option>General question</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Budget</label>
+                                <select id="iq-budget" class="form-control">
+                                    <option>Not Specified</option>
+                                    <option>Under $1M</option>
+                                    <option>$1M–$2M</option>
+                                    <option>$2M–$3M</option>
+                                    <option>$3M–$5M</option>
+                                    <option>$5M–$10M</option>
+                                    <option>$10M+</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select id="iq-status" class="form-control">
+                                    <option>New</option><option>Contacted</option><option>Warm Lead</option>
+                                    <option>Hot Lead</option><option>In Escrow</option><option>Closed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Linked Listing</label>
+                                <select id="iq-listing" class="form-control">
+                                    <option value="">None</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message / Notes</label>
+                            <textarea id="iq-message" class="form-control" placeholder="What is the client looking for?"></textarea>
+                        </div>
+                    </div>
+                    <div class="inq-modal-section">
+                        <div class="inq-section-label">📊 Lead Source</div>
+                        <div class="form-group">
+                            <label class="form-label">How did they find you?</label>
+                            <div class="source-picker" id="iq-source-picker">
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Website"><span>🌐 Website</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Facebook"><span>📘 Facebook</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Instagram"><span>📷 Instagram</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Google Search"><span>🔍 Google Search</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Referral"><span>🤝 Referral</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Paid Ad"><span>📣 Paid Ad</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Zillow/Realtor"><span>🏡 Zillow/Realtor</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Direct Mail"><span>📬 Direct Mail</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Open House"><span>🏠 Open House</span></label>
+                                <label class="source-chip"><input type="radio" name="iq-source" value="Other"><span>💬 Other</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-inquiry')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Inquiry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT INQUIRY MODAL -->
+<div class="modal-overlay" id="modal-edit-inquiry" style="display:none">
+    <div class="modal modal-large">
+        <div class="modal-header">
+            <div>
+                <div class="page-eyebrow" style="margin-bottom:0.2rem">Edit Inquiry</div>
+                <div class="modal-title" id="edit-inq-heading">Client</div>
             </div>
-            <div class="form-label" style="margin-bottom:0.5rem">Message</div>
-            <div id="detail-msg" style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;padding:1rem 1.25rem;background:var(--bg-primary);border:1px solid var(--border);border-left:3px solid var(--bronze)"></div>
-            <div style="margin-top:1.5rem">
-                <div class="form-label" style="margin-bottom:0.5rem">Update Status</div>
-                <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Contacted')">Contacted</button>
-                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Warm Lead')">Warm Lead</button>
-                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Hot Lead')">Hot Lead</button>
-                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('In Escrow')">In Escrow</button>
-                    <button class="btn btn-secondary btn-sm" onclick="updateDetailStatus('Closed')">Closed</button>
+            <button class="modal-close" onclick="closeModal('modal-edit-inquiry')">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="inq-modal-grid">
+                <div class="inq-modal-section">
+                    <div class="inq-section-label">👤 Client Information</div>
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input id="ei-name" class="form-control" required>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input id="ei-email" class="form-control" type="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input id="ei-phone" class="form-control" type="tel">
+                        </div>
+                    </div>
+                </div>
+                <div class="inq-modal-section">
+                    <div class="inq-section-label">🏠 Inquiry Details</div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Intent</label>
+                            <select id="ei-intent" class="form-control">
+                                <option>Purchase a property</option>
+                                <option>Sell my property</option>
+                                <option>Acquire land or ranch</option>
+                                <option>Investment inquiry</option>
+                                <option>General question</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Budget</label>
+                            <select id="ei-budget" class="form-control">
+                                <option>Not Specified</option>
+                                <option>Under $1M</option>
+                                <option>$1M–$2M</option>
+                                <option>$2M–$3M</option>
+                                <option>$3M–$5M</option>
+                                <option>$5M–$10M</option>
+                                <option>$10M+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select id="ei-status" class="form-control">
+                                <option>New</option><option>Contacted</option><option>Warm Lead</option>
+                                <option>Hot Lead</option><option>In Escrow</option><option>Closed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Linked Listing</label>
+                            <select id="ei-listing" class="form-control">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message / Notes</label>
+                        <textarea id="ei-message" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="inq-modal-section">
+                    <div class="inq-section-label">📊 Lead Source</div>
+                    <div class="form-group">
+                        <label class="form-label">How did they find you?</label>
+                        <div class="source-picker" id="ei-source-picker">
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Website"><span>🌐 Website</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Facebook"><span>📘 Facebook</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Instagram"><span>📷 Instagram</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Google Search"><span>🔍 Google Search</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Referral"><span>🤝 Referral</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Paid Ad"><span>📣 Paid Ad</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Zillow/Realtor"><span>🏡 Zillow/Realtor</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Direct Mail"><span>📬 Direct Mail</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Open House"><span>🏠 Open House</span></label>
+                            <label class="source-chip"><input type="radio" name="ei-source" value="Other"><span>💬 Other</span></label>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div id="ei-date" style="font-size:0.72rem;color:var(--text-dim);margin-top:1rem"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('modal-inquiry-detail')">Close</button>
-            <a id="detail-email-btn" href="mailto:" class="btn btn-primary">✉ Send Email</a>
+            <button class="btn btn-danger" onclick="deleteInquiry()" style="margin-right:auto">Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal('modal-edit-inquiry')">Cancel</button>
+            <a id="ei-email-btn" href="mailto:" class="btn btn-secondary">✉ Email</a>
+            <button class="btn btn-primary" onclick="saveInquiryEdit()">Save Changes</button>
         </div>
     </div>
 </div>
@@ -122,6 +291,41 @@
 .filter-chip { background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); padding:0.4rem 1.1rem; font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .filter-chip:hover { border-color:var(--bronze); color:var(--bronze); }
 .filter-chip.active { background:var(--bronze); border-color:var(--bronze); color:var(--ivory); }
+
+/* ── INQUIRY MODAL LAYOUT ──────────────────────────────── */
+.inq-modal-grid { display:flex; flex-direction:column; gap:1.5rem; }
+.inq-modal-section {
+    padding:1.5rem; background:var(--bg-primary);
+    border:1px solid var(--border); display:flex; flex-direction:column; gap:1rem;
+}
+.inq-section-label {
+    font-family:var(--serif); font-size:1.1rem; font-weight:300;
+    color:var(--text-primary); padding-bottom:0.75rem;
+    border-bottom:1px solid var(--border); margin-bottom:0.25rem;
+}
+.form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media(max-width:600px) { .form-row-2 { grid-template-columns:1fr; } }
+
+/* ── SOURCE PICKER CHIPS ───────────────────────────────── */
+.source-picker {
+    display:flex; flex-wrap:wrap; gap:0.5rem;
+}
+.source-chip {
+    cursor:pointer; position:relative;
+}
+.source-chip input { display:none; }
+.source-chip span {
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.5rem 1rem; font-size:0.78rem; font-weight:500;
+    background:var(--bg-primary); border:1px solid var(--border);
+    color:var(--text-secondary); transition:all 0.2s;
+    letter-spacing:0.02em;
+}
+.source-chip:hover span { border-color:rgba(164,124,72,0.4); color:var(--text-primary); }
+.source-chip input:checked + span {
+    background:rgba(164,124,72,0.12); border-color:var(--bronze);
+    color:var(--bronze); box-shadow:0 0 0 1px rgba(164,124,72,0.2);
+}
 </style>
 </body>
 </html>
