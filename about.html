@@ -879,7 +879,7 @@
         var mouseTimer = null;
         var raf;
         var bronze = { r: 164, g: 124, b: 72 };
-        var count = Math.min(60, Math.floor(window.innerWidth / 22));
+        var count = Math.min(80, Math.floor(window.innerWidth / 16));
 
         function resize() {
             var rect = section.getBoundingClientRect();
@@ -904,27 +904,26 @@
                     vx: (Math.random() - 0.5) * 0.12,
                     vy: (Math.random() - 0.5) * 0.12,
                     r: randSize(),
-                    alpha: Math.random() * 0.15 + 0.04,
+                    alpha: Math.random() * 0.18 + 0.05,
                     pulse: Math.random() * Math.PI * 2
                 });
             }
         }
 
         // Spawn chaser particles toward mouse — very sparse
-        var spawnCounter = 0;
         function spawnChasers() {
             if (mouse.x < 0 || !mouse.moving) return;
-            spawnCounter++;
-            if (spawnCounter % 3 !== 0) return; // only every 3rd frame
-            var angle = Math.random() * Math.PI * 2;
-            var dist = Math.random() * 50 + 30;
-            chasers.push({
-                x: mouse.x + Math.cos(angle) * dist,
-                y: mouse.y + Math.sin(angle) * dist,
-                r: Math.random() * 0.6 + 0.2,
-                life: 1,
-                decay: Math.random() * 0.025 + 0.02
-            });
+            for (var i = 0; i < 2; i++) {
+                var angle = Math.random() * Math.PI * 2;
+                var dist = Math.random() * 55 + 35;
+                chasers.push({
+                    x: mouse.x + Math.cos(angle) * dist,
+                    y: mouse.y + Math.sin(angle) * dist,
+                    r: Math.random() * 0.8 + 0.2,
+                    life: 1,
+                    decay: Math.random() * 0.018 + 0.012
+                });
+            }
         }
 
         function draw() {
@@ -1005,10 +1004,17 @@
                 ch.life -= ch.decay;
                 if (ch.life <= 0) { chasers.splice(c, 1); continue; }
 
-                var ca = ch.life * 0.2;
+                var ca = ch.life * 0.35;
+                var cGrad = ctx.createRadialGradient(ch.x, ch.y, 0, ch.x, ch.y, ch.r * 3);
+                cGrad.addColorStop(0, 'rgba(255,235,200,' + (ca * 0.8) + ')');
+                cGrad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
+                ctx.beginPath();
+                ctx.arc(ch.x, ch.y, ch.r * 3, 0, Math.PI * 2);
+                ctx.fillStyle = cGrad;
+                ctx.fill();
                 ctx.beginPath();
                 ctx.arc(ch.x, ch.y, ch.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + ca + ')';
+                ctx.fillStyle = 'rgba(255,235,200,' + ca + ')';
                 ctx.fill();
             }
 
