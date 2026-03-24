@@ -126,16 +126,36 @@ document.addEventListener('keydown', e => {
 });
 
 // ── AUTH ───────────────────────────────────────────────────
+// Default credentials: kanye@360.com / admin77
+const DEFAULT_EMAIL = 'kanye@360.com';
+const DEFAULT_PASS_HASH = 'd1cb6800649969380c1bbb67fa7210e198438e3ec6c94667ecd1a476ceec887b'; // SHA-256 of 'admin77'
+
+async function hashPassword(pass) {
+    const data = new TextEncoder().encode(pass);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getStoredCredentials() {
+    const stored = localStorage.getItem('kl360_credentials');
+    if (stored) return JSON.parse(stored);
+    return { email: DEFAULT_EMAIL, passHash: DEFAULT_PASS_HASH };
+}
+
 function checkAuth() {
+    // Block mobile devices
+    if (window.innerWidth < 1024 && !window.location.pathname.endsWith('login.html')) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;font-family:sans-serif;background:#141413;color:#d8ccbc"><div><h2 style="font-size:1.3rem;margin-bottom:1rem;font-weight:300">Desktop Only</h2><p style="font-size:0.85rem;opacity:0.6;line-height:1.6">The Agent Portal is only available on desktop devices.<br>Please access from a computer.</p><a href="../index.html" style="display:inline-block;margin-top:1.5rem;color:#A47C48;font-size:0.8rem">← Back to Website</a></div></div>';
+        return;
+    }
     if (!sessionStorage.getItem('kl360_auth') && !window.location.pathname.endsWith('login.html')) {
         window.location.href = 'login.html';
     }
-    // Set agent name in header
     const auth = JSON.parse(sessionStorage.getItem('kl360_auth') || '{}');
     const profile = DB.get('profile', { fname: 'Kanye', lname: 'West' });
     const name = (profile.fname || profile.lname) ? `${profile.fname} ${profile.lname}`.trim() : (auth.name || auth.email || 'Agent');
     const initials = name.split(/[\s@]/).map(w=>w.charAt(0)).join('').substring(0,2).toUpperCase() || 'A';
-    
+
     $$('.user-name').forEach(el => el.textContent = name.includes('@') ? name.split('@')[0] : name);
     $$('.avatar-initials').forEach(el => el.textContent = initials);
 }
@@ -146,22 +166,31 @@ function logout() {
 
 // ── PAGE: LOGIN ───────────────────────────────────────────
 function initLogin() {
+    // Block mobile on login page too
+    if (window.innerWidth < 1024) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;font-family:sans-serif;background:#141413;color:#d8ccbc"><div><h2 style="font-size:1.3rem;margin-bottom:1rem;font-weight:300">Desktop Only</h2><p style="font-size:0.85rem;opacity:0.6;line-height:1.6">The Agent Portal is only available on desktop devices.<br>Please access from a computer.</p><a href="../index.html" style="display:inline-block;margin-top:1.5rem;color:#A47C48;font-size:0.8rem">← Back to Website</a></div></div>';
+        return;
+    }
     const form = $('login-form');
     if (!form) return;
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
         e.preventDefault();
-        const email = $('login-email').value.trim();
+        const email = $('login-email').value.trim().toLowerCase();
         const pass  = $('login-pass').value;
         const btn   = form.querySelector('button[type=submit]');
         btn.textContent = 'Signing in…';
         btn.disabled = true;
+
+        const creds = getStoredCredentials();
+        const inputHash = await hashPassword(pass);
+
         setTimeout(() => {
-            if (email && pass.length >= 4) {
+            if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
                 sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
                 window.location.href = 'dashboard.html';
             } else {
                 const err = $('login-error');
-                if (err) { err.textContent='Invalid credentials. Enter any email + 4-char password.'; err.style.display='block'; }
+                if (err) { err.textContent = 'Invalid email or password.'; err.style.display = 'block'; }
                 btn.textContent = 'Sign In to Dashboard';
                 btn.disabled = false;
             }
@@ -1939,7 +1968,7 @@ function triggerCelebration() {
 // ── PAGE: SETTINGS ────────────────────────────────────────
 function initSettings() {
     checkAuth();
-    
+
     // Load profile
     const profile = DB.get('profile', { fname: 'Kanye', lname: 'West' });
     const fnameInput = $('setting-fname');
@@ -1954,11 +1983,49 @@ function initSettings() {
             const newFname = (fnameInput.value || '').trim();
             const newLname = (lnameInput.value || '').trim();
             DB.set('profile', { ...profile, fname: newFname, lname: newLname });
-            
             showToast('Profile updated ✓', 'success');
-            
-            // Re-run checkAuth to instantly update the UI (header name/initials)
             checkAuth();
+        });
+    }
+
+    // Change password
+    const passBtn = $('save-password-btn');
+    if (passBtn) {
+        passBtn.addEventListener('click', async () => {
+            const currentPass = $('setting-current-pass').value;
+            const newPass = $('setting-new-pass').value;
+            const confirmPass = $('setting-confirm-pass').value;
+
+            if (!currentPass || !newPass || !confirmPass) {
+                showToast('Please fill in all password fields.', 'error');
+                return;
+            }
+
+            const creds = getStoredCredentials();
+            const currentHash = await hashPassword(currentPass);
+
+            if (currentHash !== creds.passHash) {
+                showToast('Current password is incorrect.', 'error');
+                return;
+            }
+
+            if (newPass.length < 4) {
+                showToast('New password must be at least 4 characters.', 'error');
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showToast('New passwords do not match.', 'error');
+                return;
+            }
+
+            const newHash = await hashPassword(newPass);
+            localStorage.setItem('kl360_credentials', JSON.stringify({ email: creds.email, passHash: newHash }));
+
+            $('setting-current-pass').value = '';
+            $('setting-new-pass').value = '';
+            $('setting-confirm-pass').value = '';
+            showToast('Password updated successfully ✓', 'success');
         });
     }
 }

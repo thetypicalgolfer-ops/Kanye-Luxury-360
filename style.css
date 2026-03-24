@@ -137,6 +137,7 @@ body:hover .cursor { opacity: 1; }
 .nav.scrolled .nav-agent-login { color: rgba(27,27,26,0.35); }
 .nav-agent-login:hover { color: var(--bronze); }
 @media (max-width: 768px) { .nav-agent-login { display: none; } }
+.nav-mobile-menu a[href*="admin"] { display: none; }
 
 
 /* ── SECTION BASE ─────────────────────────────────── */
