@@ -970,9 +970,6 @@ footer {
     font-size: 0.68rem;
     color: rgba(216,204,188,0.35);
     letter-spacing: 0.05em;
-    width: 100%;
-    text-align: center;
-    margin-top: 0.5rem;
 }
 .footer-legal {
     display: flex;
