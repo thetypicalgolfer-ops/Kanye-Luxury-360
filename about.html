@@ -526,7 +526,7 @@
                         <svg id="vc-play-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><polygon points="6,3 6,21 20,12"/></svg>
                         <svg id="vc-pause-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
                     </button>
-                    <div class="vc-progress" id="vc-progress" onclick="seekVideo(event)">
+                    <div class="vc-progress" id="vc-progress">
                         <div class="vc-progress-fill" id="vc-fill"></div>
                     </div>
                     <span class="vc-time" id="vc-time">0:00</span>
@@ -611,7 +611,7 @@
                     <svg id="vm-play-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="6,3 6,21 20,12"/></svg>
                     <svg id="vm-pause-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
                 </button>
-                <div class="vm-progress" id="vm-progress" onclick="vmSeek(event)">
+                <div class="vm-progress" id="vm-progress">
                     <div class="vm-progress-fill" id="vm-fill"></div>
                 </div>
                 <span class="vm-time" id="vm-time">0:00</span>
@@ -678,11 +678,32 @@
             updatePlayPauseIcon();
         });
     }
-    function seekVideo(e) {
+    // Draggable seek for inline video
+    (function(){
         var bar = document.getElementById('vc-progress');
-        var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
-        if (vid.duration) vid.currentTime = pct * vid.duration;
-    }
+        if (!bar) return;
+        function seek(x) {
+            var rect = bar.getBoundingClientRect();
+            var pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+            if (vid.duration) vid.currentTime = pct * vid.duration;
+        }
+        bar.addEventListener('click', function(e){ seek(e.clientX); });
+        bar.addEventListener('mousedown', function(e){
+            e.preventDefault();
+            seek(e.clientX);
+            function onMove(ev){ seek(ev.clientX); }
+            function onUp(){ document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+        bar.addEventListener('touchstart', function(e){
+            seek(e.touches[0].clientX);
+            function onMove(ev){ ev.preventDefault(); seek(ev.touches[0].clientX); }
+            function onEnd(){ bar.removeEventListener('touchmove', onMove); bar.removeEventListener('touchend', onEnd); }
+            bar.addEventListener('touchmove', onMove, {passive:false});
+            bar.addEventListener('touchend', onEnd);
+        }, {passive:true});
+    })();
     // ── VIDEO MODAL (replaces native fullscreen) ───────
     var vmOverlay = document.getElementById('video-modal-overlay');
     var vmVid = document.getElementById('modal-video');
@@ -709,11 +730,32 @@
     function vmToggle() {
         if (vmVid.paused) vmVid.play(); else vmVid.pause();
     }
-    function vmSeek(e) {
+    // Draggable seek for modal video
+    (function(){
         var bar = document.getElementById('vm-progress');
-        var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
-        if (vmVid.duration) vmVid.currentTime = pct * vmVid.duration;
-    }
+        if (!bar) return;
+        function seek(x) {
+            var rect = bar.getBoundingClientRect();
+            var pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+            if (vmVid.duration) vmVid.currentTime = pct * vmVid.duration;
+        }
+        bar.addEventListener('click', function(e){ seek(e.clientX); });
+        bar.addEventListener('mousedown', function(e){
+            e.preventDefault();
+            seek(e.clientX);
+            function onMove(ev){ seek(ev.clientX); }
+            function onUp(){ document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+        bar.addEventListener('touchstart', function(e){
+            seek(e.touches[0].clientX);
+            function onMove(ev){ ev.preventDefault(); seek(ev.touches[0].clientX); }
+            function onEnd(){ bar.removeEventListener('touchmove', onMove); bar.removeEventListener('touchend', onEnd); }
+            bar.addEventListener('touchmove', onMove, {passive:false});
+            bar.addEventListener('touchend', onEnd);
+        }, {passive:true});
+    })();
     if (vmVid) {
         vmVid.addEventListener('click', vmToggle);
         vmVid.addEventListener('timeupdate', function(){
