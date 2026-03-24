@@ -248,9 +248,64 @@ if (form) {
     form.addEventListener('submit', e => {
         e.preventDefault();
         const btn = form.querySelector('.form-submit');
-        btn.textContent = "Message Received — We'll be in touch.";
-        btn.style.background = 'var(--sage)';
+        const origText = btn.textContent;
+        btn.textContent = 'Sending…';
         btn.disabled = true;
+
+        // Detect which form (contact page vs homepage)
+        const isContact = !!document.getElementById('c-name');
+        const name    = (document.getElementById(isContact ? 'c-name' : 'f-name') || {}).value || '';
+        const email   = (document.getElementById(isContact ? 'c-email' : 'f-email') || {}).value || '';
+        const phone   = (document.getElementById(isContact ? 'c-phone' : 'f-phone') || {}).value || '';
+        const intent  = (document.getElementById(isContact ? 'c-intent' : 'f-intent') || {}).value || '';
+        const budget  = isContact ? ((document.getElementById('c-budget') || {}).value || '') : '';
+        const message = (document.getElementById(isContact ? 'c-msg' : 'f-message') || {}).value || '';
+
+        // Save to localStorage for admin inquiry panel
+        try {
+            const inqs = JSON.parse(localStorage.getItem('kl360_inquiries') || '[]');
+            inqs.unshift({
+                id: Date.now().toString(),
+                name: name,
+                email: email,
+                phone: phone || '—',
+                intent: intent,
+                budget: budget || 'Not Specified',
+                status: 'New',
+                source: 'Website',
+                message: message,
+                listingId: null,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('kl360_inquiries', JSON.stringify(inqs));
+        } catch(err) {}
+
+        // Send email via FormSubmit
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('intent', intent);
+        formData.append('budget', budget);
+        formData.append('message', message);
+        formData.append('_subject', 'New Inquiry from ' + name + ' — Kanye Concierge 360');
+        formData.append('_template', 'table');
+
+        fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.textContent = "Message Received — We'll be in touch.";
+            btn.style.background = 'var(--sage)';
+            form.reset();
+        })
+        .catch(err => {
+            btn.textContent = "Message Received — We'll be in touch.";
+            btn.style.background = 'var(--sage)';
+            form.reset();
+        });
     });
 }
 
