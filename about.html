@@ -269,6 +269,19 @@
         .playlist-section {
             background: var(--charcoal);
             padding: 8rem var(--gutter);
+            position: relative;
+            overflow: hidden;
+        }
+        .playlist-section canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .playlist-section > .max-w {
+            position: relative;
+            z-index: 2;
         }
         .playlist {
             background: #181817;
@@ -539,7 +552,8 @@
     </section>
 
     <!-- ──────────── MUSIC PLAYLIST ──────────── -->
-    <section class="playlist-section">
+    <section class="playlist-section" id="playlist-section">
+        <canvas id="audio-wave-canvas"></canvas>
         <div class="max-w" style="max-width:700px; margin:0 auto;">
             <span class="section-eyebrow reveal" style="color:var(--limestone);">The Soundtrack</span>
             <h2 class="section-headline reveal" style="color:var(--ivory); margin-bottom:3rem;">Listen to the<br><em>Experience</em></h2>
@@ -943,6 +957,115 @@
         var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
         if (plAudio.duration) plAudio.currentTime = pct * plAudio.duration;
     }
+    // ── AUDIO-REACTIVE WAVE BACKGROUND ─────────────────
+    (function(){
+        var canvas = document.getElementById('audio-wave-canvas');
+        var section = document.getElementById('playlist-section');
+        if (!canvas || !section) return;
+        var ctx = canvas.getContext('2d');
+        var raf;
+        var bronze = { r: 164, g: 124, b: 72 };
+        var wavePhase = 0;
+
+        function resize() {
+            var rect = section.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            wavePhase += 0.008;
+
+            var w = canvas.width;
+            var h = canvas.height;
+            var midY = h * 0.5;
+            var hasAudio = analyser && dataArray && !plAudio.paused;
+
+            // Get frequency data if playing
+            var freqData = null;
+            if (hasAudio) {
+                analyser.getByteFrequencyData(dataArray);
+                freqData = dataArray;
+            }
+
+            // Draw 4 layered waves
+            var layers = [
+                { amp: 30, freq: 0.008, speed: 1, alpha: 0.04, freqBand: 0 },
+                { amp: 22, freq: 0.012, speed: 1.4, alpha: 0.05, freqBand: 8 },
+                { amp: 16, freq: 0.018, speed: 0.7, alpha: 0.06, freqBand: 16 },
+                { amp: 10, freq: 0.025, speed: 2, alpha: 0.04, freqBand: 28 }
+            ];
+
+            for (var l = 0; l < layers.length; l++) {
+                var layer = layers[l];
+                var audioBoost = 1;
+
+                if (freqData) {
+                    // Sample a frequency band to drive this wave
+                    var bandVal = 0;
+                    for (var b = 0; b < 6; b++) {
+                        bandVal += freqData[layer.freqBand + b] || 0;
+                    }
+                    bandVal /= 6;
+                    audioBoost = 1 + (bandVal / 255) * 3;
+                }
+
+                var amp = layer.amp * audioBoost;
+                var alpha = layer.alpha * (hasAudio ? (0.8 + audioBoost * 0.25) : 1);
+
+                ctx.beginPath();
+                ctx.moveTo(0, midY);
+
+                for (var x = 0; x <= w; x += 3) {
+                    var y = midY +
+                        Math.sin(x * layer.freq + wavePhase * layer.speed) * amp +
+                        Math.sin(x * layer.freq * 0.5 + wavePhase * layer.speed * 0.6) * amp * 0.4;
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.lineTo(w, h);
+                ctx.lineTo(0, h);
+                ctx.closePath();
+
+                var grad = ctx.createLinearGradient(0, midY - amp, 0, h);
+                grad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + alpha + ')');
+                grad.addColorStop(0.4, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (alpha * 0.3) + ')');
+                grad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // Wave line on top
+                ctx.beginPath();
+                for (var x2 = 0; x2 <= w; x2 += 3) {
+                    var y2 = midY +
+                        Math.sin(x2 * layer.freq + wavePhase * layer.speed) * amp +
+                        Math.sin(x2 * layer.freq * 0.5 + wavePhase * layer.speed * 0.6) * amp * 0.4;
+                    if (x2 === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2);
+                }
+                ctx.strokeStyle = 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (alpha * 1.5) + ')';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            raf = requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', resize);
+
+        var observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                resize();
+                if (!raf) draw();
+            } else {
+                if (raf) { cancelAnimationFrame(raf); raf = null; }
+            }
+        }, { threshold: 0 });
+        observer.observe(section);
+
+        resize();
+    })();
+
     // ── MODAL BACKDROP PARTICLE GAME ──────────────────
     (function(){
         var overlay = document.getElementById('video-modal-overlay');
