@@ -970,6 +970,27 @@ footer {
     color: rgba(216,204,188,0.35);
     letter-spacing: 0.05em;
 }
+.footer-legal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    margin-top: 1.2rem;
+    font-size: 0.6rem;
+    color: rgba(216,204,188,0.25);
+    letter-spacing: 0.04em;
+}
+.footer-legal a {
+    color: rgba(216,204,188,0.3);
+    transition: color 0.3s;
+}
+.footer-legal a:hover { color: var(--bronze); }
+.footer-legal svg {
+    width: 18px;
+    height: 18px;
+    fill: rgba(216,204,188,0.3);
+}
 
 /* ══════════════════════════════════════════════════════
    HAMBURGER MENU
