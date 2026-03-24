@@ -364,23 +364,12 @@
             border-top: 1px solid rgba(216,204,188,0.08);
             background: #141413;
         }
-        .pl-now-playing {
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .pl-now-info { flex: 1; min-width: 0; }
+        .pl-now-playing { margin-bottom: 0.8rem; }
         .pl-now-title {
             font-size: 0.88rem; font-weight: 500; color: var(--ivory);
         }
         .pl-now-artist {
             font-size: 0.7rem; color: rgba(216,204,188,0.4); margin-top: 2px;
-        }
-        .pl-equalizer {
-            width: 80px;
-            height: 36px;
-            flex-shrink: 0;
         }
         .pl-controls {
             display: flex;
@@ -582,11 +571,8 @@
                 </div>
                 <div class="playlist-player" id="playlist-player">
                     <div class="pl-now-playing">
-                        <div class="pl-now-info">
-                            <div class="pl-now-title" id="pl-now-title">More Than a Key</div>
-                            <div class="pl-now-artist" id="pl-now-artist">Kanye Concierge 360</div>
-                        </div>
-                        <canvas class="pl-equalizer" id="pl-equalizer" width="160" height="72"></canvas>
+                        <div class="pl-now-title" id="pl-now-title">More Than a Key</div>
+                        <div class="pl-now-artist" id="pl-now-artist">Kanye Concierge 360</div>
                     </div>
                     <div class="pl-controls">
                         <button class="pl-ctrl-btn" onclick="plPrev()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/></svg></button>
@@ -805,10 +791,8 @@
     var plTracks = document.querySelectorAll('.pl-track');
     var plIdx = 0;
 
-    // ── EQUALIZER (Web Audio API) ────────────────────
-    var eqCanvas = document.getElementById('pl-equalizer');
-    var eqCtx = eqCanvas ? eqCanvas.getContext('2d') : null;
-    var audioCtx, analyser, source, dataArray, eqRaf;
+    // ── WEB AUDIO API (for wave background) ───────────
+    var audioCtx, analyser, source, dataArray;
     var eqConnected = false;
 
     function connectEqualizer() {
@@ -825,64 +809,6 @@
             eqConnected = true;
         } catch(e) {}
     }
-
-    function drawEqualizer() {
-        if (!eqCtx || !analyser) { eqRaf = requestAnimationFrame(drawEqualizer); return; }
-
-        analyser.getByteFrequencyData(dataArray);
-
-        var w = eqCanvas.width;
-        var h = eqCanvas.height;
-        eqCtx.clearRect(0, 0, w, h);
-
-        var bars = 20;
-        var barW = Math.floor(w / bars) - 2;
-        var gap = 2;
-
-        for (var i = 0; i < bars; i++) {
-            // Sample from lower-mid frequencies for best visual
-            var idx = Math.floor(i * (dataArray.length * 0.6) / bars) + 2;
-            var val = dataArray[idx] || 0;
-            var barH = (val / 255) * h * 0.92;
-            barH = Math.max(barH, 2);
-
-            var x = i * (barW + gap);
-            var y = h - barH;
-
-            // Gradient per bar: bronze at top, dim at bottom
-            var intensity = val / 255;
-            var r = Math.floor(164 + (91 * intensity));
-            var g = Math.floor(124 + (50 * intensity));
-            var b = Math.floor(72 + (20 * intensity));
-            var alpha = 0.4 + intensity * 0.6;
-
-            // Rounded bar with glow
-            eqCtx.beginPath();
-            var radius = Math.min(barW / 2, 2);
-            eqCtx.moveTo(x + radius, y);
-            eqCtx.lineTo(x + barW - radius, y);
-            eqCtx.quadraticCurveTo(x + barW, y, x + barW, y + radius);
-            eqCtx.lineTo(x + barW, h - radius);
-            eqCtx.quadraticCurveTo(x + barW, h, x + barW - radius, h);
-            eqCtx.lineTo(x + radius, h);
-            eqCtx.quadraticCurveTo(x, h, x, h - radius);
-            eqCtx.lineTo(x, y + radius);
-            eqCtx.quadraticCurveTo(x, y, x + radius, y);
-            eqCtx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-            eqCtx.fill();
-
-            // Top highlight
-            if (barH > 6) {
-                eqCtx.fillStyle = 'rgba(255,235,200,' + (intensity * 0.4) + ')';
-                eqCtx.fillRect(x, y, barW, 2);
-            }
-        }
-
-        eqRaf = requestAnimationFrame(drawEqualizer);
-    }
-
-    // Start EQ loop
-    drawEqualizer();
 
     // Load duration on page load
     plTracks.forEach(function(t, i) {
@@ -991,10 +917,10 @@
 
             // Draw 4 layered waves
             var layers = [
-                { amp: 30, freq: 0.008, speed: 1, alpha: 0.04, freqBand: 0 },
-                { amp: 22, freq: 0.012, speed: 1.4, alpha: 0.05, freqBand: 8 },
-                { amp: 16, freq: 0.018, speed: 0.7, alpha: 0.06, freqBand: 16 },
-                { amp: 10, freq: 0.025, speed: 2, alpha: 0.04, freqBand: 28 }
+                { amp: 30, freq: 0.008, speed: 1, alpha: 0.036, freqBand: 0 },
+                { amp: 22, freq: 0.012, speed: 1.4, alpha: 0.045, freqBand: 8 },
+                { amp: 16, freq: 0.018, speed: 0.7, alpha: 0.054, freqBand: 16 },
+                { amp: 10, freq: 0.025, speed: 2, alpha: 0.036, freqBand: 28 }
             ];
 
             for (var l = 0; l < layers.length; l++) {
