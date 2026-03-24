@@ -27,6 +27,9 @@
             position: relative;
             overflow: hidden;
         }
+        @media (max-width: 768px) {
+            .video-section { padding: 4.5rem var(--gutter); }
+        }
         .video-section canvas {
             position: absolute;
             inset: 0;
@@ -510,7 +513,7 @@
         <canvas id="video-bg-canvas"></canvas>
         <div class="max-w" style="text-align:center;">
             <span class="section-eyebrow reveal" style="color:var(--limestone);">Behind the Brand</span>
-            <h2 class="section-headline reveal" style="color:var(--ivory); margin-bottom:3rem;">See the<br><em>Vision</em></h2>
+            <h2 class="section-headline reveal" style="color:var(--ivory); margin-bottom:3rem;">See the <em>Vision</em></h2>
             <div class="video-player reveal" id="video-player">
                 <div class="video-poster" id="video-poster" onclick="playVideo()">
                     <div class="video-play-btn">
