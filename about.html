@@ -646,9 +646,11 @@
     function playVideo() {
         if (!vid) return;
         poster.classList.add('hidden');
-        vPlayer.classList.add('playing');
-        vid.play();
-        updatePlayPauseIcon();
+        // Go straight to modal popout
+        vmVid.currentTime = 0;
+        vmOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        vmVid.play();
     }
     function toggleVideo() {
         if (!vid) return;
