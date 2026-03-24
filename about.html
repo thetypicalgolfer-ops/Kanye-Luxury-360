@@ -674,9 +674,8 @@
             time.textContent = m+':'+(s<10?'0':'')+s;
         });
         vid.addEventListener('ended', function(){
-            poster.classList.remove('hidden');
-            vPlayer.classList.remove('playing');
-            updatePlayPauseIcon();
+            vid.currentTime = 0;
+            vid.play();
         });
     }
     // Draggable seek for inline video
@@ -775,10 +774,8 @@
             document.getElementById('vm-pause-icon').style.display='none';
         });
         vmVid.addEventListener('ended', function(){
-            closeVideoModal();
-            poster.classList.remove('hidden');
-            vPlayer.classList.remove('playing');
-            updatePlayPauseIcon();
+            vmVid.currentTime = 0;
+            vmVid.play();
         });
         // Close on Escape
         document.addEventListener('keydown', function(e){
