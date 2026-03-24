@@ -946,10 +946,6 @@ footer {
     flex-wrap: wrap;
     gap: 1.5rem;
 }
-.footer-copy {
-    flex-basis: 100%;
-    text-align: center;
-}
 .footer-legal {
     flex-basis: 100%;
 }
