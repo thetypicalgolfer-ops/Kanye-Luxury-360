@@ -777,15 +777,25 @@
         if (!canvas || !section) return;
         var ctx = canvas.getContext('2d');
         var particles = [];
-        var mouse = { x: -9999, y: -9999 };
+        var chasers = []; // small particles that chase the mouse
+        var mouse = { x: -9999, y: -9999, moving: false };
+        var mouseTimer = null;
         var raf;
         var bronze = { r: 164, g: 124, b: 72 };
-        var count = Math.min(60, Math.floor(window.innerWidth / 20));
+        var count = Math.min(120, Math.floor(window.innerWidth / 10));
 
         function resize() {
             var rect = section.getBoundingClientRect();
             canvas.width = rect.width;
             canvas.height = rect.height;
+        }
+
+        function randSize() {
+            // Randomized sizes: mostly tiny, some medium, few large
+            var r = Math.random();
+            if (r < 0.5) return Math.random() * 0.8 + 0.3;      // tiny
+            if (r < 0.85) return Math.random() * 1.8 + 1;        // medium
+            return Math.random() * 3 + 2;                          // large
         }
 
         function init() {
@@ -797,9 +807,25 @@
                     y: Math.random() * canvas.height,
                     vx: (Math.random() - 0.5) * 0.3,
                     vy: (Math.random() - 0.5) * 0.3,
-                    r: Math.random() * 1.5 + 0.5,
+                    r: randSize(),
                     alpha: Math.random() * 0.3 + 0.05,
                     pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        // Spawn chaser particles toward mouse
+        function spawnChasers() {
+            if (mouse.x < 0 || !mouse.moving) return;
+            for (var i = 0; i < 2; i++) {
+                var angle = Math.random() * Math.PI * 2;
+                var dist = Math.random() * 60 + 40;
+                chasers.push({
+                    x: mouse.x + Math.cos(angle) * dist,
+                    y: mouse.y + Math.sin(angle) * dist,
+                    r: Math.random() * 1.2 + 0.3,
+                    life: 1,
+                    decay: Math.random() * 0.015 + 0.01
                 });
             }
         }
@@ -807,7 +833,10 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw connections
+            // Spawn chasers each frame when mouse moves
+            spawnChasers();
+
+            // Draw connections between ambient particles
             for (var i = 0; i < particles.length; i++) {
                 for (var j = i + 1; j < particles.length; j++) {
                     var dx = particles[i].x - particles[j].x;
@@ -825,7 +854,7 @@
                 }
             }
 
-            // Draw particles
+            // Draw ambient particles
             for (var k = 0; k < particles.length; k++) {
                 var p = particles[k];
                 p.pulse += 0.008;
@@ -835,13 +864,12 @@
                 var mx = p.x - mouse.x;
                 var my = p.y - mouse.y;
                 var md = Math.sqrt(mx * mx + my * my);
-                if (md < 150) {
+                if (md < 150 && md > 0) {
                     var force = (1 - md / 150) * 0.4;
                     p.vx += (mx / md) * force;
                     p.vy += (my / md) * force;
                 }
 
-                // Dampen velocity
                 p.vx *= 0.98;
                 p.vy *= 0.98;
                 p.x += p.vx;
@@ -853,12 +881,13 @@
                 if (p.y < -10) p.y = canvas.height + 10;
                 if (p.y > canvas.height + 10) p.y = -10;
 
-                // Draw soft glow
-                var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+                // Soft glow
+                var glowR = Math.max(p.r * 4, 3);
+                var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
                 grad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + glow + ')');
                 grad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
                 ctx.fillStyle = grad;
                 ctx.fill();
 
@@ -869,34 +898,69 @@
                 ctx.fill();
             }
 
+            // Draw and update chaser particles
+            for (var c = chasers.length - 1; c >= 0; c--) {
+                var ch = chasers[c];
+
+                // Chase toward mouse
+                var cdx = mouse.x - ch.x;
+                var cdy = mouse.y - ch.y;
+                var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+                if (cdist > 1) {
+                    ch.x += (cdx / cdist) * 2.5;
+                    ch.y += (cdy / cdist) * 2.5;
+                }
+
+                // Fade out
+                ch.life -= ch.decay;
+
+                if (ch.life <= 0) {
+                    chasers.splice(c, 1);
+                    continue;
+                }
+
+                // Draw with fade
+                var ca = ch.life * 0.5;
+                var cGrad = ctx.createRadialGradient(ch.x, ch.y, 0, ch.x, ch.y, ch.r * 3);
+                cGrad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + ca + ')');
+                cGrad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
+                ctx.beginPath();
+                ctx.arc(ch.x, ch.y, ch.r * 3, 0, Math.PI * 2);
+                ctx.fillStyle = cGrad;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(ch.x, ch.y, ch.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,235,200,' + (ca * 1.2) + ')';
+                ctx.fill();
+            }
+
             raf = requestAnimationFrame(draw);
         }
 
-        // Track mouse relative to section
-        section.addEventListener('mousemove', function(e) {
+        // Track mouse
+        function onMove(x, y) {
             var rect = section.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
-        });
+            mouse.x = x - rect.left;
+            mouse.y = y - rect.top;
+            mouse.moving = true;
+            clearTimeout(mouseTimer);
+            mouseTimer = setTimeout(function() { mouse.moving = false; }, 100);
+        }
+        section.addEventListener('mousemove', function(e) { onMove(e.clientX, e.clientY); });
         section.addEventListener('mouseleave', function() {
-            mouse.x = -9999;
-            mouse.y = -9999;
+            mouse.x = -9999; mouse.y = -9999; mouse.moving = false;
         });
-
-        // Touch support
         section.addEventListener('touchmove', function(e) {
-            var rect = section.getBoundingClientRect();
-            mouse.x = e.touches[0].clientX - rect.left;
-            mouse.y = e.touches[0].clientY - rect.top;
+            onMove(e.touches[0].clientX, e.touches[0].clientY);
         }, {passive: true});
         section.addEventListener('touchend', function() {
-            mouse.x = -9999;
-            mouse.y = -9999;
+            mouse.x = -9999; mouse.y = -9999; mouse.moving = false;
         });
 
         window.addEventListener('resize', resize);
 
-        // Only animate when section is visible
+        // Only animate when visible
         var observer = new IntersectionObserver(function(entries) {
             if (entries[0].isIntersecting) {
                 if (!raf) draw();
