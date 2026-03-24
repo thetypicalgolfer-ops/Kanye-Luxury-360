@@ -944,7 +944,14 @@ footer {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: 1.5rem;
+}
+.footer-copy {
+    flex-basis: 100%;
+    text-align: center;
+}
+.footer-legal {
+    flex-basis: 100%;
 }
 .footer-logo {
     font-family: var(--serif);
@@ -977,7 +984,6 @@ footer {
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.6rem 1.2rem;
-    margin-top: 1.2rem;
     font-size: 0.6rem;
     color: rgba(216,204,188,0.25);
     letter-spacing: 0.04em;
