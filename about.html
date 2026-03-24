@@ -879,7 +879,7 @@
         var mouseTimer = null;
         var raf;
         var bronze = { r: 164, g: 124, b: 72 };
-        var count = Math.min(120, Math.floor(window.innerWidth / 10));
+        var count = Math.min(40, Math.floor(window.innerWidth / 35));
 
         function resize() {
             var rect = section.getBoundingClientRect();
@@ -888,11 +888,10 @@
         }
 
         function randSize() {
-            // Randomized sizes: mostly tiny, some medium, few large
             var r = Math.random();
-            if (r < 0.5) return Math.random() * 0.8 + 0.3;      // tiny
-            if (r < 0.85) return Math.random() * 1.8 + 1;        // medium
-            return Math.random() * 3 + 2;                          // large
+            if (r < 0.6) return Math.random() * 0.5 + 0.2;
+            if (r < 0.9) return Math.random() * 1 + 0.5;
+            return Math.random() * 1.8 + 1;
         }
 
         function init() {
@@ -902,45 +901,45 @@
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
+                    vx: (Math.random() - 0.5) * 0.12,
+                    vy: (Math.random() - 0.5) * 0.12,
                     r: randSize(),
-                    alpha: Math.random() * 0.3 + 0.05,
+                    alpha: Math.random() * 0.1 + 0.02,
                     pulse: Math.random() * Math.PI * 2
                 });
             }
         }
 
-        // Spawn chaser particles toward mouse
+        // Spawn chaser particles toward mouse — very sparse
+        var spawnCounter = 0;
         function spawnChasers() {
             if (mouse.x < 0 || !mouse.moving) return;
-            for (var i = 0; i < 2; i++) {
-                var angle = Math.random() * Math.PI * 2;
-                var dist = Math.random() * 60 + 40;
-                chasers.push({
-                    x: mouse.x + Math.cos(angle) * dist,
-                    y: mouse.y + Math.sin(angle) * dist,
-                    r: Math.random() * 1.2 + 0.3,
-                    life: 1,
-                    decay: Math.random() * 0.015 + 0.01
-                });
-            }
+            spawnCounter++;
+            if (spawnCounter % 3 !== 0) return; // only every 3rd frame
+            var angle = Math.random() * Math.PI * 2;
+            var dist = Math.random() * 50 + 30;
+            chasers.push({
+                x: mouse.x + Math.cos(angle) * dist,
+                y: mouse.y + Math.sin(angle) * dist,
+                r: Math.random() * 0.6 + 0.2,
+                life: 1,
+                decay: Math.random() * 0.025 + 0.02
+            });
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Spawn chasers each frame when mouse moves
             spawnChasers();
 
-            // Draw connections between ambient particles
+            // Draw faint connections
             for (var i = 0; i < particles.length; i++) {
                 for (var j = i + 1; j < particles.length; j++) {
                     var dx = particles[i].x - particles[j].x;
                     var dy = particles[i].y - particles[j].y;
                     var dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 140) {
-                        var opacity = (1 - dist / 140) * 0.06;
+                    if (dist < 120) {
+                        var opacity = (1 - dist / 120) * 0.03;
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -954,32 +953,31 @@
             // Draw ambient particles
             for (var k = 0; k < particles.length; k++) {
                 var p = particles[k];
-                p.pulse += 0.008;
-                var glow = p.alpha + Math.sin(p.pulse) * 0.08;
+                p.pulse += 0.004;
+                var glow = p.alpha + Math.sin(p.pulse) * 0.03;
 
-                // Gentle mouse repulsion
+                // Very gentle mouse repulsion
                 var mx = p.x - mouse.x;
                 var my = p.y - mouse.y;
                 var md = Math.sqrt(mx * mx + my * my);
-                if (md < 150 && md > 0) {
-                    var force = (1 - md / 150) * 0.4;
+                if (md < 120 && md > 0) {
+                    var force = (1 - md / 120) * 0.15;
                     p.vx += (mx / md) * force;
                     p.vy += (my / md) * force;
                 }
 
-                p.vx *= 0.98;
-                p.vy *= 0.98;
+                p.vx *= 0.99;
+                p.vy *= 0.99;
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // Wrap edges
                 if (p.x < -10) p.x = canvas.width + 10;
                 if (p.x > canvas.width + 10) p.x = -10;
                 if (p.y < -10) p.y = canvas.height + 10;
                 if (p.y > canvas.height + 10) p.y = -10;
 
                 // Soft glow
-                var glowR = Math.max(p.r * 4, 3);
+                var glowR = Math.max(p.r * 3, 2);
                 var grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
                 grad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + glow + ')');
                 grad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
@@ -988,47 +986,29 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
-                // Core dot
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (glow * 1.5) + ')';
+                ctx.fillStyle = 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (glow * 0.8) + ')';
                 ctx.fill();
             }
 
-            // Draw and update chaser particles
+            // Draw chasers — subtle
             for (var c = chasers.length - 1; c >= 0; c--) {
                 var ch = chasers[c];
-
-                // Chase toward mouse
                 var cdx = mouse.x - ch.x;
                 var cdy = mouse.y - ch.y;
                 var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
                 if (cdist > 1) {
-                    ch.x += (cdx / cdist) * 2.5;
-                    ch.y += (cdy / cdist) * 2.5;
+                    ch.x += (cdx / cdist) * 1.5;
+                    ch.y += (cdy / cdist) * 1.5;
                 }
-
-                // Fade out
                 ch.life -= ch.decay;
+                if (ch.life <= 0) { chasers.splice(c, 1); continue; }
 
-                if (ch.life <= 0) {
-                    chasers.splice(c, 1);
-                    continue;
-                }
-
-                // Draw with fade
-                var ca = ch.life * 0.5;
-                var cGrad = ctx.createRadialGradient(ch.x, ch.y, 0, ch.x, ch.y, ch.r * 3);
-                cGrad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + ca + ')');
-                cGrad.addColorStop(1, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',0)');
-                ctx.beginPath();
-                ctx.arc(ch.x, ch.y, ch.r * 3, 0, Math.PI * 2);
-                ctx.fillStyle = cGrad;
-                ctx.fill();
-
+                var ca = ch.life * 0.2;
                 ctx.beginPath();
                 ctx.arc(ch.x, ch.y, ch.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255,235,200,' + (ca * 1.2) + ')';
+                ctx.fillStyle = 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + ca + ')';
                 ctx.fill();
             }
 
