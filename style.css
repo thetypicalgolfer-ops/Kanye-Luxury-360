@@ -995,6 +995,25 @@ footer {
     height: 18px;
     fill: rgba(216,204,188,0.3);
 }
+.footer-partner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(216,204,188,0.3);
+    transition: opacity 0.3s;
+}
+.footer-partner:hover { opacity: 1; }
+.footer-partner img {
+    height: 22px;
+    width: auto;
+    filter: grayscale(1) brightness(0.6) contrast(0.8);
+    opacity: 0.4;
+    transition: filter 0.3s, opacity 0.3s;
+}
+.footer-partner:hover img {
+    filter: grayscale(0) brightness(1) contrast(1);
+    opacity: 1;
+}
 
 /* ══════════════════════════════════════════════════════
    HAMBURGER MENU
