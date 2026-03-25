@@ -16,12 +16,12 @@
         if (raw) return JSON.parse(raw);
         // Fallback seed data (mirrors admin defaults)
         return [
-            { id:'1', title:'Limestone & Steel Contemporary Estate', location:'The Dominion · San Antonio, TX', price:4250000, beds:5, baths:6, sqft:7200, acres:1.2, status:'Active', tag:'Just Listed', visibility:'both', image:'img-estate-1.png?v=7', photos:[] },
-            { id:'2', title:'Architectural Modern Home', location:'Alamo Heights · San Antonio, TX', price:2895000, beds:4, baths:4.5, sqft:4800, acres:0.5, status:'Active', tag:'Active', visibility:'both', image:'img-estate-3.png?v=7', photos:[] },
-            { id:'3', title:'Hill Country Legacy Ranch', location:'Boerne · Texas Hill Country', price:6800000, beds:4, baths:3, sqft:3800, acres:340, status:'Active', tag:'Ranch Land', visibility:'both', image:'img-estate-2.png?v=6', photos:[] },
-            { id:'4', title:'Stone Oak Executive Estate', location:'Stone Oak · San Antonio, TX', price:1975000, beds:5, baths:4, sqft:4200, acres:0.8, status:'Pending', tag:'Under Contract', visibility:'listings', image:'img-stone-oak.png?v=6', photos:[] },
-            { id:'5', title:'New Braunfels Waterfront Estate', location:'New Braunfels · Comal County, TX', price:3450000, beds:6, baths:5, sqft:5600, acres:2.1, status:'Active', tag:'Waterfront', visibility:'listings', image:'img-new-braunfels.png?v=6', photos:[] },
-            { id:'6', title:'Fredericksburg Wine Country Estate', location:'Fredericksburg · Gillespie County, TX', price:5200000, beds:4, baths:4, sqft:4900, acres:75, status:'Off-Market', tag:'Off-Market', visibility:'listings', image:'img-fredericksburg.png?v=6', photos:[] },
+            { id:'1', title:'Limestone & Steel Contemporary Estate', location:'The Dominion · San Antonio, TX', price:0, beds:5, baths:6, sqft:7200, acres:1.2, status:'Off-Market', tag:'Off-Market', visibility:'both', image:'img-estate-1.png?v=7', photos:[] },
+            { id:'2', title:'Architectural Modern Home', location:'Alamo Heights · San Antonio, TX', price:0, beds:4, baths:4.5, sqft:4800, acres:0.5, status:'Off-Market', tag:'Off-Market', visibility:'both', image:'img-estate-3.png?v=7', photos:[] },
+            { id:'3', title:'Hill Country Legacy Ranch', location:'Boerne · Texas Hill Country', price:0, beds:4, baths:3, sqft:3800, acres:340, status:'Off-Market', tag:'Off-Market', visibility:'both', image:'img-estate-2.png?v=6', photos:[] },
+            { id:'4', title:'Stone Oak Executive Estate', location:'Stone Oak · San Antonio, TX', price:0, beds:5, baths:4, sqft:4200, acres:0.8, status:'Off-Market', tag:'Off-Market', visibility:'listings', image:'img-stone-oak.png?v=6', photos:[] },
+            { id:'5', title:'New Braunfels Waterfront Estate', location:'New Braunfels · Comal County, TX', price:0, beds:6, baths:5, sqft:5600, acres:2.1, status:'Off-Market', tag:'Off-Market', visibility:'listings', image:'img-new-braunfels.png?v=6', photos:[] },
+            { id:'6', title:'Fredericksburg Wine Country Estate', location:'Fredericksburg · Gillespie County, TX', price:0, beds:4, baths:4, sqft:4900, acres:75, status:'Off-Market', tag:'Off-Market', visibility:'listings', image:'img-fredericksburg.png?v=6', photos:[] },
         ];
     }
 
@@ -66,7 +66,7 @@
             const ac = Number(listing.acres);
             if (ac >= 5) details.push(`<span>${ac} Ac</span>`);
         }
-        details.push(`<span class="pc-price">${formatPrice(listing.price)}</span>`);
+        details.push(`<span class="pc-price">${listing.price ? formatPrice(listing.price) : 'Price Upon Request'}</span>`);
 
         return `
             <a href="property-detail.html?id=${listing.id}" class="property-card reveal" style="${style}">
