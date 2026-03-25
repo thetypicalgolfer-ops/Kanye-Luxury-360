@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Consultation | Kanye Concierge 360</title>
+    <meta name="description" content="Request a confidential, one-on-one consultation with Kanye Concierge 360. Luxury real estate advisory across Greater San Antonio and the Texas Hill Country.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: var(--charcoal); }
+
+        /* ── HERO BANNER ── */
+        .consult-hero {
+            position: relative;
+            height: 50vh;
+            min-height: 420px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .consult-hero img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) saturate(0.8);
+        }
+        .consult-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--charcoal) 0%, transparent 60%);
+        }
+        .consult-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 var(--gutter) 4rem;
+        }
+        .consult-hero-content .section-eyebrow { color: var(--bronze); margin-bottom: 1rem; }
+        .consult-hero-content h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.6rem, 5vw, 4.5rem);
+            font-weight: 300;
+            line-height: 1.08;
+            color: var(--ivory);
+        }
+        .consult-hero-content h1 em { font-style: italic; color: var(--bronze); }
+        .consult-hero-content p {
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.75;
+            color: var(--limestone);
+            max-width: 560px;
+            margin: 1.5rem auto 0;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .consult-body {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 6rem;
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 6rem var(--gutter) 8rem;
+            align-items: start;
+        }
+
+        /* ── LEFT: PHILOSOPHY ── */
+        .consult-philosophy h2 {
+            font-family: var(--serif);
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 300;
+            line-height: 1.15;
+            color: var(--ivory);
+            margin-bottom: 2rem;
+        }
+        .consult-philosophy h2 em { font-style: italic; color: var(--bronze); }
+        .consult-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+            margin-top: 3rem;
+        }
+        .consult-step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        .consult-step-num {
+            font-family: var(--serif);
+            font-size: 2.4rem;
+            font-weight: 300;
+            color: var(--bronze);
+            line-height: 1;
+            min-width: 2rem;
+        }
+        .consult-step-text h3 {
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ivory);
+            margin-bottom: 0.5rem;
+        }
+        .consult-step-text p {
+            font-size: 0.88rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: rgba(216,204,188,0.6);
+        }
+        .consult-divider {
+            width: 60px;
+            height: 1px;
+            background: rgba(216,204,188,0.15);
+            margin: 2.5rem 0;
+        }
+        .consult-note {
+            font-size: 0.82rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: rgba(216,204,188,0.45);
+            font-style: italic;
+        }
+
+        /* ── RIGHT: FORM ── */
+        .consult-form-wrap {
+            background: rgba(253,250,246,0.03);
+            border: 1px solid rgba(216,204,188,0.1);
+            padding: 3rem;
+        }
+        .consult-form-wrap h3 {
+            font-family: var(--serif);
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--ivory);
+            margin-bottom: 0.6rem;
+        }
+        .consult-form-wrap > p {
+            font-size: 0.82rem;
+            font-weight: 300;
+            line-height: 1.65;
+            color: rgba(216,204,188,0.5);
+            margin-bottom: 2rem;
+        }
+
+        /* ── FORM OVERRIDES (dark bg) ── */
+        .consult-form-wrap .form-field label { color: var(--limestone); }
+        .consult-form-wrap .form-field input,
+        .consult-form-wrap .form-field textarea,
+        .consult-form-wrap .form-field select {
+            background: rgba(253,250,246,0.04);
+            border-color: rgba(216,204,188,0.15);
+            color: var(--ivory);
+        }
+        .consult-form-wrap .form-field input::placeholder,
+        .consult-form-wrap .form-field textarea::placeholder {
+            color: rgba(216,204,188,0.3);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .consult-body { grid-template-columns: 1fr; gap: 4rem; padding: 4rem var(--gutter) 6rem; }
+            .consult-form-wrap { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+
+    <!-- ── NAV ── -->
+    <nav class="nav" id="nav">
+        <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="communities.html">Communities</a></li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="consultation.html" class="nav-cta btn btn-outline" style="border-color:rgba(253,250,246,0.5);color:var(--ivory);">Private Consultation</a>
+        <a href="admin/login.html" class="nav-agent-login" title="Agent Portal">&#x2B21; Agent</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="communities.html">Communities</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
+        <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
+    </div>
+
+    <!-- ── HERO ── -->
+    <section class="consult-hero">
+        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Luxury Estate at Dusk" loading="eager">
+        <div class="consult-hero-content">
+            <span class="section-eyebrow reveal">By Invitation</span>
+            <h1 class="reveal">Private<br><em>Consultation</em></h1>
+            <p class="reveal">Every exceptional transaction begins with a confidential conversation. No obligation, no pressure — just a clear understanding of your goals and how we can serve them.</p>
+        </div>
+    </section>
+
+    <!-- ── BODY ── -->
+    <div class="consult-body">
+
+        <!-- LEFT — PHILOSOPHY & PROCESS -->
+        <div class="consult-philosophy reveal">
+            <h2>How We Work<br>With <em>You</em></h2>
+            <p style="font-size:0.92rem;font-weight:300;line-height:1.75;color:rgba(216,204,188,0.6);">This is not a sales call. A private consultation is a confidential, one-on-one conversation designed to understand your situation — your timeline, your financial position, and what matters most to you in a property or transaction.</p>
+
+            <div class="consult-steps">
+                <div class="consult-step">
+                    <span class="consult-step-num">01</span>
+                    <div class="consult-step-text">
+                        <h3>Confidential Intake</h3>
+                        <p>Share your objectives, timeline, and any specific requirements. Everything discussed remains strictly between us.</p>
+                    </div>
+                </div>
+                <div class="consult-step">
+                    <span class="consult-step-num">02</span>
+                    <div class="consult-step-text">
+                        <h3>Strategy Session</h3>
+                        <p>We assess market conditions, evaluate opportunities, and outline a tailored approach — whether you are buying, selling, or acquiring land.</p>
+                    </div>
+                </div>
+                <div class="consult-step">
+                    <span class="consult-step-num">03</span>
+                    <div class="consult-step-text">
+                        <h3>Private Representation</h3>
+                        <p>If we are the right fit, we move forward with full-service representation — discreet, strategic, and relentlessly focused on your outcome.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consult-divider"></div>
+            <p class="consult-note">"We don't work with everyone — but when we do, we work with conviction."</p>
+        </div>
+
+        <!-- RIGHT — FORM -->
+        <div class="consult-form-wrap reveal">
+            <h3>Request Your Consultation</h3>
+            <p>Complete the form below and a member of our team will reach out within 24 hours to schedule your private session.</p>
+
+            <form class="lead-form" id="consult-form" onsubmit="return false;">
+                <div class="form-row">
+                    <div class="form-field"><label for="p-name">Full Name</label><input type="text" id="p-name" placeholder="Your name" required></div>
+                    <div class="form-field"><label for="p-email">Email</label><input type="email" id="p-email" placeholder="your@email.com" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field"><label for="p-phone">Phone</label><input type="tel" id="p-phone" placeholder="830-000-0000"></div>
+                    <div class="form-field"><label for="p-type">Consultation Type</label>
+                        <select id="p-type">
+                            <option value="">Select</option>
+                            <option>Buying — Luxury Home or Estate</option>
+                            <option>Buying — Ranch or Land</option>
+                            <option>Selling — Private Listing Strategy</option>
+                            <option>Investment Advisory</option>
+                            <option>Relocation to Texas</option>
+                            <option>Other — I'll explain below</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field"><label for="p-budget">Approximate Budget</label><input type="text" id="p-budget" placeholder="e.g. $2M – $5M"></div>
+                    <div class="form-field"><label for="p-timeline">Timeline</label>
+                        <select id="p-timeline">
+                            <option value="">Select</option>
+                            <option>Immediately</option>
+                            <option>Within 3 months</option>
+                            <option>3 – 6 months</option>
+                            <option>6 – 12 months</option>
+                            <option>Just exploring</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-field"><label for="p-msg">Tell Us More</label><textarea id="p-msg" placeholder="Describe what you're looking for — markets of interest, property types, specific goals, or anything else that will help us prepare for your consultation." style="height:150px;"></textarea></div>
+                <button type="submit" class="form-submit">Request Private Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-inner max-w">
+            <a href="index.html" class="footer-logo">Kanye Concierge <span>360°</span></a>
+            <ul class="footer-links">
+                <li><a href="properties.html">Properties</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li><a href="buy.html">Buy</a></li>
+                <li><a href="sell.html">Sell</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="journal.html">Journal</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="footer-copy">&copy; 2026 Kanye Concierge 360. Greater San Antonio &middot; Texas Hill Country.</div>
+            <div class="footer-legal">
+                <a href="https://www.hud.gov/program_offices/fair_housing_equal_opp" target="_blank" rel="noopener" title="Equal Housing Opportunity" class="footer-eho"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3zm0 2.84L18 11v7h-3v-5H9v5H6v-7l6-5.16z"/></svg>
+                <span>Equal Housing Opportunity</span></a>
+                <a href="https://www.trec.texas.gov/forms/consumer-protection-notice" target="_blank" rel="noopener">TREC Consumer Protection Notice</a>
+                <a href="https://www.trec.texas.gov/forms/information-about-brokerage-services" target="_blank" rel="noopener">TREC Info About Brokerage Services</a>
+                <a href="https://www.xsellencerealtysa.com/" target="_blank" rel="noopener" class="footer-partner" title="XSellence Realty"><img src="Media-Assets/XSellence Realty.jpeg" alt="XSellence Realty" loading="lazy"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+    // Consultation form handler (uses p- prefixed IDs)
+    const consultForm = document.getElementById('consult-form');
+    if (consultForm) {
+        consultForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = consultForm.querySelector('.form-submit');
+            const origText = btn.textContent;
+            btn.textContent = 'Sending…';
+            btn.disabled = true;
+
+            const name     = document.getElementById('p-name').value;
+            const email    = document.getElementById('p-email').value;
+            const phone    = (document.getElementById('p-phone') || {}).value || '';
+            const type     = (document.getElementById('p-type') || {}).value || '';
+            const budget   = (document.getElementById('p-budget') || {}).value || '';
+            const timeline = (document.getElementById('p-timeline') || {}).value || '';
+            const message  = (document.getElementById('p-msg') || {}).value || '';
+
+            // Save to localStorage for admin inquiry panel
+            try {
+                const inqs = JSON.parse(localStorage.getItem('kl360_inquiries') || '[]');
+                inqs.unshift({
+                    id: Date.now().toString(),
+                    name: name,
+                    email: email,
+                    phone: phone || '\u2014',
+                    intent: type,
+                    budget: budget || 'Not Specified',
+                    status: 'New',
+                    source: 'Private Consultation',
+                    message: 'Timeline: ' + (timeline || 'Not specified') + '\n' + message,
+                    listingId: null,
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('kl360_inquiries', JSON.stringify(inqs));
+            } catch(err) {}
+
+            // Send email via FormSubmit
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('phone', phone);
+            formData.append('_subject', 'Private Consultation Request — ' + name);
+            formData.append('consultation_type', type);
+            formData.append('budget', budget);
+            formData.append('timeline', timeline);
+            formData.append('message', message);
+            formData.append('_template', 'table');
+
+            fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(res) { return res.json(); })
+            .then(function() {
+                btn.textContent = "Request Received — We'll be in touch.";
+                btn.style.background = 'var(--sage)';
+                consultForm.reset();
+            })
+            .catch(function() {
+                btn.textContent = origText;
+                btn.disabled = false;
+            });
+        });
+    }
+    </script>
+</body>
+</html>
