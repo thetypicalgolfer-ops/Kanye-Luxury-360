@@ -990,6 +990,12 @@ footer {
     transition: color 0.3s;
 }
 .footer-legal a:hover { color: var(--bronze); }
+.footer-eho {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.footer-eho:hover svg { fill: var(--bronze); }
 .footer-legal svg {
     width: 18px;
     height: 18px;
