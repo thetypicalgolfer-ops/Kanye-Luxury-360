@@ -1440,18 +1440,18 @@
             // Time's up — freeze game (but don't reset, just stop earning)
             var timeUp = remaining <= 0 && !gameComplete;
 
-            // ── Score HUD (top-right) ──
-            var hudX = canvas.width - 28;
-            var hudY = 28;
+            // ── Score HUD (top-left, away from video modal) ──
+            var hudX = 32;
+            var hudY = 32;
 
             // Level badge
             ctx.font = '600 10px "DM Sans", sans-serif';
             ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.9)' : 'rgba(164,124,72,0.6)';
-            ctx.textAlign = 'right';
-            ctx.fillText('LVL', hudX - 36, hudY);
+            ctx.textAlign = 'left';
+            ctx.fillText('LVL', hudX, hudY);
             ctx.font = '500 22px "Cormorant Garamond", serif';
             ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.95)' : 'rgba(164,124,72,0.7)';
-            ctx.fillText(level, hudX, hudY + 2);
+            ctx.fillText(level, hudX + 28, hudY + 2);
 
             // Score
             ctx.font = '300 10px "DM Sans", sans-serif';
@@ -1464,7 +1464,7 @@
 
             // Level progress bar
             var barW = 80, barH = 3;
-            var barX = hudX - barW, barY = hudY + 40;
+            var barX = hudX, barY = hudY + 40;
             ctx.fillStyle = 'rgba(255,255,255,0.06)';
             ctx.fillRect(barX, barY, barW, barH);
             var prog = gameComplete ? 1 : (levelProgress / levelThreshold);
@@ -1589,8 +1589,11 @@
         // Start/stop with modal — RESET every time modal opens
         var obs = new MutationObserver(function() {
             if (overlay.classList.contains('active')) {
+                // Stop any existing loop first
+                if (raf) { cancelAnimationFrame(raf); raf = null; }
+                if (fireworkTimer) { clearInterval(fireworkTimer); fireworkTimer = null; }
                 init(); // Full reset every open
-                if (!raf) draw();
+                draw();
             } else {
                 if (raf) { cancelAnimationFrame(raf); raf = null; }
                 if (fireworkTimer) { clearInterval(fireworkTimer); fireworkTimer = null; }
