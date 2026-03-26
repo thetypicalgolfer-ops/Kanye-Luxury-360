@@ -332,6 +332,16 @@
 
     <script src="app.js"></script>
     <script>
+    // Nav scroll effect (this page has a hero banner)
+    (function() {
+        var nav = document.getElementById('nav');
+        if (nav) {
+            window.addEventListener('scroll', function() {
+                nav.classList.toggle('scrolled', window.scrollY > 60);
+            }, { passive: true });
+        }
+    })();
+
     // Consultation form handler (uses p- prefixed IDs)
     const consultForm = document.getElementById('consult-form');
     if (consultForm) {
