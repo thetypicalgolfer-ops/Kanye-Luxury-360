@@ -158,6 +158,11 @@
             opacity: 1;
             pointer-events: all;
         }
+        .video-modal-overlay.active ~ .nav,
+        .video-modal-overlay.active ~ #nav,
+        body:has(.video-modal-overlay.active) .nav {
+            display: none !important;
+        }
         .video-modal {
             position: relative;
             width: 380px;
@@ -1445,14 +1450,11 @@
             var hudX = canvas.width - hudW - 24;
             var hudY = 20;
 
-            // HUD background panel
-            ctx.fillStyle = 'rgba(10,10,9,0.7)';
-            ctx.strokeStyle = 'rgba(164,124,72,0.25)';
-            ctx.lineWidth = 1;
+            // HUD background panel (no border)
+            ctx.fillStyle = 'rgba(10,10,9,0.6)';
             ctx.beginPath();
             ctx.roundRect(hudX, hudY, hudW, hudH, 8);
             ctx.fill();
-            ctx.stroke();
 
             // Inner padding
             var px = hudX + 16;
