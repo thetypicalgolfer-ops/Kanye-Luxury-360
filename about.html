@@ -147,9 +147,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(5,5,4,0.75);
-            backdrop-filter: blur(40px) saturate(1.2);
-            -webkit-backdrop-filter: blur(40px) saturate(1.2);
+            background: rgba(5,5,4,0.92);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -1440,59 +1440,84 @@
             // Time's up — freeze game (but don't reset, just stop earning)
             var timeUp = remaining <= 0 && !gameComplete;
 
-            // ── Score HUD (top-left, away from video modal) ──
-            var hudX = 32;
-            var hudY = 32;
+            // ── Score HUD (top-right, elegant card panel) ──
+            var hudW = 160, hudH = 120;
+            var hudX = canvas.width - hudW - 24;
+            var hudY = 20;
 
-            // Level badge
-            ctx.font = '600 10px "DM Sans", sans-serif';
-            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.9)' : 'rgba(164,124,72,0.6)';
+            // HUD background panel
+            ctx.fillStyle = 'rgba(10,10,9,0.7)';
+            ctx.strokeStyle = 'rgba(164,124,72,0.25)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(hudX, hudY, hudW, hudH, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Inner padding
+            var px = hudX + 16;
+            var py = hudY + 22;
+
+            // Level number (large)
+            ctx.font = '300 36px "Cormorant Garamond", serif';
+            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.95)' : 'rgba(164,124,72,0.85)';
             ctx.textAlign = 'left';
-            ctx.fillText('LVL', hudX, hudY);
-            ctx.font = '500 22px "Cormorant Garamond", serif';
-            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.95)' : 'rgba(164,124,72,0.7)';
-            ctx.fillText(level, hudX + 28, hudY + 2);
+            ctx.fillText(level, px, py + 6);
 
-            // Score
+            // "LEVEL" label next to number
+            var lvlNumW = ctx.measureText(level).width;
+            ctx.font = '500 10px "DM Sans", sans-serif';
+            ctx.fillStyle = 'rgba(216,204,188,0.35)';
+            ctx.fillText('LEVEL', px + lvlNumW + 8, py - 10);
+
+            // "/ 420" max
             ctx.font = '300 10px "DM Sans", sans-serif';
-            ctx.fillStyle = 'rgba(216,204,188,0.4)';
-            ctx.fillText(score.toLocaleString() + ' pts', hudX, hudY + 18);
-
-            // Timer
-            ctx.fillStyle = remaining < 60000 && !gameComplete ? 'rgba(200,80,80,0.5)' : 'rgba(216,204,188,0.25)';
-            ctx.fillText(formatTime(remaining), hudX, hudY + 32);
-
-            // Level progress bar
-            var barW = 80, barH = 3;
-            var barX = hudX, barY = hudY + 40;
-            ctx.fillStyle = 'rgba(255,255,255,0.06)';
-            ctx.fillRect(barX, barY, barW, barH);
-            var prog = gameComplete ? 1 : (levelProgress / levelThreshold);
-            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.6)' : 'rgba(164,124,72,0.5)';
-            ctx.fillRect(barX, barY, barW * Math.min(prog, 1), barH);
-
-            // Next level label
-            ctx.font = '300 7px "DM Sans", sans-serif';
             ctx.fillStyle = 'rgba(216,204,188,0.2)';
-            ctx.fillText(gameComplete ? 'MAX LEVEL' : 'next: ' + Math.max(0, levelThreshold - levelProgress) + ' pts', hudX, barY + 12);
+            ctx.fillText('/ 420', px + lvlNumW + 8, py + 4);
+
+            // Progress bar
+            var barY2 = py + 18;
+            var barW2 = hudW - 32;
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
+            ctx.beginPath();
+            ctx.roundRect(px, barY2, barW2, 5, 2.5);
+            ctx.fill();
+            var prog = gameComplete ? 1 : (levelProgress / levelThreshold);
+            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.7)' : 'rgba(164,124,72,0.6)';
+            ctx.beginPath();
+            ctx.roundRect(px, barY2, Math.max(barW2 * Math.min(prog, 1), 4), 5, 2.5);
+            ctx.fill();
+
+            // Score and timer row
+            var rowY = barY2 + 22;
+            ctx.font = '400 13px "DM Sans", sans-serif';
+            ctx.fillStyle = 'rgba(216,204,188,0.55)';
+            ctx.textAlign = 'left';
+            ctx.fillText(score.toLocaleString() + ' pts', px, rowY);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = remaining < 60000 && !gameComplete ? 'rgba(220,100,100,0.6)' : 'rgba(216,204,188,0.3)';
+            ctx.font = '300 12px "DM Sans", sans-serif';
+            ctx.fillText(formatTime(remaining), px + barW2, rowY);
 
             // Game complete message
             if (gameComplete) {
-                ctx.font = '300 14px "Cormorant Garamond", serif';
+                ctx.font = '300 18px "Cormorant Garamond", serif';
                 ctx.fillStyle = 'rgba(255,215,0,0.7)';
                 ctx.textAlign = 'center';
                 ctx.fillText('Level 420 Achieved', canvas.width / 2, canvas.height - 40);
-                ctx.textAlign = 'right';
             }
 
             // Time's up message
             if (timeUp) {
-                ctx.font = '400 16px "Cormorant Garamond", serif';
+                ctx.font = '400 18px "Cormorant Garamond", serif';
                 ctx.fillStyle = 'rgba(164,124,72,0.6)';
                 ctx.textAlign = 'center';
-                ctx.fillText('Time Expired — Reached Level ' + level, canvas.width / 2, canvas.height - 40);
-                ctx.textAlign = 'right';
+                ctx.fillText('Time Expired \u2014 Reached Level ' + level, canvas.width / 2, canvas.height - 40);
             }
+
+            // Reset alignment for orb drawing
+            ctx.textAlign = 'left';
 
             // Draw & update orbs
             for (var i = orbs.length - 1; i >= 0; i--) {
