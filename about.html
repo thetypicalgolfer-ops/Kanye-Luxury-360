@@ -373,12 +373,30 @@
             align-items: center;
             gap: 1rem;
         }
-        .pl-now-info { flex: 1; min-width: 0; }
+        .pl-now-info { flex: 1; min-width: 0; overflow: hidden; }
+        .pl-now-title, .pl-now-artist {
+            white-space: nowrap; overflow: hidden; position: relative;
+        }
         .pl-now-title {
             font-size: 0.88rem; font-weight: 500; color: var(--ivory);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
         }
         .pl-now-artist {
             font-size: 0.7rem; color: rgba(216,204,188,0.4); margin-top: 2px;
+            mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+        }
+        .pl-now-title .pl-marquee, .pl-now-artist .pl-marquee {
+            display: inline-block;
+            padding-right: 3rem;
+        }
+        .pl-now-title .pl-marquee.scrolling, .pl-now-artist .pl-marquee.scrolling {
+            animation: plMarquee var(--marquee-duration, 8s) linear infinite;
+        }
+        @keyframes plMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         .pl-equalizer {
             width: 80px;
@@ -422,12 +440,47 @@
         .pl-time:last-child { text-align: right; }
         .pl-progress {
             flex: 1; height: 4px; background: rgba(255,255,255,0.1);
-            border-radius: 2px; cursor: pointer; overflow: hidden;
+            border-radius: 2px; cursor: pointer; position: relative;
         }
         .pl-progress-fill {
             height: 100%; width: 0%; background: var(--bronze);
             border-radius: 2px; transition: width 0.15s linear;
+            pointer-events: none;
         }
+        .pl-scrub-handle {
+            position: absolute; top: 50%; left: 0%;
+            width: 14px; height: 14px;
+            background: var(--bronze);
+            border: 2px solid #141413;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 0 0 0 rgba(164,124,72,0.4);
+            animation: handlePulse 2s ease-in-out infinite;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            z-index: 2;
+        }
+        .pl-scrub-handle:hover,
+        .pl-scrub-handle.dragging {
+            transform: translate(-50%, -50%) scale(1.3);
+            box-shadow: 0 0 0 6px rgba(164,124,72,0.2);
+            animation: none;
+        }
+        .pl-scrub-handle.dragging { cursor: grabbing; }
+        @keyframes handlePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(164,124,72,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(164,124,72,0); }
+        }
+        /* Shuffle & Repeat buttons */
+        .pl-ctrl-shuffle, .pl-ctrl-repeat {
+            opacity: 0.4;
+            transition: opacity 0.2s, color 0.2s;
+        }
+        .pl-ctrl-shuffle:hover, .pl-ctrl-repeat:hover { opacity: 0.7; }
+        .pl-ctrl-shuffle.active, .pl-ctrl-repeat.active {
+            color: var(--bronze); opacity: 1;
+        }
+        .pl-ctrl-repeat.active-one { color: var(--bronze); opacity: 1; }
     </style>
 </head>
 <body>
@@ -560,7 +613,7 @@
             <div class="playlist reveal">
                 <div class="playlist-header">
                     <div class="playlist-brand">KC 360° Playlist</div>
-                    <div class="playlist-count" id="pl-count">5 Tracks</div>
+                    <div class="playlist-count" id="pl-count">6 Tracks</div>
                 </div>
                 <div class="playlist-tracks" id="playlist-tracks">
                     <div class="pl-track active" data-src="Media-Assets/More Than a Key.mp3" onclick="playTrack(this)">
@@ -603,27 +656,38 @@
                         </div>
                         <div class="pl-track-duration" id="pl-dur-4">--:--</div>
                     </div>
+                    <div class="pl-track" data-src="Media-Assets/Nathaniel Rateliff - Redemption (From An Apple Original Film Palmer).mp3" onclick="playTrack(this)">
+                        <div class="pl-track-num"><span class="pl-num-text">6</span><span class="pl-eq"><span></span><span></span><span></span></span></div>
+                        <div class="pl-track-info">
+                            <div class="pl-track-title">Redemption</div>
+                            <div class="pl-track-artist">Nathaniel Rateliff</div>
+                        </div>
+                        <div class="pl-track-duration" id="pl-dur-5">--:--</div>
+                    </div>
                 </div>
                 <div class="playlist-player" id="playlist-player">
                     <div class="pl-now-playing">
                         <div class="pl-now-info">
-                            <div class="pl-now-title" id="pl-now-title">More Than a Key</div>
-                            <div class="pl-now-artist" id="pl-now-artist">Kanye Concierge 360</div>
+                            <div class="pl-now-title" id="pl-now-title"><span class="pl-marquee">More Than a Key</span></div>
+                            <div class="pl-now-artist" id="pl-now-artist"><span class="pl-marquee">Kanye Concierge 360</span></div>
                         </div>
                         <canvas class="pl-equalizer" id="pl-equalizer" width="160" height="72"></canvas>
                     </div>
                     <div class="pl-controls">
+                        <button class="pl-ctrl-btn pl-ctrl-shuffle" id="pl-shuffle-btn" onclick="plToggleShuffle()" title="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></button>
                         <button class="pl-ctrl-btn" onclick="plPrev()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/></svg></button>
                         <button class="pl-ctrl-btn pl-ctrl-play" id="pl-play-btn" onclick="plToggle()">
                             <svg id="pl-icon-play" viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><polygon points="6,3 6,21 20,12"/></svg>
                             <svg id="pl-icon-pause" viewBox="0 0 24 24" fill="currentColor" width="22" height="22" style="display:none"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
                         </button>
                         <button class="pl-ctrl-btn" onclick="plNext()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5,4 15,12 5,20"/><rect x="17" y="4" width="2" height="16"/></svg></button>
+                        <button class="pl-ctrl-btn pl-ctrl-repeat" id="pl-repeat-btn" onclick="plToggleRepeat()" title="Repeat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
                     </div>
                     <div class="pl-progress-row">
                         <span class="pl-time" id="pl-cur-time">0:00</span>
-                        <div class="pl-progress" id="pl-progress" onclick="plSeek(event)">
+                        <div class="pl-progress" id="pl-progress">
                             <div class="pl-progress-fill" id="pl-fill"></div>
+                            <div class="pl-scrub-handle" id="pl-scrub-handle"></div>
                         </div>
                         <span class="pl-time" id="pl-total-time">0:00</span>
                     </div>
@@ -917,9 +981,35 @@
         connectEqualizer();
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         plAudio.play();
-        document.getElementById('pl-now-title').textContent = el.querySelector('.pl-track-title').textContent;
-        document.getElementById('pl-now-artist').textContent = el.querySelector('.pl-track-artist').textContent;
+        plSetMarquee('pl-now-title', el.querySelector('.pl-track-title').textContent);
+        plSetMarquee('pl-now-artist', el.querySelector('.pl-track-artist').textContent);
         plUpdateIcons(true);
+    }
+
+    function plSetMarquee(containerId, text) {
+        var container = document.getElementById(containerId);
+        var marquee = container.querySelector('.pl-marquee');
+        marquee.textContent = text;
+        marquee.classList.remove('scrolling');
+        marquee.style.removeProperty('--marquee-duration');
+        // Reset duplicate if any
+        var dup = container.querySelector('.pl-marquee-dup');
+        if (dup) dup.remove();
+        // Check after a frame if text overflows
+        requestAnimationFrame(function() {
+            if (marquee.scrollWidth > container.clientWidth) {
+                // Duplicate text for seamless loop
+                var clone = marquee.cloneNode(true);
+                clone.className = 'pl-marquee pl-marquee-dup';
+                marquee.parentNode.appendChild(clone);
+                // Set speed: ~40px per second
+                var dur = Math.max(6, marquee.scrollWidth / 40);
+                marquee.style.setProperty('--marquee-duration', dur + 's');
+                clone.style.setProperty('--marquee-duration', dur + 's');
+                marquee.classList.add('scrolling');
+                clone.classList.add('scrolling');
+            }
+        });
     }
 
     function plToggle() {
@@ -946,25 +1036,110 @@
         document.getElementById('pl-icon-pause').style.display = playing ? '' : 'none';
     }
 
+    // ── Shuffle & Repeat state ─────────────────────
+    var plShuffle = false;
+    var plRepeat = 0; // 0=off, 1=repeat all, 2=repeat one
+
+    function plToggleShuffle() {
+        plShuffle = !plShuffle;
+        document.getElementById('pl-shuffle-btn').classList.toggle('active', plShuffle);
+    }
+    function plToggleRepeat() {
+        plRepeat = (plRepeat + 1) % 3;
+        var btn = document.getElementById('pl-repeat-btn');
+        btn.classList.remove('active', 'active-one');
+        if (plRepeat === 1) btn.classList.add('active');
+        else if (plRepeat === 2) btn.classList.add('active-one');
+        // Show "1" badge for repeat-one
+        var badge = btn.querySelector('.pl-repeat-badge');
+        if (plRepeat === 2) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'pl-repeat-badge';
+                badge.textContent = '1';
+                badge.style.cssText = 'position:absolute;top:-2px;right:-4px;font-size:0.5rem;font-weight:700;color:var(--bronze);line-height:1;';
+                btn.style.position = 'relative';
+                btn.appendChild(badge);
+            }
+            badge.style.display = '';
+        } else if (badge) { badge.style.display = 'none'; }
+    }
+
+    function plGetNextIndex() {
+        if (plShuffle) {
+            if (plTracks.length <= 1) return 0;
+            var next;
+            do { next = Math.floor(Math.random() * plTracks.length); } while (next === plIdx);
+            return next;
+        }
+        return (plIdx + 1) % plTracks.length;
+    }
+
+    // ── Scrub handle drag ────────────────────────────
+    var plProgressBar = document.getElementById('pl-progress');
+    var plScrubHandle = document.getElementById('pl-scrub-handle');
+    var plDragging = false;
+
+    function plScrubTo(clientX) {
+        var rect = plProgressBar.getBoundingClientRect();
+        var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        if (plAudio.duration) plAudio.currentTime = pct * plAudio.duration;
+        plUpdateProgress(pct * 100);
+    }
+
+    function plUpdateProgress(pct) {
+        document.getElementById('pl-fill').style.width = pct + '%';
+        plScrubHandle.style.left = pct + '%';
+    }
+
+    plProgressBar.addEventListener('mousedown', function(e) {
+        plDragging = true;
+        plScrubHandle.classList.add('dragging');
+        plScrubTo(e.clientX);
+    });
+    plProgressBar.addEventListener('touchstart', function(e) {
+        plDragging = true;
+        plScrubHandle.classList.add('dragging');
+        plScrubTo(e.touches[0].clientX);
+    }, { passive: true });
+    document.addEventListener('mousemove', function(e) {
+        if (plDragging) plScrubTo(e.clientX);
+    });
+    document.addEventListener('touchmove', function(e) {
+        if (plDragging) plScrubTo(e.touches[0].clientX);
+    }, { passive: true });
+    document.addEventListener('mouseup', function() {
+        if (plDragging) { plDragging = false; plScrubHandle.classList.remove('dragging'); }
+    });
+    document.addEventListener('touchend', function() {
+        if (plDragging) { plDragging = false; plScrubHandle.classList.remove('dragging'); }
+    });
+
+    // ── Audio event listeners ────────────────────────
     plAudio.addEventListener('timeupdate', function(){
-        document.getElementById('pl-fill').style.width = plAudio.duration ? (plAudio.currentTime/plAudio.duration*100)+'%' : '0%';
+        if (plDragging) return;
+        var pct = plAudio.duration ? (plAudio.currentTime/plAudio.duration*100) : 0;
+        plUpdateProgress(pct);
         document.getElementById('pl-cur-time').textContent = fmtTime(plAudio.currentTime);
         document.getElementById('pl-total-time').textContent = fmtTime(plAudio.duration);
     });
     plAudio.addEventListener('ended', function(){
         plTracks[plIdx].classList.remove('playing');
         plUpdateIcons(false);
-        // Auto-next if more tracks
-        if (plTracks.length > 1) plNext();
+        if (plRepeat === 2) {
+            // Repeat one — replay same track
+            plAudio.currentTime = 0;
+            plAudio.play();
+        } else if (plRepeat === 1) {
+            // Repeat all — always advance
+            playTrack(plTracks[plGetNextIndex()]);
+        } else if (plShuffle || plIdx < plTracks.length - 1) {
+            // Normal — advance unless at end (shuffle always advances)
+            playTrack(plTracks[plGetNextIndex()]);
+        }
     });
     plAudio.addEventListener('pause', function(){ plUpdateIcons(false); plTracks[plIdx].classList.remove('playing'); });
     plAudio.addEventListener('play', function(){ plUpdateIcons(true); plTracks[plIdx].classList.add('playing'); });
-
-    function plSeek(e) {
-        var bar = document.getElementById('pl-progress');
-        var pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
-        if (plAudio.duration) plAudio.currentTime = pct * plAudio.duration;
-    }
 
     // ── MODAL BACKDROP PARTICLE GAME ──────────────────
     (function(){
