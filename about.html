@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
         .about-prose {
@@ -1257,19 +1258,60 @@
         if (plVolDragging) { plVolDragging = false; plVolSlider.classList.remove('dragging'); }
     });
 
-    // ── MODAL BACKDROP PARTICLE GAME ──────────────────
+    // ── MODAL BACKDROP PARTICLE GAME (Desktop Only) ──────────────────
     (function(){
         var overlay = document.getElementById('video-modal-overlay');
         var canvas = document.getElementById('modal-particles-canvas');
         if (!canvas || !overlay) return;
+
+        // Desktop only — disable game on mobile/touch devices
+        var isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 900;
+        if (isMobile) return;
+
         var ctx = canvas.getContext('2d');
         var orbs = [];
         var bursts = [];
+        var floatingTexts = [];
         var mouse = { x: -999, y: -999 };
         var score = 0;
+        var level = 1;
+        var maxLevel = 420;
         var raf = null;
+        var gameStartTime = 0;
+        var maxGameTime = 30 * 60 * 1000; // 30 minutes
+        var gameComplete = false;
+        var fireworksActive = false;
+        var fireworkTimer = null;
         var bronze = { r: 164, g: 124, b: 72 };
-        var orbCount = 25;
+        var orbCount = 30;
+
+        // Points needed per level: start easy, scale up. ~420 levels in 30 min.
+        // Average ~4.3 sec per level = ~258 sec total if perfect
+        // Points per level = level * 2 + 8 (so level 1 = 10 pts, level 420 = 848 pts)
+        // But with bigger orbs giving more points, it scales nicely
+        function pointsForNextLevel() {
+            if (level <= 10) return 10 + level * 2;
+            if (level <= 50) return 20 + level * 3;
+            if (level <= 150) return 40 + level * 4;
+            if (level <= 300) return 80 + level * 5;
+            return 120 + level * 6;
+        }
+
+        var levelProgress = 0;
+        var levelThreshold = pointsForNextLevel();
+
+        // Orb size tiers: small (2-3), medium (4-6), large (7-10)
+        // Points: small=1, medium=3, large=7
+        function orbPoints(r) {
+            if (r >= 7) return 7;
+            if (r >= 4) return 3;
+            return 1;
+        }
+        function orbTier(r) {
+            if (r >= 7) return 'large';
+            if (r >= 4) return 'medium';
+            return 'small';
+        }
 
         function resize() {
             canvas.width = overlay.offsetWidth;
@@ -1283,14 +1325,25 @@
             else if (edge === 1) { x = canvas.width + 20; y = Math.random() * canvas.height; }
             else if (edge === 2) { x = Math.random() * canvas.width; y = canvas.height + 20; }
             else { x = -20; y = Math.random() * canvas.height; }
+
+            // Size distribution: 50% small, 35% medium, 15% large
+            var roll = Math.random();
+            var r;
+            if (roll < 0.15) r = Math.random() * 3 + 7; // large 7-10
+            else if (roll < 0.50) r = Math.random() * 2 + 4; // medium 4-6
+            else r = Math.random() * 1 + 2; // small 2-3
+
+            // Higher levels = faster orbs
+            var speedMult = 1 + Math.min(level / 200, 1.5);
+
             return {
                 x: x, y: y,
                 tx: Math.random() * canvas.width * 0.8 + canvas.width * 0.1,
                 ty: Math.random() * canvas.height * 0.8 + canvas.height * 0.1,
-                r: Math.random() * 4 + 2,
+                r: r,
                 alpha: Math.random() * 0.25 + 0.1,
                 pulse: Math.random() * Math.PI * 2,
-                speed: Math.random() * 0.004 + 0.002,
+                speed: (Math.random() * 0.004 + 0.002) * speedMult,
                 drift: Math.random() * Math.PI * 2,
                 caught: false
             };
@@ -1300,7 +1353,15 @@
             resize();
             orbs = [];
             bursts = [];
+            floatingTexts = [];
             score = 0;
+            level = 1;
+            levelProgress = 0;
+            levelThreshold = pointsForNextLevel();
+            gameComplete = false;
+            fireworksActive = false;
+            gameStartTime = Date.now();
+            if (fireworkTimer) { clearInterval(fireworkTimer); fireworkTimer = null; }
             for (var i = 0; i < orbCount; i++) {
                 var o = spawnOrb();
                 o.x = Math.random() * canvas.width;
@@ -1309,31 +1370,128 @@
             }
         }
 
+        function addFloatingText(x, y, text, color) {
+            floatingTexts.push({ x: x, y: y, text: text, color: color || 'rgba(164,124,72,0.8)', life: 1, vy: -1.2 });
+        }
+
+        function launchFireworks() {
+            if (typeof confetti === 'undefined') return;
+            fireworksActive = true;
+            var count = 0;
+            fireworkTimer = setInterval(function() {
+                confetti({ particleCount: 80, spread: 70, startVelocity: 50, origin: { x: Math.random(), y: Math.random() * 0.5 }, colors: ['#A47C48','#FFD700','#FFF5E6','#D4A76A','#8B6914'] });
+                if (Math.random() > 0.5) {
+                    confetti({ particleCount: 40, spread: 120, startVelocity: 35, origin: { x: Math.random(), y: Math.random() * 0.4 }, colors: ['#FFFFFF','#A47C48','#FFE4B5'] });
+                }
+                count++;
+                if (count > 30) { clearInterval(fireworkTimer); fireworkTimer = null; fireworksActive = false; }
+            }, 400);
+        }
+
         function popOrb(o) {
-            // Burst effect
-            for (var i = 0; i < 8; i++) {
-                var angle = (Math.PI * 2 / 8) * i + Math.random() * 0.3;
+            var pts = orbPoints(o.r);
+            var burstCount = o.r >= 7 ? 16 : (o.r >= 4 ? 10 : 6);
+            for (var i = 0; i < burstCount; i++) {
+                var angle = (Math.PI * 2 / burstCount) * i + Math.random() * 0.3;
+                var spd = o.r >= 7 ? (Math.random() * 4 + 2) : (Math.random() * 3 + 1.5);
                 bursts.push({
                     x: o.x, y: o.y,
-                    vx: Math.cos(angle) * (Math.random() * 3 + 1.5),
-                    vy: Math.sin(angle) * (Math.random() * 3 + 1.5),
+                    vx: Math.cos(angle) * spd,
+                    vy: Math.sin(angle) * spd,
                     r: Math.random() * 1.5 + 0.5,
                     life: 1,
-                    decay: Math.random() * 0.03 + 0.025
+                    decay: Math.random() * 0.03 + 0.02
                 });
             }
-            score++;
+            score += pts;
+            levelProgress += pts;
+            var ptColor = pts >= 7 ? 'rgba(255,215,0,0.9)' : (pts >= 3 ? 'rgba(164,124,72,0.8)' : 'rgba(216,204,188,0.6)');
+            addFloatingText(o.x, o.y - 10, '+' + pts, ptColor);
+
+            // Level up check
+            while (levelProgress >= levelThreshold && level < maxLevel) {
+                levelProgress -= levelThreshold;
+                level++;
+                levelThreshold = pointsForNextLevel();
+                if (level <= maxLevel) {
+                    addFloatingText(canvas.width / 2, canvas.height / 2 - 20, 'LEVEL ' + level, 'rgba(255,215,0,0.95)');
+                }
+                if (level >= maxLevel && !gameComplete) {
+                    gameComplete = true;
+                    addFloatingText(canvas.width / 2, canvas.height / 2 - 50, 'MAX LEVEL 420!', 'rgba(255,215,0,1)');
+                    launchFireworks();
+                }
+            }
+        }
+
+        function formatTime(ms) {
+            var totalSec = Math.max(0, Math.floor(ms / 1000));
+            var m = Math.floor(totalSec / 60);
+            var s = totalSec % 60;
+            return m + ':' + (s < 10 ? '0' : '') + s;
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Score display
-            if (score > 0) {
-                ctx.font = '300 11px "DM Sans", sans-serif';
-                ctx.fillStyle = 'rgba(164,124,72,0.3)';
+            var elapsed = Date.now() - gameStartTime;
+            var remaining = Math.max(0, maxGameTime - elapsed);
+
+            // Time's up — freeze game (but don't reset, just stop earning)
+            var timeUp = remaining <= 0 && !gameComplete;
+
+            // ── Score HUD (top-right) ──
+            var hudX = canvas.width - 28;
+            var hudY = 28;
+
+            // Level badge
+            ctx.font = '600 10px "DM Sans", sans-serif';
+            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.9)' : 'rgba(164,124,72,0.6)';
+            ctx.textAlign = 'right';
+            ctx.fillText('LVL', hudX - 36, hudY);
+            ctx.font = '500 22px "Cormorant Garamond", serif';
+            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.95)' : 'rgba(164,124,72,0.7)';
+            ctx.fillText(level, hudX, hudY + 2);
+
+            // Score
+            ctx.font = '300 10px "DM Sans", sans-serif';
+            ctx.fillStyle = 'rgba(216,204,188,0.4)';
+            ctx.fillText(score.toLocaleString() + ' pts', hudX, hudY + 18);
+
+            // Timer
+            ctx.fillStyle = remaining < 60000 && !gameComplete ? 'rgba(200,80,80,0.5)' : 'rgba(216,204,188,0.25)';
+            ctx.fillText(formatTime(remaining), hudX, hudY + 32);
+
+            // Level progress bar
+            var barW = 80, barH = 3;
+            var barX = hudX - barW, barY = hudY + 40;
+            ctx.fillStyle = 'rgba(255,255,255,0.06)';
+            ctx.fillRect(barX, barY, barW, barH);
+            var prog = gameComplete ? 1 : (levelProgress / levelThreshold);
+            ctx.fillStyle = gameComplete ? 'rgba(255,215,0,0.6)' : 'rgba(164,124,72,0.5)';
+            ctx.fillRect(barX, barY, barW * Math.min(prog, 1), barH);
+
+            // Next level label
+            ctx.font = '300 7px "DM Sans", sans-serif';
+            ctx.fillStyle = 'rgba(216,204,188,0.2)';
+            ctx.fillText(gameComplete ? 'MAX LEVEL' : 'next: ' + Math.max(0, levelThreshold - levelProgress) + ' pts', hudX, barY + 12);
+
+            // Game complete message
+            if (gameComplete) {
+                ctx.font = '300 14px "Cormorant Garamond", serif';
+                ctx.fillStyle = 'rgba(255,215,0,0.7)';
+                ctx.textAlign = 'center';
+                ctx.fillText('Level 420 Achieved', canvas.width / 2, canvas.height - 40);
                 ctx.textAlign = 'right';
-                ctx.fillText(score + ' caught', canvas.width - 24, 32);
+            }
+
+            // Time's up message
+            if (timeUp) {
+                ctx.font = '400 16px "Cormorant Garamond", serif';
+                ctx.fillStyle = 'rgba(164,124,72,0.6)';
+                ctx.textAlign = 'center';
+                ctx.fillText('Time Expired — Reached Level ' + level, canvas.width / 2, canvas.height - 40);
+                ctx.textAlign = 'right';
             }
 
             // Draw & update orbs
@@ -1342,34 +1500,29 @@
                 o.pulse += 0.012;
                 o.drift += 0.003;
 
-                // Gentle wander toward target
                 o.x += (o.tx - o.x) * o.speed + Math.sin(o.drift) * 0.3;
                 o.y += (o.ty - o.y) * o.speed + Math.cos(o.drift * 1.3) * 0.3;
 
-                // New wander target when close
                 var dtx = o.tx - o.x, dty = o.ty - o.y;
                 if (Math.sqrt(dtx*dtx + dty*dty) < 30) {
                     o.tx = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
                     o.ty = Math.random() * canvas.height * 0.8 + canvas.height * 0.1;
                 }
 
-                // Check mouse catch
                 var mx = o.x - mouse.x, my = o.y - mouse.y;
                 var md = Math.sqrt(mx*mx + my*my);
                 var catchRadius = o.r * 3 + 12;
 
-                if (md < catchRadius && !o.caught) {
+                if (md < catchRadius && !o.caught && !timeUp && !gameComplete) {
                     o.caught = true;
                     popOrb(o);
-                    // Respawn after delay
                     (function(idx){
-                        setTimeout(function(){ orbs[idx] = spawnOrb(); }, 800 + Math.random() * 600);
+                        setTimeout(function(){ orbs[idx] = spawnOrb(); }, 600 + Math.random() * 500);
                     })(i);
                 }
 
                 if (o.caught) continue;
 
-                // Flee gently from mouse when close but not caught
                 if (md < 80 && md > 0) {
                     var flee = (1 - md / 80) * 1.2;
                     o.x += (mx / md) * flee;
@@ -1377,8 +1530,6 @@
                 }
 
                 var glow = o.alpha + Math.sin(o.pulse) * 0.06;
-
-                // Outer glow
                 var grad = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r * 5);
                 grad.addColorStop(0, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (glow * 0.6) + ')');
                 grad.addColorStop(0.5, 'rgba(' + bronze.r + ',' + bronze.g + ',' + bronze.b + ',' + (glow * 0.15) + ')');
@@ -1388,34 +1539,45 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
-                // Core
                 ctx.beginPath();
                 ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255,240,210,' + (glow * 0.7) + ')';
+                var coreColor = o.r >= 7 ? 'rgba(255,215,100,' + (glow * 0.8) + ')' : (o.r >= 4 ? 'rgba(255,240,210,' + (glow * 0.7) + ')' : 'rgba(216,204,188,' + (glow * 0.6) + ')');
+                ctx.fillStyle = coreColor;
                 ctx.fill();
             }
 
             // Draw bursts
             for (var b = bursts.length - 1; b >= 0; b--) {
                 var p = bursts[b];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vx *= 0.96;
-                p.vy *= 0.96;
+                p.x += p.vx; p.y += p.vy;
+                p.vx *= 0.96; p.vy *= 0.96;
                 p.life -= p.decay;
                 if (p.life <= 0) { bursts.splice(b, 1); continue; }
-
-                var ba = p.life * 0.5;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r * (1 + (1 - p.life) * 0.5), 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255,235,200,' + ba + ')';
+                ctx.fillStyle = 'rgba(255,235,200,' + (p.life * 0.5) + ')';
                 ctx.fill();
+            }
+
+            // Draw floating texts
+            for (var t = floatingTexts.length - 1; t >= 0; t--) {
+                var ft = floatingTexts[t];
+                ft.y += ft.vy;
+                ft.life -= 0.018;
+                if (ft.life <= 0) { floatingTexts.splice(t, 1); continue; }
+                ctx.font = ft.text.indexOf('LEVEL') >= 0 ? '600 16px "DM Sans", sans-serif' : '600 12px "DM Sans", sans-serif';
+                ctx.textAlign = ft.text.indexOf('LEVEL') >= 0 || ft.text.indexOf('MAX') >= 0 ? 'center' : 'left';
+                ctx.globalAlpha = ft.life;
+                ctx.fillStyle = ft.color;
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.globalAlpha = 1;
+                ctx.textAlign = 'right';
             }
 
             raf = requestAnimationFrame(draw);
         }
 
-        // Mouse tracking on the overlay
+        // Mouse tracking (desktop only)
         overlay.addEventListener('mousemove', function(e) {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
@@ -1423,22 +1585,18 @@
         overlay.addEventListener('mouseleave', function() {
             mouse.x = -999; mouse.y = -999;
         });
-        overlay.addEventListener('touchmove', function(e) {
-            mouse.x = e.touches[0].clientX;
-            mouse.y = e.touches[0].clientY;
-        }, {passive:true});
-        overlay.addEventListener('touchend', function() {
-            mouse.x = -999; mouse.y = -999;
-        });
 
-        // Start/stop with modal
+        // Start/stop with modal — RESET every time modal opens
         var obs = new MutationObserver(function() {
             if (overlay.classList.contains('active')) {
-                resize();
-                if (!orbs.length) init(); else resize();
+                init(); // Full reset every open
                 if (!raf) draw();
             } else {
                 if (raf) { cancelAnimationFrame(raf); raf = null; }
+                if (fireworkTimer) { clearInterval(fireworkTimer); fireworkTimer = null; }
+                // Clear state on close
+                orbs = []; bursts = []; floatingTexts = [];
+                score = 0; level = 1; gameComplete = false; fireworksActive = false;
             }
         });
         obs.observe(overlay, { attributes: true, attributeFilter: ['class'] });
