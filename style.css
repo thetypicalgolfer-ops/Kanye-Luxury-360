@@ -1010,7 +1010,7 @@ footer {
 }
 .footer-partner:hover { opacity: 1; }
 .footer-partner img {
-    height: 22px;
+    height: 36px;
     width: auto;
     filter: grayscale(1) brightness(0.6) contrast(0.8);
     opacity: 0.4;
