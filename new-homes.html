@@ -23,11 +23,10 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .page-hero-dark {
-            min-height: 40vh;
             display: flex;
             align-items: flex-end;
             background: linear-gradient(160deg, rgba(27,27,26,0.85), rgba(27,27,26,0.6)), linear-gradient(135deg, #0B425E 0%, #1a1a19 100%);
-            padding: 4rem var(--gutter);
+            padding: 7rem var(--gutter) 2rem;
         }
         .hero-subtitle {
             font-family: var(--sans);
@@ -151,7 +150,7 @@
             line-height: 1.7;
         }
         @media(max-width:768px) {
-            .page-hero-dark { min-height: 32vh; padding: 3rem var(--gutter); }
+            .page-hero-dark { padding: 6rem var(--gutter) 1.5rem; }
             .embed-toolbar { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
             .embed-frame-wrap, .embed-frame-wrap iframe { min-height: 75vh; height: 75vh; }
         }
