@@ -158,6 +158,28 @@ function checkAuth() {
 
     $$('.user-name').forEach(el => el.textContent = name.includes('@') ? name.split('@')[0] : name);
     $$('.avatar-initials').forEach(el => el.textContent = initials);
+
+    // Apply profile photo to all avatar-wrap elements
+    const avatarPhoto = profile.photo;
+    $$('.avatar-wrap').forEach(wrap => {
+        const existing = wrap.querySelector('img');
+        if (avatarPhoto) {
+            if (existing) {
+                existing.src = avatarPhoto;
+            } else {
+                const img = document.createElement('img');
+                img.src = avatarPhoto;
+                img.alt = 'Profile';
+                wrap.appendChild(img);
+            }
+            const init = wrap.querySelector('.avatar-initials');
+            if (init) init.style.display = 'none';
+        } else {
+            if (existing) existing.remove();
+            const init = wrap.querySelector('.avatar-initials');
+            if (init) init.style.display = '';
+        }
+    });
 }
 function logout() {
     sessionStorage.removeItem('kl360_auth');
@@ -1976,13 +1998,54 @@ function initSettings() {
     if (fnameInput) fnameInput.value = profile.fname || '';
     if (lnameInput) lnameInput.value = profile.lname || '';
 
+    // Profile photo upload
+    const changePhotoBtn = $('change-photo-btn');
+    const removePhotoBtn = $('remove-photo-btn');
+    const avatarFileInput = $('avatar-file-input');
+    if (removePhotoBtn && profile.photo) removePhotoBtn.style.display = '';
+
+    if (changePhotoBtn && avatarFileInput) {
+        changePhotoBtn.addEventListener('click', () => avatarFileInput.click());
+        avatarFileInput.addEventListener('change', () => {
+            const file = avatarFileInput.files[0];
+            if (!file) return;
+            if (!['image/jpeg','image/png'].includes(file.type)) {
+                showToast('Please select a JPG or PNG file.', 'error'); return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Image must be under 2MB.', 'error'); return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                const current = DB.get('profile', { fname: 'Kanye', lname: 'West' });
+                DB.set('profile', { ...current, photo: reader.result });
+                showToast('Profile photo updated ✓', 'success');
+                if (removePhotoBtn) removePhotoBtn.style.display = '';
+                checkAuth();
+            };
+            reader.readAsDataURL(file);
+            avatarFileInput.value = '';
+        });
+    }
+    if (removePhotoBtn) {
+        removePhotoBtn.addEventListener('click', () => {
+            const current = DB.get('profile', { fname: 'Kanye', lname: 'West' });
+            delete current.photo;
+            DB.set('profile', current);
+            showToast('Profile photo removed', 'success');
+            removePhotoBtn.style.display = 'none';
+            checkAuth();
+        });
+    }
+
     // Save profile
     const saveBtn = $('save-profile-btn');
     if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             const newFname = (fnameInput.value || '').trim();
             const newLname = (lnameInput.value || '').trim();
-            DB.set('profile', { ...profile, fname: newFname, lname: newLname });
+            const current = DB.get('profile', { fname: 'Kanye', lname: 'West' });
+            DB.set('profile', { ...current, fname: newFname, lname: newLname });
             showToast('Profile updated ✓', 'success');
             checkAuth();
         });

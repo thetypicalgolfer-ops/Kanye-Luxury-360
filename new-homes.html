@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Home Search | Builder Listings &amp; Communities | Kanye Concierge 360</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="description" content="Browse new construction homes, builder communities, and development opportunities across Greater San Antonio and the Texas Hill Country. Powered by Kanye Concierge 360.">
+    <meta name="keywords" content="new homes San Antonio, new construction luxury homes Texas, builder communities San Antonio, new home search Texas Hill Country, Kanye Concierge 360">
+    <link rel="canonical" href="https://kanyeconcierge360.com/new-homes.html">
+    <meta property="og:title" content="New Home Search | Kanye Concierge 360">
+    <meta property="og:description" content="Browse new construction homes, builder communities, and development opportunities across Greater San Antonio and the Texas Hill Country.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-hero-dark {
+            min-height: 40vh;
+            display: flex;
+            align-items: flex-end;
+            background: linear-gradient(160deg, rgba(27,27,26,0.85), rgba(27,27,26,0.6)), linear-gradient(135deg, #0B425E 0%, #1a1a19 100%);
+            padding: 4rem var(--gutter);
+        }
+        .hero-subtitle {
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--limestone);
+            margin-top: 1.2rem;
+            line-height: 1.7;
+            max-width: 540px;
+            opacity: 0.85;
+        }
+        .embed-section {
+            background: var(--ivory);
+            padding: 0;
+            position: relative;
+        }
+        .embed-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem var(--gutter);
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .embed-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .embed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--sans);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sage);
+        }
+        .embed-badge-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4caf50;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .embed-toolbar-right a {
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--bronze);
+            text-decoration: none;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+        .embed-toolbar-right a:hover { opacity: 0.7; }
+        .embed-frame-wrap {
+            position: relative;
+            width: 100%;
+            min-height: 85vh;
+            background: #f8f7f5;
+        }
+        .embed-frame-wrap iframe {
+            width: 100%;
+            height: 85vh;
+            border: none;
+            display: block;
+        }
+        .embed-loader {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            background: #f8f7f5;
+            z-index: 5;
+            transition: opacity 0.4s ease;
+        }
+        .embed-loader.hidden { opacity: 0; pointer-events: none; }
+        .embed-spinner {
+            width: 32px; height: 32px;
+            border: 2px solid var(--border);
+            border-top-color: var(--bronze);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .embed-loader span {
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--sage);
+            font-weight: 300;
+        }
+        .cta-banner {
+            background: var(--charcoal);
+            padding: 5rem var(--gutter);
+            text-align: center;
+        }
+        .cta-banner h2 {
+            font-family: var(--serif);
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 300;
+            color: var(--ivory);
+            margin-bottom: 1rem;
+        }
+        .cta-banner h2 em { font-style: italic; color: var(--bronze); }
+        .cta-banner p {
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            color: var(--sage);
+            font-weight: 300;
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+        @media(max-width:768px) {
+            .page-hero-dark { min-height: 32vh; padding: 3rem var(--gutter); }
+            .embed-toolbar { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+            .embed-frame-wrap, .embed-frame-wrap iframe { min-height: 75vh; height: 75vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ──────────────── NAV ──────────────── -->
+    <nav class="nav" id="nav">
+        <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="new-homes.html" style="color:var(--bronze)">New Homes</a></li>
+            <li><a href="communities.html">Communities</a></li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="consultation.html" class="nav-cta btn btn-outline">Private Consultation</a>
+        <a href="admin/login.html" class="nav-agent-login" title="Agent Portal">⬡ Agent</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="new-homes.html" style="color:var(--bronze)">New Homes</a>
+        <a href="communities.html">Communities</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
+        <a href="admin/login.html"
+            style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent
+            Login</a>
+    </div>
+
+    <!-- ──────────────── HERO ──────────────── -->
+    <div class="page-hero-dark">
+        <div>
+            <span class="section-eyebrow">New Construction</span>
+            <h1 class="section-headline" style="color:var(--ivory);">New Home<br><em>Search</em></h1>
+            <p class="hero-subtitle">Browse builder communities, new construction homes, and development opportunities across Greater San Antonio and the Texas Hill Country.</p>
+        </div>
+    </div>
+
+    <!-- ──────────────── EMBED ──────────────── -->
+    <section class="embed-section">
+        <div class="embed-toolbar">
+            <div class="embed-toolbar-left">
+                <div class="embed-badge">
+                    <span class="embed-badge-dot"></span>
+                    Live Listings via New Home Buddy
+                </div>
+            </div>
+            <div class="embed-toolbar-right">
+                <a href="contact.html?intent=buy">Need help finding the right home? Contact us &rarr;</a>
+            </div>
+        </div>
+        <div class="embed-frame-wrap">
+            <div class="embed-loader" id="embed-loader">
+                <div class="embed-spinner"></div>
+                <span>Loading listings&hellip;</span>
+            </div>
+            <iframe
+                src="https://a.nhb.app/u/kanye-harris"
+                title="New Home Buddy — Kanye Harris Listings"
+                loading="lazy"
+                allow="geolocation"
+                onload="document.getElementById('embed-loader').classList.add('hidden')"
+            ></iframe>
+        </div>
+    </section>
+
+    <!-- ──────────────── CTA BANNER ──────────────── -->
+    <section class="cta-banner">
+        <h2>Interested in a <em>New Build?</em></h2>
+        <p>Let us represent you in the builder negotiation process. Our advisory ensures you get the best terms, upgrades, and value on your new construction home.</p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="consultation.html" class="btn btn-primary btn-arrow">Schedule Consultation</a>
+            <a href="buy.html" class="btn btn-outline" style="border-color:rgba(164,124,72,0.4); color:var(--limestone);">Buyer Advisory</a>
+        </div>
+    </section>
+
+    <!-- ──────────────── FOOTER ──────────────── -->
+    <footer>
+        <div class="footer-inner max-w">
+            <a href="index.html" class="footer-logo">Kanye Concierge <span>360°</span></a>
+            <ul class="footer-links">
+                <li><a href="properties.html">Properties</a></li>
+                <li><a href="new-homes.html">New Homes</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li><a href="buy.html">Buy</a></li>
+                <li><a href="sell.html">Sell</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="journal.html">Journal</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="footer-copy">© 2026 Kanye Concierge 360. Greater San Antonio · Texas Hill Country.</div>
+            <div class="footer-legal">
+                <a href="https://www.hud.gov/program_offices/fair_housing_equal_opp" target="_blank" rel="noopener" title="Equal Housing Opportunity" class="footer-eho"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3zm0 2.84L18 11v7h-3v-5H9v5H6v-7l6-5.16z"/></svg>
+                <span>Equal Housing Opportunity</span></a>
+                <a href="https://www.trec.texas.gov/forms/consumer-protection-notice" target="_blank" rel="noopener">TREC Consumer Protection Notice</a>
+                <a href="https://www.trec.texas.gov/forms/information-about-brokerage-services" target="_blank" rel="noopener">TREC Info About Brokerage Services</a>
+                <a href="https://www.xsellencerealtysa.com/" target="_blank" rel="noopener" class="footer-partner" title="XSellence Realty"><img src="Media-Assets/XSellence Realty.jpeg" alt="XSellence Realty" loading="lazy"></a>
+            </div>
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

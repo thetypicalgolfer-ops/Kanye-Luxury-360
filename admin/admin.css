@@ -234,6 +234,11 @@ input, select, textarea { font-family: var(--sans); }
     overflow: hidden;
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-wrap {
+    width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+}
+.avatar-wrap-lg { width: 72px; height: 72px; }
+.avatar-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-initials {
     background: var(--bronze);
     color: var(--ivory);

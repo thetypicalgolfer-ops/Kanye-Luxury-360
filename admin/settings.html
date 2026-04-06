@@ -138,7 +138,7 @@
                 <div class="header-page-title">Settings</div>
             </div>
             <div class="header-right">
-                <div class="user-profile"><div class="avatar-initials">KL</div><span class="user-name">Agent</span></div>
+                <div class="user-profile"><div class="avatar-wrap"><div class="avatar-initials">KL</div></div><span class="user-name">Agent</span></div>
             </div>
         </header>
         
@@ -171,9 +171,11 @@
                             </div>
                             <div class="section-card-body">
                                 <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border-light)">
-                                    <div class="avatar-initials" style="width:72px;height:72px;font-size:1.5rem">KL</div>
+                                    <div class="avatar-wrap avatar-wrap-lg"><div class="avatar-initials" style="width:72px;height:72px;font-size:1.5rem">KL</div></div>
                                     <div>
-                                        <button class="btn btn-secondary btn-sm" style="margin-bottom:0.5rem">Change Photo</button>
+                                        <input type="file" id="avatar-file-input" accept="image/jpeg,image/png" style="display:none">
+                                        <button class="btn btn-secondary btn-sm" id="change-photo-btn" style="margin-bottom:0.5rem">Change Photo</button>
+                                        <button class="btn btn-secondary btn-sm" id="remove-photo-btn" style="margin-bottom:0.5rem;margin-left:0.5rem;display:none">Remove</button>
                                         <div style="font-size:0.75rem;color:var(--text-secondary)">JPG or PNG, max 2MB.</div>
                                     </div>
                                 </div>
