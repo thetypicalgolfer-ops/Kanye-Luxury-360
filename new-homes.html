@@ -232,12 +232,16 @@
         var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
 
         if (isFirefox) {
-            // Firefox ETP blocks third-party storage the NHB SPA needs — open directly
             loader.classList.add('hidden');
-            wrap.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:4rem 2rem;text-align:center;">'
-                + '<p style="font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;color:var(--charcoal);margin-bottom:0.75rem;">New Home Listings</p>'
-                + '<p style="font-family:var(--sans);font-size:0.95rem;color:var(--sage);font-weight:300;max-width:480px;margin:0 auto 2.5rem;line-height:1.7;">Browse new construction homes, builder communities, and development opportunities across Greater San Antonio and the Texas Hill Country.</p>'
-                + '<a href="https://a.nhb.app/u/kanye-harris" target="_blank" rel="noopener" class="btn btn-outline" style="border-color:var(--bronze);color:var(--bronze);font-size:0.85rem;padding:0.9rem 2.5rem;">Browse New Home Listings &rarr;</a>'
+            wrap.style.cssText = 'position:relative;min-height:85vh;overflow:hidden;';
+            wrap.innerHTML = ''
+                + '<img src="Media-Assets/Limestone1.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;">'
+                + '<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(17,17,16,0.35) 0%, rgba(17,17,16,0.7) 50%, rgba(17,17,16,0.92) 100%);"></div>'
+                + '<div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;padding:4rem 2rem;text-align:center;">'
+                +   '<span style="font-family:var(--sans);font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--bronze);margin-bottom:1.2rem;">Powered by New Home Buddy</span>'
+                +   '<p style="font-family:var(--serif);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:300;color:var(--ivory);margin-bottom:1rem;line-height:1.15;">Discover Your Next <em style="font-style:italic;color:var(--bronze);">New Build</em></p>'
+                +   '<p style="font-family:var(--sans);font-size:1rem;color:rgba(216,204,188,0.7);font-weight:300;max-width:520px;margin:0 auto 2.8rem;line-height:1.8;">Browse new construction homes, builder communities, and development opportunities across Greater San Antonio and the Texas Hill Country.</p>'
+                +   '<a href="https://a.nhb.app/u/kanye-harris" target="_blank" rel="noopener" class="btn btn-outline" style="border-color:var(--bronze);color:var(--bronze);font-size:0.78rem;padding:1rem 3rem;letter-spacing:0.14em;backdrop-filter:blur(8px);background:rgba(17,17,16,0.3);">Browse New Home Listings &rarr;</a>'
                 + '</div>';
         } else {
             // Chrome, Safari, Edge — embed works fine
