@@ -96,23 +96,25 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
 
 
 // ── HERO ENTRY ANIMATION ─────────────────────────────────
-const tl = gsap.timeline({ delay: 0.3 });
-tl.to('#hero-tag',      { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.1)
-  .to('#hero-headline', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, 0.3)
-  .to('#hero-sub',      { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.6)
-  .to('#hero-ctas',     { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.8);
+if (document.querySelector('.hero')) {
+    const tl = gsap.timeline({ delay: 0.3 });
+    tl.to('#hero-tag',      { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.1)
+      .to('#hero-headline', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, 0.3)
+      .to('#hero-sub',      { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.6)
+      .to('#hero-ctas',     { opacity: 1, y: 0, duration: 1,   ease: 'power3.out' }, 0.8);
 
-// Subtle hero parallax on scroll
-gsap.to('#hero-media img', {
-    scrollTrigger: {
-        trigger: '.hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.5
-    },
-    y: 120,
-    ease: 'none'
-});
+    // Subtle hero parallax on scroll
+    gsap.to('#hero-media img', {
+        scrollTrigger: {
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.5
+        },
+        y: 120,
+        ease: 'none'
+    });
+}
 
 // ── SCROLL REVEALS ────────────────────────────────────────
 // Use gsap.to() — CSS .reveal pre-sets opacity:0/y:40px, so we animate TO visible.
