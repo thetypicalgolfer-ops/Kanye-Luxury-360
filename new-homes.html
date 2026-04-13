@@ -159,6 +159,11 @@
 </head>
 <body>
 
+    <div class="cursor" id="cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-ring" id="cursor-ring"></div>
+    </div>
+
     <!-- ──────────────── NAV ──────────────── -->
     <nav class="nav" id="nav">
         <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
@@ -219,6 +224,7 @@
                 <span>Loading listings&hellip;</span>
             </div>
             <iframe
+                id="nhb-frame"
                 src="https://a.nhb.app/u/kanye-harris"
                 title="New Home Buddy — Kanye Harris Listings"
                 loading="eager"
@@ -227,8 +233,36 @@
                 style="width:100%;height:85vh;border:none;"
                 onload="document.getElementById('embed-loader').classList.add('hidden')"
             ></iframe>
+            <div id="nhb-fallback" style="display:none; text-align:center; padding:6rem 2rem;">
+                <p style="font-family:var(--serif); font-size:clamp(1.4rem,2.5vw,2rem); font-weight:300; color:var(--charcoal); margin-bottom:1rem;">New Home Listings</p>
+                <p style="font-family:var(--sans); font-size:0.95rem; color:var(--sage); font-weight:300; max-width:440px; margin:0 auto 2rem; line-height:1.7;">Your browser's privacy settings are preventing the listings from loading inline. View them directly instead.</p>
+                <a href="https://a.nhb.app/u/kanye-harris" target="_blank" rel="noopener" class="btn btn-outline" style="border-color:var(--bronze); color:var(--bronze);">View New Home Listings &rarr;</a>
+            </div>
         </div>
     </section>
+    <script>
+    // Detect if iframe content was blocked (Firefox ETP / cookie restrictions)
+    (function() {
+        var frame = document.getElementById('nhb-frame');
+        var fallback = document.getElementById('nhb-fallback');
+        var loader = document.getElementById('embed-loader');
+        if (!frame || !fallback) return;
+        // Give iframe time to load and render; if it goes blank, show fallback
+        setTimeout(function() {
+            try {
+                // Cross-origin will throw — that's expected and means it loaded
+                frame.contentWindow.document;
+            } catch(e) {
+                // SecurityError = cross-origin loaded fine, do nothing
+                return;
+            }
+            // If we can access it, it means same-origin blank page — blocked
+            frame.style.display = 'none';
+            fallback.style.display = 'block';
+            if (loader) loader.classList.add('hidden');
+        }, 4000);
+    })();
+    </script>
 
     <!-- ──────────────── CTA BANNER ──────────────── -->
     <section class="cta-banner">
