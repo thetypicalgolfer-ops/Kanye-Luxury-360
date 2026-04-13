@@ -1034,23 +1034,13 @@ footer {
     width: 90px;
     height: 90px;
     border-radius: 6px;
-    filter: brightness(0.92) contrast(1.1);
-    opacity: 0.7;
-    transition: opacity 0.3s, filter 0.3s;
-}
-.footer-qr:hover img {
-    opacity: 1;
-    filter: brightness(1) contrast(1);
+    opacity: 0.75;
 }
 .footer-qr-label {
     font-size: 0.58rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(216,204,188,0.3);
-    transition: color 0.3s;
-}
-.footer-qr:hover .footer-qr-label {
-    color: rgba(216,204,188,0.55);
 }
 
 /* ══════════════════════════════════════════════════════
