@@ -213,16 +213,18 @@
         }
         .vplayer-overlay.open { display: flex; opacity: 1; }
 
-        /* Default (horizontal). Video on top, info below. Caps to 1100px wide. */
+        /* Default (horizontal). Video sized to fill the available viewport while keeping aspect.
+           --ar is set by JS from the actual video.videoWidth / videoHeight (a unit-less number). */
         .vplayer-box {
             background: #050505;
             box-shadow: 0 40px 100px -30px rgba(0,0,0,0.9);
             display: flex; flex-direction: column;
-            width: auto; max-width: min(1100px, 92vw);
-            max-height: 92vh;
+            width: min(96vw, calc((96vh - 150px) * var(--ar, 1.7778)));
+            max-width: 1700px;
+            max-height: 96vh;
             overflow: hidden;
             transform: scale(0.96);
-            transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.25, 1), max-width 0.32s ease;
+            transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.25, 1);
         }
         .vplayer-overlay.open .vplayer-box { transform: scale(1); }
 
@@ -230,7 +232,7 @@
             position: relative; background: #000;
             display: flex; align-items: center; justify-content: center;
             width: 100%;
-            aspect-ratio: 16 / 9;     /* default — overridden once we know the real aspect */
+            aspect-ratio: var(--ar, 1.7778);   /* matches the actual video so it fills the box */
             min-height: 0;
         }
         .vplayer-video-wrap video {
@@ -254,21 +256,23 @@
         }
 
         /* ── VERTICAL VIDEO LAYOUT (portrait, e.g. 9:16) ─────────────
-           Video sits left in a tall, narrow frame; metadata column on the right.
-           The whole modal stays centered and never spans more than ~85vh tall. */
+           Video on the left at near-full viewport height; info column on the right. */
         .vplayer-box.is-vertical {
             flex-direction: row;
-            max-width: min(820px, 95vw);
+            width: auto;                         /* override the horizontal width formula */
+            max-width: 96vw;
+            max-height: 96vh;
+            height: min(96vh, calc(96vw / (var(--ar, 0.5625) + 0.4)));
         }
         .vplayer-box.is-vertical .vplayer-video-wrap {
-            aspect-ratio: var(--video-aspect, 9 / 16);
-            height: min(85vh, 720px);
-            width: auto;
-            max-width: 60vw;
+            height: 100%;
+            width: calc(100% * var(--ar, 0.5625));   /* width follows aspect of the video */
+            min-width: 0;
+            aspect-ratio: auto;
             flex-shrink: 0;
         }
         .vplayer-box.is-vertical .vplayer-info {
-            flex: 1; min-width: 0;
+            flex: 0 0 320px; min-width: 0;
             padding: 2rem 1.75rem;
             border-top: none;
             border-left: 1px solid rgba(255,255,255,0.05);
@@ -277,30 +281,29 @@
         }
         .vplayer-box.is-vertical .vplayer-info h2 { font-size: 1.5rem; }
 
-        /* Square videos: keep a tighter modal. */
+        /* Square videos: tighter modal that still fills viewport height when possible. */
         .vplayer-box.is-square {
-            max-width: min(680px, 92vw);
-        }
-        .vplayer-box.is-square .vplayer-video-wrap { aspect-ratio: 1 / 1; }
-
-        /* Horizontal videos use the explicit aspect of the actual file (e.g. 21:9). */
-        .vplayer-box.is-horizontal .vplayer-video-wrap {
-            aspect-ratio: var(--video-aspect, 16 / 9);
+            width: min(96vw, calc((96vh - 150px) * var(--ar, 1)));
+            max-width: 820px;
         }
 
         /* Mobile: collapse vertical layout back to stacked so info goes below the portrait video. */
         @media (max-width: 720px) {
             .vplayer-box.is-vertical {
                 flex-direction: column;
-                max-width: 95vw;
+                width: auto;
+                max-width: 96vw;
+                height: auto;
             }
             .vplayer-box.is-vertical .vplayer-video-wrap {
                 width: 100%;
                 max-width: 100%;
                 height: auto;
-                max-height: 65vh;
+                aspect-ratio: var(--ar, 0.5625);
+                max-height: 75vh;
             }
             .vplayer-box.is-vertical .vplayer-info {
+                flex: 0 0 auto;
                 border-left: none;
                 border-top: 1px solid rgba(255,255,255,0.05);
                 padding: 1.25rem 1.5rem 1.5rem;
@@ -518,7 +521,8 @@
             const ratio = w / h;
 
             box.classList.remove('is-horizontal', 'is-vertical', 'is-square');
-            box.style.setProperty('--video-aspect', w + ' / ' + h);
+            // Pass aspect as a unit-less number so it can be used in calc() math throughout the modal.
+            box.style.setProperty('--ar', String(ratio));
 
             if (ratio < 0.85)        box.classList.add('is-vertical');
             else if (ratio > 1.15)   box.classList.add('is-horizontal');
@@ -533,13 +537,13 @@
             document.getElementById('vplayer-title').textContent = v.title || '';
             document.getElementById('vplayer-desc').textContent  = v.description || '';
 
-            // Reset to default (horizontal) immediately so the modal doesn't flash at the wrong size.
+            // Reset to default (horizontal 16:9) immediately so the modal doesn't flash at the wrong size.
             box.classList.remove('is-horizontal', 'is-vertical', 'is-square');
             box.classList.add('is-horizontal');
-            box.style.removeProperty('--video-aspect');
+            box.style.setProperty('--ar', '1.7778');
 
             video.src = v.url;
-            // Once metadata arrives, swap to the correct orientation class with a smooth transition.
+            // Once metadata arrives, snap to the correct orientation + actual aspect.
             video.addEventListener('loadedmetadata', applyPlayerOrientation, { once: true });
 
             overlay.classList.add('open');
