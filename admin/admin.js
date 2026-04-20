@@ -183,6 +183,7 @@ function checkAuth() {
 }
 function logout() {
     sessionStorage.removeItem('kl360_auth');
+    sessionStorage.removeItem('kl360_server_token');
     window.location.href = 'login.html';
 }
 
@@ -206,17 +207,31 @@ function initLogin() {
         const creds = getStoredCredentials();
         const inputHash = await hashPassword(pass);
 
-        setTimeout(() => {
-            if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
-                sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
-                window.location.href = 'dashboard.html';
-            } else {
-                const err = $('login-error');
-                if (err) { err.textContent = 'Invalid email or password.'; err.style.display = 'block'; }
-                btn.textContent = 'Sign In to Dashboard';
-                btn.disabled = false;
-            }
-        }, 700);
+        if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
+            sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
+            // Also obtain a server-side session token so the agent can upload/delete videos.
+            // Failure here is non-fatal — the rest of the dashboard works offline; the
+            // videos page will simply show a "reconnect" banner.
+            try {
+                const r = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass }),
+                });
+                if (r.ok) {
+                    const data = await r.json();
+                    if (data && data.token) sessionStorage.setItem('kl360_server_token', data.token);
+                } else {
+                    sessionStorage.removeItem('kl360_server_token');
+                }
+            } catch { sessionStorage.removeItem('kl360_server_token'); }
+            window.location.href = 'dashboard.html';
+        } else {
+            const err = $('login-error');
+            if (err) { err.textContent = 'Invalid email or password.'; err.style.display = 'block'; }
+            btn.textContent = 'Sign In to Dashboard';
+            btn.disabled = false;
+        }
     });
 }
 
@@ -1830,6 +1845,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (page==='campaigns') initCampaigns();
     if (page==='analytics') initAnalytics();
     if (page==='settings')  initSettings();
+    if (page==='videos')    checkAuth(); // videos.html handles the rest via its own inline script
 });
 
 // ── PAGE: PIPELINE ────────────────────────────────────────

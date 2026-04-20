@@ -103,6 +103,10 @@ body:hover .cursor { opacity: 1; }
     gap: 2.5rem;
     list-style: none;
 }
+/* Tighten gap progressively so all 10 items + CTA stay visible on common laptop widths. */
+@media (max-width: 1500px) { .nav-links { gap: 1.75rem; } }
+@media (max-width: 1280px) { .nav-links { gap: 1.25rem; } .nav { padding: 1.5rem var(--gutter); } }
+@media (max-width: 1100px) { .nav-links a { font-size: 0.7rem; letter-spacing: 0.08em; } }
 .nav-links a {
     font-size: 0.75rem;
     font-weight: 400;

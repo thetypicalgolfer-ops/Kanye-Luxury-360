@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Library | Kanye Concierge 360</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta property="og:title" content="Video Library | Kanye Concierge 360">
+    <meta property="og:description" content="Property tours, neighborhood walkthroughs, and behind-the-scenes from Kanye Concierge 360 — luxury real estate in San Antonio and the Texas Hill Country.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="og-image.png">
+    <link rel="canonical" href="https://kanyeconcierge360.com/videos.html">
+    <meta name="description" content="Watch property tours, neighborhood walkthroughs, and exclusive behind-the-scenes videos from Kanye Concierge 360.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .videos-hero {
+            height: 50vh; min-height: 360px;
+            display: flex; align-items: flex-end;
+            background: linear-gradient(rgba(27,27,26,0.55), rgba(27,27,26,0.85)),
+                        url('img-agent.jpg') center/cover;
+            padding: 5rem var(--gutter);
+        }
+        .videos-section { padding: 5rem var(--gutter); background: var(--ivory); }
+        .videos-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.25rem;
+        }
+        @media (max-width: 1000px) { .videos-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px)  { .videos-grid { grid-template-columns: 1fr; } }
+
+        .video-card {
+            background: #fff; border: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            cursor: pointer; transition: transform .35s ease, box-shadow .35s ease;
+        }
+        .video-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.25); }
+        .video-thumb {
+            position: relative; aspect-ratio: 16/9; background: #1b1b1a;
+            overflow: hidden;
+        }
+        .video-thumb video, .video-thumb img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+        .video-play-badge {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.35));
+            transition: background .3s ease;
+        }
+        .video-card:hover .video-play-badge { background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.55)); }
+        .video-play-icon {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: rgba(255,255,255,0.92); color: #1b1b1a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; padding-left: 5px;
+            transition: transform .3s ease;
+        }
+        .video-card:hover .video-play-icon { transform: scale(1.08); }
+        .video-meta { padding: 1.4rem 1.4rem 1.6rem; }
+        .video-title {
+            font-family: var(--serif); font-size: 1.35rem; font-weight: 400;
+            color: var(--charcoal); line-height: 1.25; margin-bottom: 0.5rem;
+        }
+        .video-desc {
+            font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary, #6f6960);
+            line-height: 1.55; opacity: 0.9;
+            display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .video-date {
+            margin-top: 0.85rem; font-size: 0.7rem; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--bronze, #A47C48);
+        }
+
+        .videos-empty {
+            text-align: center; padding: 4rem 1rem;
+            color: var(--text-secondary, #6f6960);
+        }
+        .videos-empty h3 {
+            font-family: var(--serif); font-size: 1.6rem; font-weight: 300;
+            color: var(--charcoal); margin-bottom: 0.6rem;
+        }
+        .videos-loading {
+            text-align: center; padding: 3rem 1rem; opacity: 0.5;
+            font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+        }
+
+        /* PLAYER MODAL */
+        .vplayer-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(15,15,14,0.92);
+            display: none; align-items: center; justify-content: center;
+            padding: 2.5rem 1.5rem;
+        }
+        .vplayer-overlay.open { display: flex; }
+        .vplayer-box {
+            width: 100%; max-width: 1100px;
+            background: #0c0c0b;
+            display: flex; flex-direction: column;
+            box-shadow: 0 30px 80px -20px rgba(0,0,0,.6);
+        }
+        .vplayer-video-wrap {
+            position: relative; aspect-ratio: 16/9; background: #000;
+        }
+        .vplayer-video-wrap video {
+            width: 100%; height: 100%; display: block;
+        }
+        .vplayer-info {
+            padding: 1.5rem 1.75rem 1.75rem;
+            color: var(--ivory);
+        }
+        .vplayer-info h2 {
+            font-family: var(--serif); font-size: 1.75rem; font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        .vplayer-info p {
+            font-family: var(--sans); font-size: 0.92rem;
+            color: rgba(243,239,232,0.75); line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .vplayer-close {
+            position: absolute; top: 1rem; right: 1rem; z-index: 2;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; cursor: pointer; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .vplayer-close:hover { background: rgba(0,0,0,0.85); }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
+
+    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
+        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Concierge <span>360°</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="properties.html">Properties</a></li>
+            <li><a href="new-homes.html">New Homes</a></li>
+            <li><a href="communities.html">Communities</a></li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="consultation.html" class="nav-cta btn btn-outline">Private Consultation</a>
+        <a href="admin/login.html" class="nav-agent-login" title="Agent Portal">⬡ Agent</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="nav-mobile-menu" id="nav-mobile-menu">
+        <a href="index.html">Home</a>
+        <a href="properties.html">Properties</a>
+        <a href="new-homes.html">New Homes</a>
+        <a href="communities.html">Communities</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="videos.html">Videos</a>
+        <a href="journal.html">Journal</a>
+        <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
+        <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
+    </div>
+
+    <div class="videos-hero">
+        <div>
+            <span class="section-eyebrow">Kanye Concierge 360</span>
+            <h1 class="section-headline" style="color:var(--ivory);">Video<br><em>Library</em></h1>
+        </div>
+    </div>
+
+    <section class="videos-section">
+        <div class="max-w">
+            <div id="videos-loading" class="videos-loading">Loading library…</div>
+            <div id="videos-empty" class="videos-empty" style="display:none;">
+                <h3>The library is being curated.</h3>
+                <p>Property tours and neighborhood features will appear here soon.</p>
+            </div>
+            <div class="videos-grid" id="videos-grid" style="display:none;"></div>
+        </div>
+    </section>
+
+    <div class="vplayer-overlay" id="vplayer">
+        <div class="vplayer-box">
+            <div class="vplayer-video-wrap">
+                <button class="vplayer-close" type="button" aria-label="Close" onclick="closeVideoPlayer()">×</button>
+                <video id="vplayer-video" controls playsinline preload="metadata"></video>
+            </div>
+            <div class="vplayer-info">
+                <h2 id="vplayer-title"></h2>
+                <p id="vplayer-desc"></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner max-w">
+            <a href="index.html" class="footer-logo">Kanye Concierge <span>360°</span></a>
+            <ul class="footer-links">
+                <li><a href="properties.html">Properties</a></li>
+                <li><a href="new-homes.html">New Homes</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li><a href="buy.html">Buy</a></li>
+                <li><a href="sell.html">Sell</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="videos.html">Videos</a></li>
+                <li><a href="journal.html">Journal</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="footer-copy">© 2026 Kanye Concierge 360. Greater San Antonio · Texas Hill Country.</div>
+        </div>
+    </footer>
+
+    <script>
+        function escapeHTML(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+        function fmtDate(ts) {
+            if (!ts) return '';
+            return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        async function loadVideos() {
+            const grid    = document.getElementById('videos-grid');
+            const loading = document.getElementById('videos-loading');
+            const empty   = document.getElementById('videos-empty');
+            try {
+                const r = await fetch('/api/videos', { cache: 'no-store' });
+                const data = r.ok ? await r.json() : { videos: [] };
+                const videos = (data && data.videos) || [];
+                loading.style.display = 'none';
+                if (!videos.length) { empty.style.display = 'block'; return; }
+                grid.style.display = 'grid';
+                grid.innerHTML = videos.map(v => `
+                    <article class="video-card" data-id="${escapeHTML(v.id)}">
+                        <div class="video-thumb">
+                            <video src="${escapeHTML(v.url)}#t=0.5" muted playsinline preload="metadata"
+                                ${v.poster ? `poster="${escapeHTML(v.poster)}"` : ''}></video>
+                            <div class="video-play-badge"><div class="video-play-icon">▶</div></div>
+                        </div>
+                        <div class="video-meta">
+                            <h3 class="video-title">${escapeHTML(v.title)}</h3>
+                            ${v.description ? `<p class="video-desc">${escapeHTML(v.description)}</p>` : ''}
+                            <div class="video-date">${fmtDate(v.createdAt)}</div>
+                        </div>
+                    </article>
+                `).join('');
+                grid.querySelectorAll('.video-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const v = videos.find(x => x.id === card.dataset.id);
+                        if (v) openVideoPlayer(v);
+                    });
+                });
+            } catch (e) {
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+            }
+        }
+
+        function openVideoPlayer(v) {
+            const overlay = document.getElementById('vplayer');
+            const video   = document.getElementById('vplayer-video');
+            document.getElementById('vplayer-title').textContent = v.title || '';
+            document.getElementById('vplayer-desc').textContent  = v.description || '';
+            video.src = v.url;
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            video.play().catch(() => {});
+        }
+        function closeVideoPlayer() {
+            const overlay = document.getElementById('vplayer');
+            const video   = document.getElementById('vplayer-video');
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('vplayer').addEventListener('click', e => {
+            if (e.target.id === 'vplayer') closeVideoPlayer();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeVideoPlayer();
+        });
+
+        loadVideos();
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>

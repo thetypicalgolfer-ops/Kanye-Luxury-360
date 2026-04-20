@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videos | Kanye Concierge 360</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+    /* ── DROPZONE ─────────────────────────────────── */
+    .video-uploader {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .video-uploader-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+    .video-uploader-header h3 {
+        font-family: var(--serif); font-size: 1.4rem; font-weight: 300;
+        color: var(--text-primary);
+    }
+    .video-uploader-header p {
+        font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem;
+        max-width: 520px;
+    }
+
+    .dropzone {
+        border: 2px dashed var(--border);
+        background: var(--bg-primary);
+        padding: 3.5rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+    .dropzone:hover, .dropzone.is-dragover {
+        border-color: var(--bronze);
+        background: rgba(164,124,72,0.05);
+    }
+    .dropzone-icon {
+        font-size: 2.5rem; color: var(--bronze);
+        margin-bottom: 1rem;
+    }
+    .dropzone-headline {
+        font-family: var(--serif); font-size: 1.5rem; font-weight: 300;
+        color: var(--text-primary); margin-bottom: 0.4rem;
+    }
+    .dropzone-sub {
+        font-size: 0.8rem; color: var(--text-secondary);
+        letter-spacing: 0.05em;
+    }
+    .dropzone-fineprint {
+        margin-top: 1rem; font-size: 0.7rem; color: var(--text-dim);
+        letter-spacing: 0.05em;
+    }
+    .dropzone-input { display: none; }
+
+    .compose {
+        display: none;
+        background: var(--bg-primary); border: 1px solid var(--border);
+        padding: 1.5rem;
+    }
+    .compose.is-active { display: block; }
+    .compose-file {
+        display: flex; align-items: center; gap: 1rem;
+        padding: 0.85rem 1rem; background: var(--bg-card);
+        border: 1px solid var(--border); margin-bottom: 1.25rem;
+    }
+    .compose-file-thumb {
+        width: 44px; height: 44px; flex-shrink: 0;
+        background: var(--bronze); color: var(--ivory);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+    }
+    .compose-file-info { flex: 1; min-width: 0; }
+    .compose-file-name {
+        font-size: 0.88rem; color: var(--text-primary);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .compose-file-meta {
+        font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.15rem;
+        letter-spacing: 0.05em;
+    }
+    .compose-file-clear {
+        background: none; border: none; color: var(--text-dim);
+        cursor: pointer; font-size: 1.2rem; padding: 0.25rem 0.6rem;
+    }
+    .compose-file-clear:hover { color: #e05c5c; }
+
+    .compose-actions {
+        display: flex; justify-content: flex-end; gap: 0.75rem;
+        margin-top: 1.25rem;
+    }
+
+    .progress {
+        display: none;
+        margin-top: 1rem;
+    }
+    .progress.is-active { display: block; }
+    .progress-bar-wrap {
+        height: 6px; background: var(--bg-hover);
+        overflow: hidden; margin-top: 0.5rem;
+    }
+    .progress-bar {
+        height: 100%; background: var(--bronze);
+        width: 0%; transition: width 0.2s ease;
+    }
+    .progress-label {
+        display: flex; justify-content: space-between;
+        font-size: 0.72rem; color: var(--text-secondary);
+        letter-spacing: 0.05em;
+    }
+
+    /* ── VIDEO LIST ───────────────────────────────── */
+    .videos-grid-admin {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .vcard {
+        background: var(--bg-card); border: 1px solid var(--border);
+        display: flex; flex-direction: column;
+        transition: var(--transition);
+    }
+    .vcard:hover { border-color: rgba(164,124,72,0.3); }
+    .vcard-thumb {
+        position: relative; aspect-ratio: 16/9;
+        background: var(--bg-primary); overflow: hidden;
+    }
+    .vcard-thumb video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .vcard-body { padding: 1.1rem 1.25rem 1.4rem; }
+    .vcard-title {
+        font-family: var(--serif); font-size: 1.15rem; font-weight: 400;
+        color: var(--text-primary); line-height: 1.3;
+        margin-bottom: 0.4rem;
+    }
+    .vcard-meta {
+        font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--text-secondary);
+        display: flex; gap: 0.75rem; flex-wrap: wrap;
+    }
+    .vcard-actions {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.85rem 1.25rem;
+        border-top: 1px solid var(--border-light);
+    }
+
+    .empty-state {
+        text-align: center; padding: 4rem 2rem;
+        background: var(--bg-card); border: 1px solid var(--border);
+        color: var(--text-secondary);
+    }
+    .empty-state h3 {
+        font-family: var(--serif); font-size: 1.4rem; font-weight: 300;
+        color: var(--text-primary); margin-bottom: 0.5rem;
+    }
+
+    .auth-banner {
+        background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.25);
+        color: #e05c5c; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+        font-size: 0.85rem; display: none;
+    }
+    .auth-banner.show { display: block; }
+    .auth-banner a { color: #e05c5c; text-decoration: underline; }
+</style>
+</head>
+<body data-page="videos">
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div>
+                <div class="sidebar-brand-logo">Kanye Concierge <span>360°</span></div>
+                <div class="sidebar-brand-tag">Agent Portal</div>
+            </div>
+        </div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-item-icon">⬡</span> Dashboard</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="pipeline.html"  class="nav-item"><span class="nav-item-icon">⚖</span> Pipeline</a>
+            <a href="inquiries.html" class="nav-item"><span class="nav-item-icon">📋</span> Inquiries</a>
+            <a href="campaigns.html" class="nav-item"><span class="nav-item-icon">📮</span> Campaigns</a>
+            <a href="videos.html"    class="nav-item active"><span class="nav-item-icon">🎬</span> Videos</a>
+            <a href="analytics.html" class="nav-item"><span class="nav-item-icon">📈</span> Analytics</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logout()"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="header-page-title">Video Library</div>
+            </div>
+            <div class="header-right">
+                <a href="../videos.html" target="_blank" class="btn header-btn">View Public Page ↗</a>
+                <div class="user-profile" onclick="window.location='../index.html'">
+                    <div class="avatar-wrap"><div class="avatar-initials">KL</div></div>
+                    <span class="user-name">Agent</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Media</div>
+                    <h1 class="page-title">Videos</h1>
+                    <p class="page-subtitle">Upload property tours, walkthroughs, and behind-the-scenes clips. Posts go live on the public Video Library instantly.</p>
+                </div>
+            </div>
+
+            <div id="auth-banner" class="auth-banner">
+                <strong>Server connection lost.</strong>
+                Uploads and deletes are temporarily disabled. <a href="#" onclick="reconnectServerAuth(event)">Reconnect</a>.
+            </div>
+
+            <!-- ── UPLOAD PANEL ──────────────────────── -->
+            <div class="video-uploader">
+                <div class="video-uploader-header">
+                    <div>
+                        <h3>Post a New Video</h3>
+                        <p>Drop an MP4 below — or click to browse. We'll upload it and publish it to the website with the title and description you provide.</p>
+                    </div>
+                </div>
+
+                <div class="dropzone" id="dropzone">
+                    <input type="file" id="file-input" class="dropzone-input" accept="video/mp4,video/quicktime,video/webm,video/x-m4v">
+                    <div class="dropzone-icon">⬆</div>
+                    <div class="dropzone-headline">Drag &amp; drop your video here</div>
+                    <div class="dropzone-sub">or click to choose a file from your computer</div>
+                    <div class="dropzone-fineprint">MP4, MOV, WebM · up to 1 GB</div>
+                </div>
+
+                <div class="compose" id="compose">
+                    <div class="compose-file">
+                        <div class="compose-file-thumb">▶</div>
+                        <div class="compose-file-info">
+                            <div class="compose-file-name" id="compose-file-name">file.mp4</div>
+                            <div class="compose-file-meta" id="compose-file-meta">— MB</div>
+                        </div>
+                        <button type="button" class="compose-file-clear" onclick="clearComposer()" aria-label="Remove">×</button>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label" for="video-title">Title</label>
+                        <input type="text" id="video-title" class="form-control" placeholder="e.g. Limestone Estate · Cinematic Tour" maxlength="140">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="video-desc">Description (optional)</label>
+                        <textarea id="video-desc" class="form-control" rows="3" placeholder="A short description that will appear under the video on the public page." maxlength="2000"></textarea>
+                    </div>
+
+                    <div class="progress" id="progress">
+                        <div class="progress-label">
+                            <span id="progress-status">Uploading…</span>
+                            <span id="progress-pct">0%</span>
+                        </div>
+                        <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+                    </div>
+
+                    <div class="compose-actions">
+                        <button type="button" class="btn btn-secondary" onclick="clearComposer()">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="post-btn" onclick="postVideo()">Post Video</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── EXISTING LIBRARY ──────────────────── -->
+            <div class="page-header" style="margin-top: 2.5rem;">
+                <div class="page-header-text">
+                    <div class="page-eyebrow">Library</div>
+                    <h2 class="page-title" style="font-size: 1.6rem;">Published Videos</h2>
+                </div>
+            </div>
+
+            <div id="videos-loading" style="opacity:0.4; font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase; padding: 2rem 0;">Loading…</div>
+            <div id="videos-empty" class="empty-state" style="display:none;">
+                <h3>No videos yet</h3>
+                <p>Upload your first video above and it'll show up here and on the public Video Library page.</p>
+            </div>
+            <div id="videos-list" class="videos-grid-admin" style="display:none;"></div>
+        </div>
+    </main>
+</div>
+
+<script src="admin.js"></script>
+<script type="module">
+    // Vercel Blob client uploader (loaded from CDN since the site is static).
+    import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client';
+    window.__blobUpload = upload;
+</script>
+<script>
+(function () {
+    const $ = id => document.getElementById(id);
+    let currentFile = null;
+    let isUploading = false;
+
+    function fmtSize(n) {
+        if (!n) return '—';
+        if (n >= 1024 * 1024 * 1024) return (n / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+        if (n >= 1024 * 1024)        return (n / (1024 * 1024)).toFixed(1) + ' MB';
+        if (n >= 1024)               return (n / 1024).toFixed(0) + ' KB';
+        return n + ' B';
+    }
+    function fmtDate(ts) {
+        if (!ts) return '';
+        return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    function escapeHTML(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function getServerToken() {
+        return sessionStorage.getItem('kl360_server_token') || '';
+    }
+    function setAuthBanner(show) {
+        const b = $('auth-banner');
+        if (b) b.classList.toggle('show', !!show);
+    }
+
+    // ── DRAG & DROP ─────────────────────────────────────────
+    const dropzone = $('dropzone');
+    const fileInput = $('file-input');
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => {
+        if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+    });
+    ['dragenter', 'dragover'].forEach(ev =>
+        dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('is-dragover'); })
+    );
+    ['dragleave', 'drop'].forEach(ev =>
+        dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('is-dragover'); })
+    );
+    dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+        const ok = ['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v'];
+        if (!ok.includes(file.type)) {
+            showToast('Please choose an MP4, MOV, or WebM file.', 'danger');
+            return;
+        }
+        if (file.size > 1024 * 1024 * 1024) {
+            showToast('File is over 1 GB. Please use a smaller export.', 'danger');
+            return;
+        }
+        currentFile = file;
+        $('compose-file-name').textContent = file.name;
+        $('compose-file-meta').textContent = fmtSize(file.size) + ' · ' + (file.type || 'video');
+        $('compose').classList.add('is-active');
+        $('video-title').focus();
+    }
+
+    window.clearComposer = function () {
+        if (isUploading) return;
+        currentFile = null;
+        $('file-input').value = '';
+        $('video-title').value = '';
+        $('video-desc').value = '';
+        $('compose').classList.remove('is-active');
+        $('progress').classList.remove('is-active');
+        $('progress-bar').style.width = '0%';
+        $('progress-pct').textContent = '0%';
+        $('progress-status').textContent = 'Uploading…';
+    };
+
+    // ── POST FLOW ───────────────────────────────────────────
+    window.postVideo = async function () {
+        if (!currentFile) { showToast('Choose a video file first.', 'danger'); return; }
+        const title = $('video-title').value.trim();
+        const desc  = $('video-desc').value.trim();
+        if (!title) { showToast('Please add a title.', 'danger'); $('video-title').focus(); return; }
+
+        const token = getServerToken();
+        if (!token) {
+            setAuthBanner(true);
+            showToast('Please reconnect to the server (sign in again).', 'danger');
+            return;
+        }
+        if (typeof window.__blobUpload !== 'function') {
+            showToast('Uploader is still loading — try again in a moment.', 'danger');
+            return;
+        }
+
+        isUploading = true;
+        $('post-btn').disabled = true;
+        $('post-btn').textContent = 'Posting…';
+        $('progress').classList.add('is-active');
+        $('progress-status').textContent = 'Uploading…';
+        $('progress-bar').style.width = '0%';
+        $('progress-pct').textContent = '0%';
+
+        try {
+            const blob = await window.__blobUpload(currentFile.name, currentFile, {
+                access: 'public',
+                handleUploadUrl: '/api/upload-url',
+                contentType: currentFile.type,
+                clientPayload: JSON.stringify({ token }),
+                onUploadProgress: (e) => {
+                    const pct = Math.min(100, Math.round((e.percentage != null ? e.percentage : (e.loaded / e.total) * 100)));
+                    $('progress-bar').style.width = pct + '%';
+                    $('progress-pct').textContent = pct + '%';
+                },
+            });
+
+            $('progress-status').textContent = 'Saving…';
+
+            const res = await fetch('/api/videos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                    url: blob.url,
+                    pathname: blob.pathname,
+                    title, description: desc,
+                    size: currentFile.size,
+                    contentType: currentFile.type,
+                }),
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('Save failed (' + res.status + ')'));
+            }
+
+            showToast('Video posted to the public library.', 'success');
+            isUploading = false;
+            clearComposer();
+            await loadList();
+        } catch (err) {
+            isUploading = false;
+            const msg = (err && err.message) || 'Upload failed';
+            showToast(msg, 'danger');
+            if (/unauthor/i.test(msg)) setAuthBanner(true);
+        } finally {
+            isUploading = false;
+            $('post-btn').disabled = false;
+            $('post-btn').textContent = 'Post Video';
+        }
+    };
+
+    // ── LIST + DELETE ───────────────────────────────────────
+    async function loadList() {
+        const list    = $('videos-list');
+        const loading = $('videos-loading');
+        const empty   = $('videos-empty');
+        loading.style.display = 'block';
+        list.style.display    = 'none';
+        empty.style.display   = 'none';
+        try {
+            const r = await fetch('/api/videos', { cache: 'no-store' });
+            const data = r.ok ? await r.json() : { videos: [] };
+            const videos = (data && data.videos) || [];
+            loading.style.display = 'none';
+            if (!videos.length) { empty.style.display = 'block'; return; }
+            list.style.display = 'grid';
+            list.innerHTML = videos.map(v => `
+                <div class="vcard" data-id="${escapeHTML(v.id)}">
+                    <div class="vcard-thumb">
+                        <video src="${escapeHTML(v.url)}#t=0.5" muted playsinline preload="metadata"></video>
+                    </div>
+                    <div class="vcard-body">
+                        <div class="vcard-title">${escapeHTML(v.title)}</div>
+                        <div class="vcard-meta">
+                            <span>${fmtDate(v.createdAt)}</span>
+                            <span>${fmtSize(v.size)}</span>
+                        </div>
+                    </div>
+                    <div class="vcard-actions">
+                        <a href="${escapeHTML(v.url)}" target="_blank" class="btn btn-secondary btn-sm">Preview</a>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteVideo('${escapeHTML(v.id)}','${escapeHTML((v.title || '').replace(/'/g,'&#39;'))}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {
+            loading.style.display = 'none';
+            empty.style.display = 'block';
+        }
+    }
+
+    window.deleteVideo = async function (id, title) {
+        if (!confirm(`Delete "${title}"? This removes it from the website and the storage bucket. This cannot be undone.`)) return;
+        const token = getServerToken();
+        if (!token) {
+            setAuthBanner(true);
+            showToast('Please reconnect to the server (sign in again).', 'danger');
+            return;
+        }
+        try {
+            const r = await fetch('/api/videos', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify({ id }),
+            });
+            if (!r.ok) {
+                const err = await r.json().catch(() => ({}));
+                throw new Error(err.error || ('Delete failed (' + r.status + ')'));
+            }
+            showToast('Video deleted.', 'success');
+            await loadList();
+        } catch (err) {
+            showToast(err.message || 'Delete failed', 'danger');
+        }
+    };
+
+    // ── RECONNECT (re-prompt password without leaving the page) ──
+    window.reconnectServerAuth = async function (e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const pass = prompt('Enter your dashboard password to reconnect:');
+        if (!pass) return;
+        try {
+            const r = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pass }),
+            });
+            const data = await r.json();
+            if (!r.ok || !data.token) throw new Error(data.error || 'Auth failed');
+            sessionStorage.setItem('kl360_server_token', data.token);
+            setAuthBanner(false);
+            showToast('Reconnected.', 'success');
+        } catch (err) {
+            showToast(err.message || 'Could not reconnect.', 'danger');
+        }
+    };
+
+    // Initial state
+    if (!getServerToken()) setAuthBanner(true);
+    loadList();
+})();
+</script>
+</body>
+</html>
