@@ -22,90 +22,198 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        .videos-hero {
-            height: 55vh; min-height: 400px;
-            display: flex; align-items: flex-end;
-            background: linear-gradient(rgba(27,27,26,0.45), rgba(27,27,26,0.85)),
-                        url('img-estate-1.png') center/cover;
-            padding: 5rem var(--gutter);
-        }
-        .videos-section { padding: 5rem var(--gutter); background: var(--ivory); }
-        .videos-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.25rem;
-        }
-        @media (max-width: 1000px) { .videos-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px)  { .videos-grid { grid-template-columns: 1fr; } }
+        /* ── PAGE THEME — cinematic dark ──────────────────────────── */
+        body { background: #0c0c0b; color: var(--ivory); }
 
-        .video-card {
-            background: #fff; border: 1px solid var(--border);
-            display: flex; flex-direction: column;
-            cursor: pointer; transition: transform .35s ease, box-shadow .35s ease;
+        /* Force the nav into its dark/scrolled state on this page (no cream bar over the dark canvas). */
+        .nav, .nav.scrolled {
+            background: rgba(12,12,11,0.78) !important;
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .video-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.25); }
-        .video-thumb {
-            position: relative; aspect-ratio: 16/9; background: #1b1b1a;
+        .nav .nav-logo, .nav.scrolled .nav-logo,
+        .nav .nav-links a, .nav.scrolled .nav-links a { color: var(--ivory) !important; }
+        .nav.scrolled .nav-links a:hover { color: var(--bronze) !important; }
+        .nav-cta { color: var(--ivory) !important; border-color: rgba(253,250,246,0.4) !important; }
+
+        /* ── PAGE LAYOUT ──────────────────────────────────────────── */
+        .vlib {
+            padding: calc(var(--header-h, 90px) + 2.5rem) 4vw 5rem;
+            max-width: 1700px; margin: 0 auto;
+        }
+        .vlib-head {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            flex-wrap: wrap; gap: 1.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 3rem;
+        }
+        .vlib-eyebrow {
+            font-family: var(--sans); font-size: 0.7rem;
+            letter-spacing: 0.28em; text-transform: uppercase;
+            color: var(--bronze); margin-bottom: 0.6rem;
+        }
+        .vlib-title {
+            font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300; line-height: 1.05; color: var(--ivory);
+        }
+        .vlib-title em { font-style: italic; color: var(--limestone); }
+        .vlib-count {
+            font-family: var(--sans); font-size: 0.78rem;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: rgba(216,204,188,0.55);
+        }
+
+        /* ── FEATURED (most recent) ──────────────────────────────── */
+        .vlib-feature {
+            position: relative; aspect-ratio: 21/9;
+            background: #000; overflow: hidden;
+            margin-bottom: 4rem; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        @media (max-width: 800px) { .vlib-feature { aspect-ratio: 16/10; } }
+        .vlib-feature video {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .vlib-feature:hover video { transform: scale(1.02); }
+        .vlib-feature-shade {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%),
+                linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.85) 100%);
+        }
+        .vlib-feature-meta {
+            position: absolute; left: 0; bottom: 0;
+            padding: 2.5rem 3rem;
+            max-width: 640px; color: var(--ivory);
+        }
+        .vlib-feature-tag {
+            display: inline-block;
+            font-size: 0.65rem; letter-spacing: 0.28em;
+            text-transform: uppercase; color: var(--bronze);
+            margin-bottom: 0.85rem;
+        }
+        .vlib-feature-title {
+            font-family: var(--serif); font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+            font-weight: 400; line-height: 1.1;
+            margin-bottom: 0.75rem;
+        }
+        .vlib-feature-desc {
+            font-size: 0.95rem; line-height: 1.55;
+            color: rgba(253,250,246,0.78);
+            margin-bottom: 1.4rem;
+            display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .video-thumb video, .video-thumb img {
+        .vlib-play-btn {
+            display: inline-flex; align-items: center; gap: 0.7rem;
+            padding: 0.85rem 1.6rem;
+            background: var(--ivory); color: #0c0c0b;
+            font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+            font-weight: 500; border: none; cursor: pointer;
+            transition: background 0.25s ease;
+        }
+        .vlib-play-btn:hover { background: var(--bronze); color: var(--ivory); }
+        .vlib-play-btn::before {
+            content: '▶'; font-size: 0.8rem;
+        }
+
+        /* ── ROW HEADER ──────────────────────────────────────────── */
+        .vlib-row-head {
+            font-family: var(--serif); font-size: 1.4rem;
+            font-weight: 400; color: var(--ivory);
+            margin-bottom: 1.25rem; letter-spacing: 0.01em;
+        }
+
+        /* ── GRID OF VIDEOS (Netflix-tile style) ─────────────────── */
+        .vlib-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem 1.25rem;
+        }
+        @media (min-width: 1200px) {
+            .vlib-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (min-width: 1500px) {
+            .vlib-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+
+        .vtile {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+        .vtile-thumb {
+            position: relative; aspect-ratio: 16/9;
+            background: #1a1a18;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .vtile-thumb video, .vtile-thumb img {
             width: 100%; height: 100%; object-fit: cover; display: block;
         }
-        .video-play-badge {
+        .vtile-thumb-overlay {
             position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+            opacity: 0; transition: opacity 0.3s ease;
             display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.35));
-            transition: background .3s ease;
         }
-        .video-card:hover .video-play-badge { background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.55)); }
-        .video-play-icon {
-            width: 64px; height: 64px; border-radius: 50%;
-            background: rgba(255,255,255,0.92); color: #1b1b1a;
+        .vtile-play {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: rgba(255,255,255,0.95); color: #0c0c0b;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; padding-left: 5px;
-            transition: transform .3s ease;
+            font-size: 1.15rem; padding-left: 4px;
+            transform: scale(0.85); transition: transform 0.3s ease;
         }
-        .video-card:hover .video-play-icon { transform: scale(1.08); }
-        .video-meta { padding: 1.4rem 1.4rem 1.6rem; }
-        .video-title {
-            font-family: var(--serif); font-size: 1.35rem; font-weight: 400;
-            color: var(--charcoal); line-height: 1.25; margin-bottom: 0.5rem;
+        .vtile:hover {
+            transform: translateY(-4px) scale(1.04);
+            z-index: 5;
+            box-shadow: 0 30px 60px -25px rgba(0,0,0,0.85);
         }
-        .video-desc {
-            font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary, #6f6960);
-            line-height: 1.55; opacity: 0.9;
-            display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical;
+        .vtile:hover .vtile-thumb-overlay { opacity: 1; }
+        .vtile:hover .vtile-play { transform: scale(1); }
+        .vtile-meta { padding: 0.85rem 0.25rem 0; }
+        .vtile-title {
+            font-family: var(--serif); font-size: 1.1rem; font-weight: 400;
+            color: var(--ivory); line-height: 1.25;
+            margin-bottom: 0.3rem;
+            display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .video-date {
-            margin-top: 0.85rem; font-size: 0.7rem; letter-spacing: 0.18em;
-            text-transform: uppercase; color: var(--bronze, #A47C48);
+        .vtile-date {
+            font-size: 0.65rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: rgba(216,204,188,0.45);
         }
 
-        .videos-empty {
-            text-align: center; padding: 4rem 1rem;
-            color: var(--text-secondary, #6f6960);
+        /* ── EMPTY / LOADING ─────────────────────────────────────── */
+        .vlib-loading, .vlib-empty {
+            text-align: center; padding: 6rem 1rem;
+            color: rgba(216,204,188,0.5);
         }
-        .videos-empty h3 {
-            font-family: var(--serif); font-size: 1.6rem; font-weight: 300;
-            color: var(--charcoal); margin-bottom: 0.6rem;
+        .vlib-empty h3 {
+            font-family: var(--serif); font-size: 1.8rem; font-weight: 300;
+            color: var(--ivory); margin-bottom: 0.6rem;
         }
-        .videos-loading {
-            text-align: center; padding: 3rem 1rem; opacity: 0.5;
-            font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+        .vlib-loading {
+            font-size: 0.75rem; letter-spacing: 0.25em;
+            text-transform: uppercase; opacity: 0.5;
         }
 
-        /* PLAYER MODAL */
+        /* ── PLAYER MODAL (cinematic) ────────────────────────────── */
         .vplayer-overlay {
             position: fixed; inset: 0; z-index: 9999;
-            background: rgba(15,15,14,0.92);
+            background: rgba(0,0,0,0.95);
             display: none; align-items: center; justify-content: center;
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1rem;
         }
         .vplayer-overlay.open { display: flex; }
         .vplayer-box {
-            width: 100%; max-width: 1100px;
-            background: #0c0c0b;
+            width: 100%; max-width: 1200px;
+            background: #050505;
             display: flex; flex-direction: column;
-            box-shadow: 0 30px 80px -20px rgba(0,0,0,.6);
+            box-shadow: 0 40px 100px -30px rgba(0,0,0,0.9);
         }
         .vplayer-video-wrap {
             position: relative; aspect-ratio: 16/9; background: #000;
@@ -114,16 +222,16 @@
             width: 100%; height: 100%; display: block;
         }
         .vplayer-info {
-            padding: 1.5rem 1.75rem 1.75rem;
+            padding: 1.75rem 2rem 2rem;
             color: var(--ivory);
         }
         .vplayer-info h2 {
-            font-family: var(--serif); font-size: 1.75rem; font-weight: 300;
+            font-family: var(--serif); font-size: 1.85rem; font-weight: 300;
             margin-bottom: 0.5rem;
         }
         .vplayer-info p {
             font-family: var(--sans); font-size: 0.92rem;
-            color: rgba(243,239,232,0.75); line-height: 1.6;
+            color: rgba(253,250,246,0.7); line-height: 1.6;
             white-space: pre-wrap;
         }
         .vplayer-close {
@@ -134,13 +242,18 @@
             display: flex; align-items: center; justify-content: center;
         }
         .vplayer-close:hover { background: rgba(0,0,0,0.85); }
+
+        /* ── FOOTER tweak so cream footer lifts off dark canvas ──── */
+        footer { background: #0a0a09 !important; border-top: 1px solid rgba(255,255,255,0.05); }
+        footer * { color: rgba(253,250,246,0.7) !important; }
+        footer .footer-logo span { color: var(--bronze) !important; }
     </style>
 </head>
 <body>
     <div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring" id="cursor-ring"></div></div>
 
-    <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
-        <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Concierge <span>360°</span></a>
+    <nav class="nav scrolled" id="nav">
+        <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="properties.html">Properties</a></li>
@@ -173,23 +286,31 @@
         <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
     </div>
 
-    <div class="videos-hero">
-        <div>
-            <span class="section-eyebrow">Kanye Concierge 360</span>
-            <h1 class="section-headline" style="color:var(--ivory);">Video<br><em>Library</em></h1>
-        </div>
-    </div>
-
-    <section class="videos-section">
-        <div class="max-w">
-            <div id="videos-loading" class="videos-loading">Loading library…</div>
-            <div id="videos-empty" class="videos-empty" style="display:none;">
-                <h3>The library is being curated.</h3>
-                <p>Property tours and neighborhood features will appear here soon.</p>
+    <main class="vlib">
+        <header class="vlib-head">
+            <div>
+                <div class="vlib-eyebrow">Kanye Concierge 360</div>
+                <h1 class="vlib-title">Video <em>Library</em></h1>
             </div>
-            <div class="videos-grid" id="videos-grid" style="display:none;"></div>
+            <div class="vlib-count" id="vlib-count" style="display:none;"></div>
+        </header>
+
+        <div id="vlib-loading" class="vlib-loading">Loading library…</div>
+
+        <div id="vlib-empty" class="vlib-empty" style="display:none;">
+            <h3>The library is being curated.</h3>
+            <p>Property tours and neighborhood features will appear here soon.</p>
         </div>
-    </section>
+
+        <!-- Featured (latest) — only shown when at least one video exists -->
+        <section id="vlib-feature-wrap" style="display:none;"></section>
+
+        <!-- Grid of remaining videos -->
+        <section id="vlib-grid-wrap" style="display:none;">
+            <div class="vlib-row-head" id="vlib-row-head">More from the library</div>
+            <div class="vlib-grid" id="vlib-grid"></div>
+        </section>
+    </main>
 
     <div class="vplayer-overlay" id="vplayer">
         <div class="vplayer-box">
@@ -233,37 +354,82 @@
             return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        let _videos = [];
+
         async function loadVideos() {
-            const grid    = document.getElementById('videos-grid');
-            const loading = document.getElementById('videos-loading');
-            const empty   = document.getElementById('videos-empty');
+            const loading      = document.getElementById('vlib-loading');
+            const empty        = document.getElementById('vlib-empty');
+            const featureWrap  = document.getElementById('vlib-feature-wrap');
+            const gridWrap     = document.getElementById('vlib-grid-wrap');
+            const grid         = document.getElementById('vlib-grid');
+            const rowHead      = document.getElementById('vlib-row-head');
+            const countEl      = document.getElementById('vlib-count');
+
             try {
                 const r = await fetch('/api/videos', { cache: 'no-store' });
                 const data = r.ok ? await r.json() : { videos: [] };
-                const videos = (data && data.videos) || [];
+                _videos = (data && data.videos) || [];
                 loading.style.display = 'none';
-                if (!videos.length) { empty.style.display = 'block'; return; }
-                grid.style.display = 'grid';
-                grid.innerHTML = videos.map(v => `
-                    <article class="video-card" data-id="${escapeHTML(v.id)}">
-                        <div class="video-thumb">
-                            <video src="${escapeHTML(v.url)}#t=0.5" muted playsinline preload="metadata"
-                                ${v.poster ? `poster="${escapeHTML(v.poster)}"` : ''}></video>
-                            <div class="video-play-badge"><div class="video-play-icon">▶</div></div>
+
+                if (!_videos.length) { empty.style.display = 'block'; return; }
+
+                // Header count
+                countEl.style.display = 'block';
+                countEl.textContent = _videos.length + (_videos.length === 1 ? ' film' : ' films');
+
+                // Featured = newest (videos arrive newest-first from the API)
+                const featured = _videos[0];
+                const rest     = _videos.slice(1);
+
+                featureWrap.style.display = 'block';
+                featureWrap.innerHTML = `
+                    <div class="vlib-feature" data-id="${escapeHTML(featured.id)}">
+                        <video src="${escapeHTML(featured.url)}#t=0.5" muted loop playsinline preload="metadata"
+                            ${featured.poster ? `poster="${escapeHTML(featured.poster)}"` : ''}></video>
+                        <div class="vlib-feature-shade"></div>
+                        <div class="vlib-feature-meta">
+                            <div class="vlib-feature-tag">Now Featured · ${fmtDate(featured.createdAt)}</div>
+                            <h2 class="vlib-feature-title">${escapeHTML(featured.title)}</h2>
+                            ${featured.description ? `<p class="vlib-feature-desc">${escapeHTML(featured.description)}</p>` : ''}
+                            <button type="button" class="vlib-play-btn">Play</button>
                         </div>
-                        <div class="video-meta">
-                            <h3 class="video-title">${escapeHTML(v.title)}</h3>
-                            ${v.description ? `<p class="video-desc">${escapeHTML(v.description)}</p>` : ''}
-                            <div class="video-date">${fmtDate(v.createdAt)}</div>
-                        </div>
-                    </article>
-                `).join('');
-                grid.querySelectorAll('.video-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        const v = videos.find(x => x.id === card.dataset.id);
-                        if (v) openVideoPlayer(v);
+                    </div>
+                `;
+                const featureEl = featureWrap.querySelector('.vlib-feature');
+                featureEl.addEventListener('click', () => openVideoPlayer(featured));
+
+                // Subtle hover-preview on the featured video — autoplay muted on hover only
+                const featureVid = featureEl.querySelector('video');
+                featureEl.addEventListener('mouseenter', () => { featureVid.play().catch(() => {}); });
+                featureEl.addEventListener('mouseleave', () => { featureVid.pause(); featureVid.currentTime = 0.5; });
+
+                if (rest.length) {
+                    gridWrap.style.display = 'block';
+                    rowHead.textContent = rest.length === 1 ? 'Also in the library' : 'More from the library';
+                    grid.innerHTML = rest.map(v => `
+                        <article class="vtile" data-id="${escapeHTML(v.id)}">
+                            <div class="vtile-thumb">
+                                <video src="${escapeHTML(v.url)}#t=0.5" muted playsinline preload="metadata"
+                                    ${v.poster ? `poster="${escapeHTML(v.poster)}"` : ''}></video>
+                                <div class="vtile-thumb-overlay"><div class="vtile-play">▶</div></div>
+                            </div>
+                            <div class="vtile-meta">
+                                <h3 class="vtile-title">${escapeHTML(v.title)}</h3>
+                                <div class="vtile-date">${fmtDate(v.createdAt)}</div>
+                            </div>
+                        </article>
+                    `).join('');
+                    grid.querySelectorAll('.vtile').forEach(tile => {
+                        const v   = rest.find(x => x.id === tile.dataset.id);
+                        const vid = tile.querySelector('video');
+                        tile.addEventListener('click', () => v && openVideoPlayer(v));
+                        // Hover-preview: play muted while pointer is over the tile
+                        tile.addEventListener('mouseenter', () => { vid && vid.play().catch(() => {}); });
+                        tile.addEventListener('mouseleave', () => { if (vid) { vid.pause(); vid.currentTime = 0.5; } });
                     });
-                });
+                } else {
+                    gridWrap.style.display = 'none';
+                }
             } catch (e) {
                 loading.style.display = 'none';
                 empty.style.display = 'block';
