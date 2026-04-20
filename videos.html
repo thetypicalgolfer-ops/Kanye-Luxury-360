@@ -201,47 +201,121 @@
             text-transform: uppercase; opacity: 0.5;
         }
 
-        /* ── PLAYER MODAL (cinematic) ────────────────────────────── */
+        /* ── PLAYER MODAL (cinematic, orientation-aware) ─────────── */
         .vplayer-overlay {
             position: fixed; inset: 0; z-index: 9999;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(6px);
             display: none; align-items: center; justify-content: center;
-            padding: 2rem 1rem;
+            padding: 2.5rem 1.25rem;
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
-        .vplayer-overlay.open { display: flex; }
+        .vplayer-overlay.open { display: flex; opacity: 1; }
+
+        /* Default (horizontal). Video on top, info below. Caps to 1100px wide. */
         .vplayer-box {
-            width: 100%; max-width: 1200px;
             background: #050505;
-            display: flex; flex-direction: column;
             box-shadow: 0 40px 100px -30px rgba(0,0,0,0.9);
+            display: flex; flex-direction: column;
+            width: auto; max-width: min(1100px, 92vw);
+            max-height: 92vh;
+            overflow: hidden;
+            transform: scale(0.96);
+            transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.25, 1), max-width 0.32s ease;
         }
+        .vplayer-overlay.open .vplayer-box { transform: scale(1); }
+
         .vplayer-video-wrap {
-            position: relative; aspect-ratio: 16/9; background: #000;
+            position: relative; background: #000;
+            display: flex; align-items: center; justify-content: center;
+            width: 100%;
+            aspect-ratio: 16 / 9;     /* default — overridden once we know the real aspect */
+            min-height: 0;
         }
         .vplayer-video-wrap video {
-            width: 100%; height: 100%; display: block;
+            width: 100%; height: 100%;
+            object-fit: contain; display: block;
+            background: #000;
         }
         .vplayer-info {
-            padding: 1.75rem 2rem 2rem;
+            padding: 1.5rem 2rem 1.75rem;
             color: var(--ivory);
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         .vplayer-info h2 {
-            font-family: var(--serif); font-size: 1.85rem; font-weight: 300;
-            margin-bottom: 0.5rem;
+            font-family: var(--serif); font-size: 1.7rem; font-weight: 300;
+            line-height: 1.15; margin-bottom: 0.5rem;
         }
         .vplayer-info p {
-            font-family: var(--sans); font-size: 0.92rem;
+            font-family: var(--sans); font-size: 0.9rem;
             color: rgba(253,250,246,0.7); line-height: 1.6;
             white-space: pre-wrap;
         }
-        .vplayer-close {
-            position: absolute; top: 1rem; right: 1rem; z-index: 2;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; cursor: pointer; font-size: 1.2rem;
-            display: flex; align-items: center; justify-content: center;
+
+        /* ── VERTICAL VIDEO LAYOUT (portrait, e.g. 9:16) ─────────────
+           Video sits left in a tall, narrow frame; metadata column on the right.
+           The whole modal stays centered and never spans more than ~85vh tall. */
+        .vplayer-box.is-vertical {
+            flex-direction: row;
+            max-width: min(820px, 95vw);
         }
-        .vplayer-close:hover { background: rgba(0,0,0,0.85); }
+        .vplayer-box.is-vertical .vplayer-video-wrap {
+            aspect-ratio: var(--video-aspect, 9 / 16);
+            height: min(85vh, 720px);
+            width: auto;
+            max-width: 60vw;
+            flex-shrink: 0;
+        }
+        .vplayer-box.is-vertical .vplayer-info {
+            flex: 1; min-width: 0;
+            padding: 2rem 1.75rem;
+            border-top: none;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; justify-content: flex-start;
+            overflow-y: auto;
+        }
+        .vplayer-box.is-vertical .vplayer-info h2 { font-size: 1.5rem; }
+
+        /* Square videos: keep a tighter modal. */
+        .vplayer-box.is-square {
+            max-width: min(680px, 92vw);
+        }
+        .vplayer-box.is-square .vplayer-video-wrap { aspect-ratio: 1 / 1; }
+
+        /* Horizontal videos use the explicit aspect of the actual file (e.g. 21:9). */
+        .vplayer-box.is-horizontal .vplayer-video-wrap {
+            aspect-ratio: var(--video-aspect, 16 / 9);
+        }
+
+        /* Mobile: collapse vertical layout back to stacked so info goes below the portrait video. */
+        @media (max-width: 720px) {
+            .vplayer-box.is-vertical {
+                flex-direction: column;
+                max-width: 95vw;
+            }
+            .vplayer-box.is-vertical .vplayer-video-wrap {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                max-height: 65vh;
+            }
+            .vplayer-box.is-vertical .vplayer-info {
+                border-left: none;
+                border-top: 1px solid rgba(255,255,255,0.05);
+                padding: 1.25rem 1.5rem 1.5rem;
+            }
+        }
+
+        .vplayer-close {
+            position: absolute; top: 0.85rem; right: 0.85rem; z-index: 5;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; cursor: pointer; font-size: 1.15rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .vplayer-close:hover { background: rgba(0,0,0,0.85); transform: scale(1.05); }
 
         /* ── FOOTER tweak so cream footer lifts off dark canvas ──── */
         footer { background: #0a0a09 !important; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -436,12 +510,38 @@
             }
         }
 
+        function applyPlayerOrientation() {
+            const video = document.getElementById('vplayer-video');
+            const box   = document.querySelector('#vplayer .vplayer-box');
+            if (!video || !box || !video.videoWidth || !video.videoHeight) return;
+            const w = video.videoWidth, h = video.videoHeight;
+            const ratio = w / h;
+
+            box.classList.remove('is-horizontal', 'is-vertical', 'is-square');
+            box.style.setProperty('--video-aspect', w + ' / ' + h);
+
+            if (ratio < 0.85)        box.classList.add('is-vertical');
+            else if (ratio > 1.15)   box.classList.add('is-horizontal');
+            else                     box.classList.add('is-square');
+        }
+
         function openVideoPlayer(v) {
             const overlay = document.getElementById('vplayer');
             const video   = document.getElementById('vplayer-video');
+            const box     = overlay.querySelector('.vplayer-box');
+
             document.getElementById('vplayer-title').textContent = v.title || '';
             document.getElementById('vplayer-desc').textContent  = v.description || '';
+
+            // Reset to default (horizontal) immediately so the modal doesn't flash at the wrong size.
+            box.classList.remove('is-horizontal', 'is-vertical', 'is-square');
+            box.classList.add('is-horizontal');
+            box.style.removeProperty('--video-aspect');
+
             video.src = v.url;
+            // Once metadata arrives, swap to the correct orientation class with a smooth transition.
+            video.addEventListener('loadedmetadata', applyPlayerOrientation, { once: true });
+
             overlay.classList.add('open');
             document.body.style.overflow = 'hidden';
             video.play().catch(() => {});
