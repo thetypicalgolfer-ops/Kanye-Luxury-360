@@ -2,6 +2,22 @@
 //   KANYE CONCIERGE 360 — ADMIN BACKEND · Full Engine
 // ============================================================
 
+// ── ONE-TIME LIVE CUTOVER ────────────────────────────────
+// Wipes any demo data previously cached in the client's browser so the
+// dashboard starts from a clean, live state. Bump this version string to
+// force another wipe in the future.
+(function () {
+    const SCHEMA_VERSION = 'live-1';
+    try {
+        if (localStorage.getItem('kl360_schema_version') !== SCHEMA_VERSION) {
+            localStorage.removeItem('kl360_listings');
+            localStorage.removeItem('kl360_inquiries');
+            localStorage.removeItem('kl360_campaigns');
+            localStorage.setItem('kl360_schema_version', SCHEMA_VERSION);
+        }
+    } catch (e) { /* localStorage unavailable — ignore */ }
+})();
+
 // ── DATA LAYER ───────────────────────────────────────────
 const DB = {
     get(key, fallback = []) {
@@ -14,36 +30,13 @@ const DB = {
         // Notify other tabs (homepage, properties) to re-render live
         try { new BroadcastChannel('kl360_sync').postMessage({ key }); } catch(e) {}
     },
-    getListings() {
-        return this.get('listings', [
-            { id:'1', title:'Limestone & Steel Contemporary Estate', location:'The Dominion · San Antonio, TX', price:4250000, beds:5, baths:6, sqft:7200, acres:1.2, status:'Active', tag:'Just Listed', visibility:'both', image:'../img-estate-1.png', photos:['../img-estate-1.png','../img-estate-1b.png','../img-estate-1c.png'], description:'A breathtaking fusion of natural limestone and steel. 5 beds, 6 baths, chef\'s kitchen, resort pool.', createdAt: new Date(Date.now()-2*86400000).toISOString() },
-            { id:'2', title:'Architectural Modern Home', location:'Alamo Heights · San Antonio, TX', price:2895000, beds:4, baths:4.5, sqft:4800, acres:0.5, status:'Active', tag:'Active', visibility:'both', image:'../img-estate-2a.png', photos:['../img-estate-2a.png','../img-estate-2b.png','../img-estate-2c.png'], description:'Clean lines, floor-to-ceiling glass, and bespoke finishes define this masterwork.', createdAt: new Date(Date.now()-7*86400000).toISOString() },
-            { id:'3', title:'Hill Country Legacy Ranch', location:'Boerne · Texas Hill Country', price:6800000, beds:4, baths:3, sqft:3800, acres:340, status:'Active', tag:'Ranch Land', visibility:'both', image:'../img-estate-3a.png', photos:['../img-estate-3a.png','../img-estate-3b.png','../img-estate-3c.png'], description:'340 pristine acres, ag-exempt, with a custom 4-bed lodge and multiple water features.', createdAt: new Date(Date.now()-14*86400000).toISOString() },
-            { id:'4', title:'Stone Oak Executive Estate', location:'Stone Oak · San Antonio, TX', price:1975000, beds:5, baths:4, sqft:4200, acres:0.8, status:'Pending', tag:'Under Contract', visibility:'listings', image:'../img-stone-oak-1.png', photos:['../img-stone-oak-1.png','../img-stone-oak-2.png','../img-stone-oak-3.png'], description:'Impeccably maintained estate in the heart of Stone Oak\'s premier gated community.', createdAt: new Date(Date.now()-21*86400000).toISOString() },
-            { id:'5', title:'New Braunfels Waterfront Estate', location:'New Braunfels · Comal County, TX', price:3450000, beds:6, baths:5, sqft:5600, acres:2.1, status:'Active', tag:'Waterfront', visibility:'listings', image:'../img-new-braunfels.png', photos:['../img-new-braunfels.png','../img-new-braunfels-b.png','../img-new-braunfels-c.png'], description:'Stunning river-front estate with private boat dock, infinity pool, and 6 en-suite bedrooms.', createdAt: new Date(Date.now()-5*86400000).toISOString() },
-            { id:'6', title:'Fredericksburg Wine Country Estate', location:'Fredericksburg · Gillespie County, TX', price:5200000, beds:4, baths:4, sqft:4900, acres:75, status:'Off-Market', tag:'Off-Market', visibility:'listings', image:'../img-fredericksburg.png', photos:['../img-fredericksburg.png','../img-fredericksburg-b.png','../img-fredericksburg-c.png'], description:'75-acre Hill Country estate surrounded by vineyards. Private guest cottage, pool, and event barn.', createdAt: new Date(Date.now()-30*86400000).toISOString() },
-        ]);
-    },
-    saveListings(data) { this.set('listings', data); },
-    getInquiries() {
-        return this.get('inquiries', [
-            { id:'1', name:'Michael & Elena Vance', email:'mvance@example.com', phone:'(210) 555-0192', intent:'Purchase a property', budget:'$3M–$5M', source:'Referral', message:'Looking for a private estate in The Dominion district. We need at least 5 bedrooms and a pool.', status:'Hot Lead', listingId:'1', createdAt: new Date(Date.now()-1*86400000).toISOString() },
-            { id:'2', name:'Arthur Pemberton', email:'a.pemberton@example.com', phone:'(210) 555-8839', intent:'Acquire land or ranch', budget:'$5M–$10M', source:'Google Search', message:'Interested in Hill Country ranch land, 200+ acres. Looking to build a legacy property for my family.', status:'Warm Lead', listingId:'3', createdAt: new Date(Date.now()-3*86400000).toISOString() },
-            { id:'3', name:'Jessica & Tom Wei', email:'jwei@example.com', phone:'(512) 555-4421', intent:'Purchase a property', budget:'$2M–$3M', source:'Zillow/Realtor', message:'Relocating from Austin, need modern luxury near top-rated schools in San Antonio.', status:'New', listingId:'2', createdAt: new Date(Date.now()-5*86400000).toISOString() },
-            { id:'4', name:'David Calderon', email:'d.calderon@example.com', phone:'(210) 555-7723', intent:'Sell my property', budget:'Not Specified', source:'Facebook', message:'I own a 4,500 sqft home in Stone Oak. Looking for a top agent to list it properly.', status:'Contacted', listingId:null, createdAt: new Date(Date.now()-8*86400000).toISOString() },
-            { id:'5', name:'Priya Nair', email:'p.nair@example.com', phone:'(210) 555-3351', intent:'Investment inquiry', budget:'$2M+', source:'Instagram', message:'Exploring investment-grade properties in the Hill Country corridor.', status:'New', listingId:null, createdAt: new Date(Date.now()-12*86400000).toISOString() },
-            { id:'6', name:'James & Carol Whitfield', email:'whitfields@example.com', phone:'(830) 555-2200', intent:'Purchase a property', budget:'$1M–$2M', source:'Website', message:'Retiring and looking for a Hill Country estate close to Boerne or Fredericksburg.', status:'Warm Lead', listingId:'3', createdAt: new Date(Date.now()-15*86400000).toISOString() },
-        ]);
-    },
+    // LIVE MODE: no seed data. Dashboard starts empty and populates
+    // only from real listings, website inquiries, and agent-created campaigns.
+    getListings()  { return this.get('listings',  []); },
+    saveListings(data)  { this.set('listings',  data); },
+    getInquiries() { return this.get('inquiries', []); },
     saveInquiries(data) { this.set('inquiries', data); },
-    getCampaigns() {
-        return this.get('campaigns', [
-            { id:'1', name:'Limestone Estate Launch', type:'Email Blast', status:'Live', audience:'Buyer Leads', sent:340, opens:218, clicks:64, engagement:64, notes:'Targeted at $3M–$5M buyer segment. Focus on architectural photography.', createdAt: new Date(Date.now()-5*86400000).toISOString() },
-            { id:'2', name:'Hill Country Ranch Teasers', type:'Social Media', status:'Live', audience:'Ranch Buyers', sent:0, opens:1240, clicks:312, engagement:25, notes:'Instagram + Facebook carousel ads targeting ranch and land buyers.', createdAt: new Date(Date.now()-2*86400000).toISOString() },
-            { id:'3', name:'Seller Valuation Drive — Q1', type:'Email Blast', status:'Completed', audience:'Seller Leads', sent:520, opens:312, clicks:89, engagement:60, notes:'Q1 seller campaign. Successfully generated 3 new listing appointments.', createdAt: new Date(Date.now()-30*86400000).toISOString() },
-            { id:'4', name:'Spring Luxury Open House Series', type:'Direct Mailer', status:'Draft', audience:'All Leads', sent:0, opens:0, clicks:0, engagement:0, notes:'Planned for April. High-gloss mailer targeting Dominion and Alamo Heights zip codes.', createdAt: new Date(Date.now()-1*86400000).toISOString() },
-        ]);
-    },
+    getCampaigns() { return this.get('campaigns', []); },
     saveCampaigns(data) { this.set('campaigns', data); },
 };
 
