@@ -35,6 +35,9 @@
         .nav .nav-links a, .nav.scrolled .nav-links a { color: var(--ivory) !important; }
         .nav.scrolled .nav-links a:hover { color: var(--bronze) !important; }
         .nav-cta { color: var(--ivory) !important; border-color: rgba(253,250,246,0.4) !important; }
+        /* Hamburger spans inherit currentColor — force ivory so the icon is visible on the dark nav. */
+        .nav-hamburger { color: var(--ivory) !important; }
+        .nav-hamburger span { background: var(--ivory) !important; }
 
         /* ── PAGE LAYOUT ──────────────────────────────────────────── */
         .vlib {
