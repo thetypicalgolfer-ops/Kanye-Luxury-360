@@ -335,14 +335,23 @@
     <nav class="nav scrolled" id="nav">
         <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="properties.html">Properties</a></li>
-            <li><a href="new-homes.html">New Homes</a></li>
-            <li><a href="communities.html">Communities</a></li>
+            <li class="has-dropdown">
+                <a href="properties.html">Properties</a>
+                <ul class="nav-dropdown">
+                    <li><a href="properties.html">All Properties</a></li>
+                    <li><a href="new-homes.html">New Homes</a></li>
+                    <li><a href="communities.html">Communities</a></li>
+                </ul>
+            </li>
             <li><a href="buy.html">Buy</a></li>
             <li><a href="sell.html">Sell</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="videos.html">Videos</a></li>
+            <li class="has-dropdown">
+                <a href="about.html">About</a>
+                <ul class="nav-dropdown">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                </ul>
+            </li>
             <li><a href="journal.html">Journal</a></li>
             <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -353,7 +362,6 @@
         </button>
     </nav>
     <div class="nav-mobile-menu" id="nav-mobile-menu">
-        <a href="index.html">Home</a>
         <a href="properties.html">Properties</a>
         <a href="new-homes.html">New Homes</a>
         <a href="communities.html">Communities</a>
@@ -362,8 +370,11 @@
         <a href="about.html">About</a>
         <a href="videos.html">Videos</a>
         <a href="journal.html">Journal</a>
+        <a href="contact.html">Contact</a>
         <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
-        <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
+        <a href="admin/login.html"
+            style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent
+            Login</a>
     </div>
 
     <main class="vlib">

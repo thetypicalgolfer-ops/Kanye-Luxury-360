@@ -108,17 +108,26 @@
 <nav class="nav scrolled" id="nav" style="background:rgba(243,239,232,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
     <a href="index.html" class="nav-logo" style="color:var(--charcoal)">Kanye Concierge <span>360°</span></a>
     <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="properties.html">Properties</a></li>
-        <li><a href="new-homes.html">New Homes</a></li>
-        <li><a href="communities.html">Communities</a></li>
-        <li><a href="buy.html">Buy</a></li>
-        <li><a href="sell.html">Sell</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="videos.html">Videos</a></li>
-        <li><a href="journal.html">Journal</a></li>
-        <li><a href="contact.html">Contact</a></li>
-    </ul>
+            <li class="has-dropdown">
+                <a href="properties.html">Properties</a>
+                <ul class="nav-dropdown">
+                    <li><a href="properties.html">All Properties</a></li>
+                    <li><a href="new-homes.html">New Homes</a></li>
+                    <li><a href="communities.html">Communities</a></li>
+                </ul>
+            </li>
+            <li><a href="buy.html">Buy</a></li>
+            <li><a href="sell.html">Sell</a></li>
+            <li class="has-dropdown">
+                <a href="about.html">About</a>
+                <ul class="nav-dropdown">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                </ul>
+            </li>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
     <a href="consultation.html" class="nav-cta btn btn-outline">Private Consultation</a>
     <a href="admin/login.html" class="nav-agent-login" title="Agent Portal">⬡ Agent</a>
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
@@ -126,19 +135,20 @@
     </button>
 </nav>
 <div class="nav-mobile-menu" id="nav-mobile-menu">
-    <a href="index.html">Home</a>
-    <a href="properties.html">Properties</a>
-    <a href="new-homes.html">New Homes</a>
-    <a href="communities.html">Communities</a>
-    <a href="buy.html">Buy</a>
-    <a href="sell.html">Sell</a>
-    <a href="about.html">About</a>
-    <a href="videos.html">Videos</a>
-    <a href="journal.html">Journal</a>
-    <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
-    <a href="admin/login.html"
-        style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
-</div>
+        <a href="properties.html">Properties</a>
+        <a href="new-homes.html">New Homes</a>
+        <a href="communities.html">Communities</a>
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell</a>
+        <a href="about.html">About</a>
+        <a href="videos.html">Videos</a>
+        <a href="journal.html">Journal</a>
+        <a href="contact.html">Contact</a>
+        <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
+        <a href="admin/login.html"
+            style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent
+            Login</a>
+    </div>
 
 <div class="article-hero">
     <img src="img-stone-oak-1.png" alt="Luxury home in Stone Oak San Antonio with limestone facade and mature oak trees">

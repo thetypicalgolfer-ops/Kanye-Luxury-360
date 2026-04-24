@@ -90,14 +90,23 @@
     <nav class="nav" id="nav">
         <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="properties.html">Properties</a></li>
-            <li><a href="new-homes.html">New Homes</a></li>
-            <li><a href="communities.html">Communities</a></li>
+            <li class="has-dropdown">
+                <a href="properties.html">Properties</a>
+                <ul class="nav-dropdown">
+                    <li><a href="properties.html">All Properties</a></li>
+                    <li><a href="new-homes.html">New Homes</a></li>
+                    <li><a href="communities.html">Communities</a></li>
+                </ul>
+            </li>
             <li><a href="buy.html">Buy</a></li>
             <li><a href="sell.html">Sell</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="videos.html">Videos</a></li>
+            <li class="has-dropdown">
+                <a href="about.html">About</a>
+                <ul class="nav-dropdown">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                </ul>
+            </li>
             <li><a href="journal.html">Journal</a></li>
             <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -108,7 +117,6 @@
         </button>
     </nav>
     <div class="nav-mobile-menu" id="nav-mobile-menu">
-        <a href="index.html">Home</a>
         <a href="properties.html">Properties</a>
         <a href="new-homes.html">New Homes</a>
         <a href="communities.html">Communities</a>
@@ -117,6 +125,7 @@
         <a href="about.html">About</a>
         <a href="videos.html">Videos</a>
         <a href="journal.html">Journal</a>
+        <a href="contact.html">Contact</a>
         <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
         <a href="admin/login.html"
             style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent
@@ -506,6 +515,7 @@
                 </div>
             </div>
             <form class="lead-form reveal" onsubmit="return false;">
+                <input type="text" id="f-website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;" aria-hidden="true">
                 <div class="form-row">
                     <div class="form-field">
                         <label for="f-name">Full Name</label>
@@ -539,6 +549,23 @@
                         placeholder="Tell us about your goals, timeline, and any specific requirements…"></textarea>
                 </div>
                 <button type="submit" class="form-submit">Request Private Consultation</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ──────────── PRIVATE LISTING ALERTS ──────────── -->
+    <section class="listing-alerts" id="listing-alerts">
+        <div class="listing-alerts-inner">
+            <div>
+                <span class="section-eyebrow">Private Access</span>
+                <h2>Off-Market<br><em>Listing Alerts</em></h2>
+                <p>Be the first to know when new estates, ranches, and Hill Country properties enter our private inventory — including off-market listings never advertised publicly.</p>
+            </div>
+            <form class="listing-alerts-form" novalidate>
+                <input type="email" placeholder="your@email.com" required aria-label="Email address">
+                <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                <button type="submit">Notify Me</button>
+                <noscript><div class="listing-alerts-fineprint">JavaScript required to subscribe.</div></noscript>
             </form>
         </div>
     </section>

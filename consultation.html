@@ -191,14 +191,23 @@
     <nav class="nav" id="nav">
         <a href="index.html" class="nav-logo">Kanye Concierge <span>360°</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="properties.html">Properties</a></li>
-            <li><a href="new-homes.html">New Homes</a></li>
-            <li><a href="communities.html">Communities</a></li>
+            <li class="has-dropdown">
+                <a href="properties.html">Properties</a>
+                <ul class="nav-dropdown">
+                    <li><a href="properties.html">All Properties</a></li>
+                    <li><a href="new-homes.html">New Homes</a></li>
+                    <li><a href="communities.html">Communities</a></li>
+                </ul>
+            </li>
             <li><a href="buy.html">Buy</a></li>
             <li><a href="sell.html">Sell</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="videos.html">Videos</a></li>
+            <li class="has-dropdown">
+                <a href="about.html">About</a>
+                <ul class="nav-dropdown">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                </ul>
+            </li>
             <li><a href="journal.html">Journal</a></li>
             <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -209,7 +218,6 @@
         </button>
     </nav>
     <div class="nav-mobile-menu" id="nav-mobile-menu">
-        <a href="index.html">Home</a>
         <a href="properties.html">Properties</a>
         <a href="new-homes.html">New Homes</a>
         <a href="communities.html">Communities</a>
@@ -218,8 +226,11 @@
         <a href="about.html">About</a>
         <a href="videos.html">Videos</a>
         <a href="journal.html">Journal</a>
+        <a href="contact.html">Contact</a>
         <a href="consultation.html" class="nav-mobile-cta">Private Consultation</a>
-        <a href="admin/login.html" style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent Login</a>
+        <a href="admin/login.html"
+            style="font-family:var(--sans);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage)">Agent
+            Login</a>
     </div>
 
     <!-- ── HERO ── -->
@@ -274,6 +285,7 @@
             <p>Complete the form below and a member of our team will reach out within 24 hours to schedule your private session.</p>
 
             <form class="lead-form" id="consult-form" onsubmit="return false;">
+                <input type="text" id="p-website" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;" aria-hidden="true">
                 <div class="form-row">
                     <div class="form-field"><label for="p-name">Full Name</label><input type="text" id="p-name" placeholder="Your name" required></div>
                     <div class="form-field"><label for="p-email">Email</label><input type="email" id="p-email" placeholder="your@email.com" required></div>
@@ -353,69 +365,78 @@
         }
     })();
 
-    // Consultation form handler (uses p- prefixed IDs)
+    // Consultation form handler — posts to /api/leads with FormSubmit fallback.
     const consultForm = document.getElementById('consult-form');
     if (consultForm) {
-        consultForm.addEventListener('submit', function(e) {
+        consultForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = consultForm.querySelector('.form-submit');
+            if (btn.disabled) return;
             const origText = btn.textContent;
             btn.textContent = 'Sending…';
             btn.disabled = true;
+            btn.style.background = '';
 
-            const name     = document.getElementById('p-name').value;
-            const email    = document.getElementById('p-email').value;
-            const phone    = (document.getElementById('p-phone') || {}).value || '';
-            const type     = (document.getElementById('p-type') || {}).value || '';
-            const budget   = (document.getElementById('p-budget') || {}).value || '';
-            const timeline = (document.getElementById('p-timeline') || {}).value || '';
-            const message  = (document.getElementById('p-msg') || {}).value || '';
+            const v = id => (document.getElementById(id) || {}).value || '';
+            const name     = v('p-name').trim();
+            const email    = v('p-email').trim();
+            const phone    = v('p-phone').trim();
+            const type     = v('p-type').trim();
+            const budget   = v('p-budget').trim();
+            const timeline = v('p-timeline').trim();
+            const message  = v('p-msg').trim();
 
-            // Save to localStorage for admin inquiry panel
+            if (!name)              { btn.textContent = 'Please add your name';      setTimeout(()=>{btn.textContent=origText;btn.disabled=false;},1800); return; }
+            if (!email && !phone)   { btn.textContent = 'Please add email or phone'; setTimeout(()=>{btn.textContent=origText;btn.disabled=false;},1800); return; }
+
+            const payload = {
+                name, email, phone,
+                intent: type,
+                budget,
+                timeline,
+                message,
+                source: 'consultation',
+                source_page: location.href,
+                website: v('p-website'),
+            };
+
+            let delivered = false;
             try {
-                const inqs = JSON.parse(localStorage.getItem('kl360_inquiries') || '[]');
-                inqs.unshift({
-                    id: Date.now().toString(),
-                    name: name,
-                    email: email,
-                    phone: phone || '\u2014',
-                    intent: type,
-                    budget: budget || 'Not Specified',
-                    status: 'New',
-                    source: 'Private Consultation',
-                    message: 'Timeline: ' + (timeline || 'Not specified') + '\n' + message,
-                    listingId: null,
-                    createdAt: new Date().toISOString()
+                const r = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
                 });
-                localStorage.setItem('kl360_inquiries', JSON.stringify(inqs));
-            } catch(err) {}
+                if (r.ok) delivered = true;
+            } catch (_) {}
 
-            // Send email via FormSubmit
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('email', email);
-            formData.append('phone', phone);
-            formData.append('_subject', 'Private Consultation Request — ' + name);
-            formData.append('consultation_type', type);
-            formData.append('budget', budget);
-            formData.append('timeline', timeline);
-            formData.append('message', message);
-            formData.append('_template', 'table');
+            if (!delivered) {
+                try {
+                    const fd = new FormData();
+                    fd.append('name', name);
+                    fd.append('email', email);
+                    fd.append('phone', phone);
+                    fd.append('_subject', 'Private Consultation Request - ' + name);
+                    fd.append('consultation_type', type);
+                    fd.append('budget', budget);
+                    fd.append('timeline', timeline);
+                    fd.append('message', message);
+                    fd.append('_template', 'table');
+                    const r = await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', { method: 'POST', body: fd });
+                    const data = await r.json().catch(() => ({}));
+                    if (data && String(data.success) === 'true') delivered = true;
+                } catch (_) {}
+            }
 
-            fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', {
-                method: 'POST',
-                body: formData
-            })
-            .then(function(res) { return res.json(); })
-            .then(function() {
-                btn.textContent = "Request Received — We'll be in touch.";
+            if (delivered) {
+                btn.textContent = "Request Received - We'll be in touch.";
                 btn.style.background = 'var(--sage)';
                 consultForm.reset();
-            })
-            .catch(function() {
-                btn.textContent = origText;
-                btn.disabled = false;
-            });
+            } else {
+                btn.textContent = 'Could not send - please call 830-699-6542';
+                btn.style.background = '#8a3a3a';
+                setTimeout(() => { btn.textContent = origText; btn.style.background=''; btn.disabled = false; }, 4500);
+            }
         });
     }
     </script>

@@ -245,71 +245,172 @@ tabs.forEach(tab => {
     });
 });
 // ── FORM SUBMIT ───────────────────────────────────────────
+// Posts to /api/leads (our Supabase-backed CRM). On failure, falls back
+// to FormSubmit.co so the lead still makes it to the inbox during outages
+// or before the client has finished setting up Supabase/Resend.
 const form = document.querySelector('.lead-form');
-if (form) {
-    form.addEventListener('submit', e => {
+if (form && !form.id) {           // consultation.html has its own handler via id=consult-form
+    form.addEventListener('submit', async e => {
         e.preventDefault();
         const btn = form.querySelector('.form-submit');
+        if (btn.disabled) return;
         const origText = btn.textContent;
         btn.textContent = 'Sending…';
         btn.disabled = true;
+        btn.style.background = '';
 
         // Detect which form (contact page vs homepage)
         const isContact = !!document.getElementById('c-name');
-        const name    = (document.getElementById(isContact ? 'c-name' : 'f-name') || {}).value || '';
-        const email   = (document.getElementById(isContact ? 'c-email' : 'f-email') || {}).value || '';
-        const phone   = (document.getElementById(isContact ? 'c-phone' : 'f-phone') || {}).value || '';
-        const intent  = (document.getElementById(isContact ? 'c-intent' : 'f-intent') || {}).value || '';
-        const budget  = isContact ? ((document.getElementById('c-budget') || {}).value || '') : '';
-        const message = (document.getElementById(isContact ? 'c-msg' : 'f-message') || {}).value || '';
+        const getVal = id => (document.getElementById(id) || {}).value || '';
+        const name    = getVal(isContact ? 'c-name'   : 'f-name').trim();
+        const email   = getVal(isContact ? 'c-email'  : 'f-email').trim();
+        const phone   = getVal(isContact ? 'c-phone'  : 'f-phone').trim();
+        const intent  = getVal(isContact ? 'c-intent' : 'f-intent').trim();
+        const budget  = isContact ? getVal('c-budget').trim() : '';
+        const message = getVal(isContact ? 'c-msg'    : 'f-message').trim();
 
-        // Save to localStorage for admin inquiry panel
+        // Validate on the client so we can give a helpful message before hitting the API.
+        if (!name) {
+            btn.textContent = 'Please add your name';
+            setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 1800);
+            return;
+        }
+        if (!email && !phone) {
+            btn.textContent = 'Please add email or phone';
+            setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 1800);
+            return;
+        }
+
+        const payload = {
+            name, email, phone, intent, budget, message,
+            source: isContact ? 'contact-page' : 'homepage',
+            source_page: (typeof location !== 'undefined' ? location.href : ''),
+            website: (document.getElementById(isContact ? 'c-website' : 'f-website') || {}).value || '',
+        };
+
+        let delivered = false;
         try {
-            const inqs = JSON.parse(localStorage.getItem('kl360_inquiries') || '[]');
-            inqs.unshift({
-                id: Date.now().toString(),
-                name: name,
-                email: email,
-                phone: phone || '—',
-                intent: intent,
-                budget: budget || 'Not Specified',
-                status: 'New',
-                source: 'Website',
-                message: message,
-                listingId: null,
-                createdAt: new Date().toISOString()
+            const r = await fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
-            localStorage.setItem('kl360_inquiries', JSON.stringify(inqs));
-        } catch(err) {}
+            if (r.ok) delivered = true;
+        } catch (_) { /* swallow and fall through to backup */ }
 
-        // Send email via FormSubmit
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('intent', intent);
-        formData.append('budget', budget);
-        formData.append('message', message);
-        formData.append('_subject', 'New Inquiry from ' + name + ' — Kanye Concierge 360');
-        formData.append('_template', 'table');
+        // Fallback — FormSubmit.co. Only fires if the main API didn't accept.
+        if (!delivered) {
+            try {
+                const fd = new FormData();
+                fd.append('name', name);
+                fd.append('email', email);
+                fd.append('phone', phone);
+                fd.append('intent', intent);
+                fd.append('budget', budget);
+                fd.append('message', message);
+                fd.append('_subject', 'New Inquiry from ' + name + ' — Kanye Concierge 360');
+                fd.append('_template', 'table');
+                const r = await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', { method: 'POST', body: fd });
+                const data = await r.json().catch(() => ({}));
+                // FormSubmit returns { success: "true" } on accepted; anything else means not delivered.
+                if (data && String(data.success) === 'true') delivered = true;
+            } catch (_) {}
+        }
 
-        fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
+        if (delivered) {
             btn.textContent = "Message Received — We'll be in touch.";
             btn.style.background = 'var(--sage)';
             form.reset();
-        })
-        .catch(err => {
-            btn.textContent = "Message Received — We'll be in touch.";
-            btn.style.background = 'var(--sage)';
-            form.reset();
-        });
+        } else {
+            btn.textContent = 'Could not send — please call 830-699-6542';
+            btn.style.background = '#8a3a3a';
+            setTimeout(() => {
+                btn.textContent = origText;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 4500);
+        }
     });
 }
+
+// ── PRIVATE LISTING ALERTS (lead magnet) ─────────────────
+// Single-email-field forms with class .listing-alerts-form. Posts to
+// /api/leads with intent=listing-alerts so the agent's inbox can tag them as
+// soft leads. The form lives on multiple pages — handler attaches to all.
+document.querySelectorAll('.listing-alerts-form').forEach(form => {
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type=submit]');
+        if (btn.disabled) return;
+        const origText = btn.textContent;
+
+        const emailEl = form.querySelector('input[type=email]');
+        const honeypotEl = form.querySelector('input[name=website]');
+        const email = (emailEl && emailEl.value || '').trim();
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            const orig = btn.textContent;
+            btn.textContent = 'Enter a valid email';
+            setTimeout(() => { btn.textContent = orig; }, 1800);
+            return;
+        }
+
+        btn.textContent = 'Sending…';
+        btn.disabled = true;
+
+        const payload = {
+            // Use the email's local part as the "name" so the lead has SOMETHING
+            // identifiable in the inbox until the agent collects more info.
+            name: email.split('@')[0],
+            email,
+            intent: 'Private Listing Alerts',
+            source: 'listing-alerts',
+            source_page: location.href,
+            website: (honeypotEl && honeypotEl.value) || '',
+        };
+
+        let delivered = false;
+        try {
+            const r = await fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (r.ok) delivered = true;
+        } catch (_) {}
+
+        // Fallback: drop a copy via FormSubmit so we don't lose the signup.
+        if (!delivered) {
+            try {
+                const fd = new FormData();
+                fd.append('email', email);
+                fd.append('_subject', 'New Listing Alerts subscriber — ' + email);
+                fd.append('_template', 'table');
+                const r = await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', { method: 'POST', body: fd });
+                const data = await r.json().catch(() => ({}));
+                if (data && String(data.success) === 'true') delivered = true;
+            } catch (_) {}
+        }
+
+        if (delivered) {
+            btn.textContent = "You're on the list ✓";
+            btn.style.background = 'var(--sage)';
+            btn.style.borderColor = 'var(--sage)';
+            btn.style.color = 'var(--ivory)';
+            if (emailEl) emailEl.value = '';
+        } else {
+            btn.textContent = 'Could not subscribe — please try again';
+            btn.style.background = '#8a3a3a';
+            btn.style.borderColor = '#8a3a3a';
+            setTimeout(() => {
+                btn.textContent = origText;
+                btn.style.background = '';
+                btn.style.borderColor = '';
+                btn.disabled = false;
+            }, 4500);
+        }
+    });
+});
 
 // ── CONTACT FORM AUTO-SELECT ──────────────────────────────
 const urlParams = new URLSearchParams(window.location.search);

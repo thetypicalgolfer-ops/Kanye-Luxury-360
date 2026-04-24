@@ -1,13 +1,14 @@
 {
   "name": "kanye-luxury-360",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Kanye Concierge 360 — Luxury real estate site with secured video uploads",
+  "description": "Kanye Concierge 360 — Luxury real estate site with CRM, video uploads, and lead notifications",
   "type": "module",
   "engines": {
     "node": ">=18.x"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
     "@vercel/blob": "^0.27.0"
   }
 }

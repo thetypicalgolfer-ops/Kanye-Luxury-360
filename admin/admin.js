@@ -136,11 +136,7 @@ function getStoredCredentials() {
 }
 
 function checkAuth() {
-    // Block mobile devices
-    if (window.innerWidth < 1024 && !window.location.pathname.endsWith('login.html')) {
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;font-family:sans-serif;background:#141413;color:#d8ccbc"><div><h2 style="font-size:1.3rem;margin-bottom:1rem;font-weight:300">Desktop Only</h2><p style="font-size:0.85rem;opacity:0.6;line-height:1.6">The Agent Portal is only available on desktop devices.<br>Please access from a computer.</p><a href="../index.html" style="display:inline-block;margin-top:1.5rem;color:#A47C48;font-size:0.8rem">← Back to Website</a></div></div>';
-        return;
-    }
+    // Mobile is fully supported now — the agent needs to read leads from his phone.
     if (!sessionStorage.getItem('kl360_auth') && !window.location.pathname.endsWith('login.html')) {
         window.location.href = 'login.html';
     }
@@ -181,12 +177,14 @@ function logout() {
 }
 
 // ── PAGE: LOGIN ───────────────────────────────────────────
+// Auth flow:
+//  1. Try the server-side /api/auth endpoint with the password. Server compares
+//     against ADMIN_PASSWORD_HASH (env var). If it accepts, we store both the
+//     session token AND the local sessionStorage flag — done.
+//  2. If the server returns 500 (env not configured yet), fall back to the
+//     legacy local hash check so the UI still works during initial deploy.
+//  3. Any other failure → invalid credentials.
 function initLogin() {
-    // Block mobile on login page too
-    if (window.innerWidth < 1024) {
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;font-family:sans-serif;background:#141413;color:#d8ccbc"><div><h2 style="font-size:1.3rem;margin-bottom:1rem;font-weight:300">Desktop Only</h2><p style="font-size:0.85rem;opacity:0.6;line-height:1.6">The Agent Portal is only available on desktop devices.<br>Please access from a computer.</p><a href="../index.html" style="display:inline-block;margin-top:1.5rem;color:#A47C48;font-size:0.8rem">← Back to Website</a></div></div>';
-        return;
-    }
     const form = $('login-form');
     if (!form) return;
     form.addEventListener('submit', async e => {
@@ -194,37 +192,59 @@ function initLogin() {
         const email = $('login-email').value.trim().toLowerCase();
         const pass  = $('login-pass').value;
         const btn   = form.querySelector('button[type=submit]');
+        const errEl = $('login-error');
+        if (errEl) errEl.style.display = 'none';
         btn.textContent = 'Signing in…';
         btn.disabled = true;
 
-        const creds = getStoredCredentials();
-        const inputHash = await hashPassword(pass);
-
-        if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
-            sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
-            // Also obtain a server-side session token so the agent can upload/delete videos.
-            // Failure here is non-fatal — the rest of the dashboard works offline; the
-            // videos page will simply show a "reconnect" banner.
-            try {
-                const r = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: pass }),
-                });
-                if (r.ok) {
-                    const data = await r.json();
-                    if (data && data.token) sessionStorage.setItem('kl360_server_token', data.token);
-                } else {
-                    sessionStorage.removeItem('kl360_server_token');
-                }
-            } catch { sessionStorage.removeItem('kl360_server_token'); }
-            window.location.href = 'dashboard.html';
-        } else {
-            const err = $('login-error');
-            if (err) { err.textContent = 'Invalid email or password.'; err.style.display = 'block'; }
+        const fail = msg => {
+            if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
             btn.textContent = 'Sign In to Dashboard';
             btn.disabled = false;
+        };
+
+        let serverOk = false;
+        let serverConfigured = true;
+        try {
+            const r = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pass }),
+            });
+            if (r.ok) {
+                const data = await r.json();
+                if (data && data.token) {
+                    sessionStorage.setItem('kl360_server_token', data.token);
+                    serverOk = true;
+                }
+            } else if (r.status === 500) {
+                serverConfigured = false;          // env not set on Vercel yet
+            } else {
+                sessionStorage.removeItem('kl360_server_token');
+            }
+        } catch {
+            serverConfigured = false;
         }
+
+        if (serverOk) {
+            sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
+            window.location.href = 'inbox.html';
+            return;
+        }
+
+        if (!serverConfigured) {
+            // Fallback to legacy local check — only reached when /api/auth env is missing.
+            const creds = getStoredCredentials();
+            const inputHash = await hashPassword(pass);
+            if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
+                sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
+                sessionStorage.removeItem('kl360_server_token');
+                window.location.href = 'inbox.html';
+                return;
+            }
+        }
+
+        fail('Invalid email or password.');
     });
 }
 
