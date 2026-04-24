@@ -8,6 +8,8 @@ const EDITABLE_FIELDS = [
     'agent_name', 'agent_email', 'agent_phone', 'agent_photo_url',
     'notify_email', 'notify_sms',
     'auto_reply_enabled', 'auto_reply_subject', 'auto_reply_body',
+    // Self-serve integrations editable from Settings → Integrations.
+    'calendly_url', 'ga4_id', 'meta_pixel_id',
 ];
 
 function bad(res, code, msg) { return res.status(code).json({ error: msg }); }

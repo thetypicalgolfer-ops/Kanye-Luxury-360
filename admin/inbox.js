@@ -18,6 +18,17 @@ function logoutInbox() {
     window.location.href = 'login.html';
 }
 
+// Mobile sidebar drawer (matches the pattern in admin.js's other pages).
+function toggleInboxSidebar() {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebar-overlay');
+    if (!sb) return;
+    const willOpen = !sb.classList.contains('open');
+    sb.classList.toggle('open', willOpen);
+    if (ov) ov.classList.toggle('open', willOpen);
+}
+window.toggleInboxSidebar = toggleInboxSidebar;
+
 // ── API ───────────────────────────────────────────────
 const API = {
     token() { return sessionStorage.getItem('kl360_server_token') || ''; },
@@ -160,10 +171,14 @@ function renderList() {
         const initials = (lead.name || '?')
             .split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('') || '?';
         const isSubscriber = lead.source === 'listing-alerts';
+        const isBooking    = lead.source === 'calendly';
         if (isSubscriber) row.classList.add('soft-lead');
+        if (isBooking)    row.classList.add('booking-lead');
         const sourceBadge = isSubscriber
             ? '<span class="lead-row-source-badge" title="Subscribed via listing-alerts form">Subscriber</span>'
-            : '';
+            : isBooking
+                ? '<span class="lead-row-source-badge booking" title="Calendar booking via Calendly">Booked</span>'
+                : '';
         const snippetText = isSubscriber
             ? (lead.email || 'Listing alerts subscriber')
             : (lead.message || lead.email || lead.phone || '');

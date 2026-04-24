@@ -67,6 +67,13 @@ create table if not exists agent_settings (
     constraint agent_settings_singleton check (id = 1)
 );
 
+-- Self-serve integrations the agent can wire up from the admin panel.
+-- All three values are returned by /api/site-config (public, read-only) so the
+-- public site can inject GA / Meta Pixel / Calendly without redeploying.
+alter table agent_settings add column if not exists calendly_url   text;
+alter table agent_settings add column if not exists ga4_id         text;   -- e.g. G-XXXXXXXXXX
+alter table agent_settings add column if not exists meta_pixel_id  text;   -- numeric Facebook Pixel id
+
 insert into agent_settings (id) values (1) on conflict (id) do nothing;
 
 -- updated_at trigger for leads

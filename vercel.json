@@ -4,8 +4,11 @@
     "api/upload-url.js":     { "maxDuration": 30 },
     "api/videos.js":         { "maxDuration": 10 },
     "api/auth.js":           { "maxDuration": 10 },
-    "api/leads.js":          { "maxDuration": 15 },
-    "api/lead-events.js":    { "maxDuration": 10 },
-    "api/agent-settings.js": { "maxDuration": 10 }
+    "api/leads.js":              { "maxDuration": 15 },
+    "api/lead-events.js":        { "maxDuration": 10 },
+    "api/agent-settings.js":     { "maxDuration": 10 },
+    "api/site-config.js":        { "maxDuration": 5  },
+    "api/integration-status.js": { "maxDuration": 8  },
+    "api/calendly-webhook.js":   { "maxDuration": 12 }
   }
 }

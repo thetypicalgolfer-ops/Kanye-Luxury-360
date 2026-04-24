@@ -8,13 +8,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
 <style>
+/* ── INBOX PAGE BAR (mobile-only header inside main) ──── */
+.inbox-page-bar {
+    display: none;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.inbox-page-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--ivory);
+    letter-spacing: 0.01em;
+}
+@media (max-width: 768px) {
+    .inbox-page-bar { display: flex; }
+}
+
 /* ── INBOX LAYOUT ─────────────────────────────────────── */
 .inbox-shell {
     display: grid;
     grid-template-columns: 360px 1fr 340px;
-    height: calc(100vh - var(--header-h));
     overflow: hidden;
     background: var(--bg-primary);
+    flex: 1;
+    min-height: 0;
 }
 @media (max-width: 1280px) {
     .inbox-shell { grid-template-columns: 320px 1fr 300px; }
@@ -23,7 +45,6 @@
     .inbox-shell {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
-        height: calc(100dvh - var(--header-h));
     }
     .inbox-list, .inbox-thread, .inbox-detail {
         display: none;
@@ -200,6 +221,16 @@
     background: linear-gradient(135deg, rgba(110,116,98,0.2), rgba(110,116,98,0.06));
     border-color: rgba(110,116,98,0.2);
     color: #b6b9a7;
+}
+.lead-row-source-badge.booking {
+    background: rgba(0,107,255,0.12);
+    color: #6ea3ff;
+    border-color: rgba(0,107,255,0.22);
+}
+.lead-row.booking-lead .lead-row-avatar {
+    background: linear-gradient(135deg, rgba(0,107,255,0.22), rgba(0,107,255,0.06));
+    border-color: rgba(0,107,255,0.22);
+    color: #6ea3ff;
 }
 
 /* ── THREAD (center) ─────────────────────────────────── */
@@ -538,27 +569,43 @@
 </head>
 <body data-page="inbox">
 
-<div id="config-banner" class="config-banner" style="display:none">
-    Backend not yet connected. New leads will be emailed but not stored. <a href="../SETUP.md" target="_blank">Finish setup →</a>
-</div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleInboxSidebar()"></div>
 
-<header class="top-header" style="padding-left:1.4rem">
-    <div class="header-left">
-        <a href="inbox.html" class="brand-link">Kanye Concierge <span>360°</span></a>
-        <span class="brand-divider">/</span>
-        <div class="header-crumb">Inbox</div>
-    </div>
-    <div class="header-right" style="gap:0.15rem">
-        <a href="inbox.html"     class="top-nav-link" style="color:var(--ivory)">Inbox</a>
-        <a href="listings.html"  class="top-nav-link">Listings</a>
-        <a href="videos.html"    class="top-nav-link">Videos</a>
-        <a href="settings.html"  class="top-nav-link">Settings</a>
-        <a href="../index.html"  class="top-nav-link" target="_blank" title="View public site">Site ↗</a>
-        <button class="top-nav-link signout" onclick="logoutInbox()">Sign Out</button>
-    </div>
-</header>
+<div class="app-layout">
 
-<div class="inbox-shell" id="inbox-shell">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div>
+                <div class="sidebar-brand-logo">Kanye Concierge <span>360°</span></div>
+                <div class="sidebar-brand-tag">Agent Portal</div>
+            </div>
+        </div>
+        <div class="sidebar-section-label">Navigation</div>
+        <nav class="sidebar-nav">
+            <a href="inbox.html"     class="nav-item active"><span class="nav-item-icon">✉</span> Inbox</a>
+            <a href="listings.html"  class="nav-item"><span class="nav-item-icon">🏠</span> Listings</a>
+            <a href="videos.html"    class="nav-item"><span class="nav-item-icon">🎬</span> Videos</a>
+            <a href="settings.html"  class="nav-item"><span class="nav-item-icon">⚙</span> Settings</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="../index.html" class="nav-item" target="_blank"><span class="nav-item-icon">🌐</span> View Website</a>
+            <a href="#" class="nav-item" onclick="logoutInbox(); return false;"><span class="nav-item-icon">→</span> Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div id="config-banner" class="config-banner" style="display:none">
+            Backend not yet connected. New leads will be emailed but not stored. <a href="../SETUP.md" target="_blank">Finish setup →</a>
+        </div>
+
+        <!-- Mobile-only top bar (hamburger + page title). Hidden on desktop where the sidebar is always visible. -->
+        <div class="inbox-page-bar">
+            <button class="mobile-menu-btn" onclick="toggleInboxSidebar()" aria-label="Open menu">☰</button>
+            <div class="inbox-page-title">Inbox</div>
+        </div>
+
+        <div class="inbox-shell" id="inbox-shell">
     <!-- LIST -->
     <aside class="inbox-list" id="inbox-list" data-mobile-active="list">
         <div class="inbox-list-head">
@@ -617,7 +664,9 @@
             <p style="font-size:0.85rem">Lead details appear here.</p>
         </div>
     </aside>
-</div>
+        </div><!-- /.inbox-shell -->
+    </main>
+</div><!-- /.app-layout -->
 
 <div id="toast-container" class="toast-container"></div>
 

@@ -244,26 +244,112 @@
 
                     <!-- Integrations Panel -->
                     <div class="settings-panel" id="panel-integrations">
-                        <div class="section-card">
+
+                        <!-- Live status of backend services -->
+                        <div class="section-card" style="margin-bottom:1.5rem">
                             <div class="section-card-header">
-                                <div class="section-card-title">Connected Services</div>
+                                <div class="section-card-title">Backend Services</div>
+                            </div>
+                            <div class="section-card-body" id="status-cards">
+                                <div style="font-size:0.82rem;color:var(--text-secondary)">Loading status…</div>
+                            </div>
+                        </div>
+
+                        <!-- Self-serve integrations the agent can wire up themselves -->
+                        <div class="section-card" style="margin-bottom:1.5rem">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Lead-Generating Integrations</div>
                             </div>
                             <div class="section-card-body">
-                                <div class="integration-card">
-                                    <div class="integration-icon">MLS</div>
-                                    <div style="flex-grow:1">
-                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">SABOR MLS</div>
-                                        <div style="font-size:0.8rem;color:var(--text-secondary)">Sync listings automatically. Last sync: Today, 8:42 AM.</div>
+                                <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.55;margin-bottom:1.5rem">
+                                    Paste IDs/links from each service below. They take effect on the public site within ~5 minutes (CDN cache). All three are <strong style="color:var(--ivory)">free</strong>.
+                                </p>
+
+                                <!-- Calendly -->
+                                <div class="integration-card" style="flex-direction:column;align-items:stretch;gap:0.85rem;padding:1.5rem">
+                                    <div style="display:flex;align-items:center;gap:1rem">
+                                        <div class="integration-icon" style="background:#006bff20;color:#006bff;font-family:var(--sans);font-weight:600">C</div>
+                                        <div style="flex-grow:1">
+                                            <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Calendly</div>
+                                            <div style="font-size:0.78rem;color:var(--text-secondary)">Book consultations directly. Adds a "Book a 30-min call" CTA to the consultation page.</div>
+                                        </div>
+                                        <span class="status-pill" id="calendly-status" style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:99px;background:rgba(216,204,188,0.1);color:var(--text-dim)">Not set</span>
                                     </div>
-                                    <button class="btn btn-secondary btn-sm">Disconnect</button>
+                                    <input class="form-control" type="url" id="setting-calendly-url" placeholder="https://calendly.com/your-handle/30min">
+                                    <div style="display:flex;justify-content:space-between;align-items:center">
+                                        <a href="https://calendly.com/signup" target="_blank" rel="noopener" style="font-size:0.72rem;color:var(--bronze)">Don't have Calendly? Sign up free →</a>
+                                        <a href="#" id="calendly-test" style="font-size:0.72rem;color:var(--text-secondary);display:none">Test link ↗</a>
+                                    </div>
+                                </div>
+
+                                <!-- Google Analytics 4 -->
+                                <div class="integration-card" style="flex-direction:column;align-items:stretch;gap:0.85rem;padding:1.5rem">
+                                    <div style="display:flex;align-items:center;gap:1rem">
+                                        <div class="integration-icon" style="background:#f9ab0020;color:#f9ab00;font-family:var(--sans);font-weight:600">GA</div>
+                                        <div style="flex-grow:1">
+                                            <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Google Analytics 4</div>
+                                            <div style="font-size:0.78rem;color:var(--text-secondary)">Track which pages get traffic, where leads come from, what's working.</div>
+                                        </div>
+                                        <span class="status-pill" id="ga4-status" style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:99px;background:rgba(216,204,188,0.1);color:var(--text-dim)">Not set</span>
+                                    </div>
+                                    <input class="form-control" type="text" id="setting-ga4-id" placeholder="G-XXXXXXXXXX">
+                                    <a href="https://analytics.google.com/analytics/web/#/a/admin/property" target="_blank" rel="noopener" style="font-size:0.72rem;color:var(--bronze)">Get your Measurement ID at Analytics → Admin → Data Streams →</a>
+                                </div>
+
+                                <!-- Meta Pixel -->
+                                <div class="integration-card" style="flex-direction:column;align-items:stretch;gap:0.85rem;padding:1.5rem">
+                                    <div style="display:flex;align-items:center;gap:1rem">
+                                        <div class="integration-icon" style="background:#1877f220;color:#1877f2;font-family:var(--sans);font-weight:600">M</div>
+                                        <div style="flex-grow:1">
+                                            <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Meta Pixel</div>
+                                            <div style="font-size:0.78rem;color:var(--text-secondary)">Required for any future Facebook/Instagram ads. Install now so it has data when you start.</div>
+                                        </div>
+                                        <span class="status-pill" id="pixel-status" style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:99px;background:rgba(216,204,188,0.1);color:var(--text-dim)">Not set</span>
+                                    </div>
+                                    <input class="form-control" type="text" id="setting-meta-pixel-id" placeholder="1234567890123456">
+                                    <a href="https://business.facebook.com/events_manager2/list/pixel" target="_blank" rel="noopener" style="font-size:0.72rem;color:var(--bronze)">Get your Pixel ID at Meta Events Manager →</a>
+                                </div>
+
+                                <div style="margin-top:1.5rem;display:flex;gap:0.75rem;align-items:center">
+                                    <button class="btn btn-primary" id="save-integrations-btn">Save Integrations</button>
+                                    <span id="save-integrations-msg" style="font-size:0.8rem;color:var(--text-secondary)"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paid lead sources (informational, no admin form) -->
+                        <div class="section-card">
+                            <div class="section-card-header">
+                                <div class="section-card-title">Paid Lead Sources</div>
+                            </div>
+                            <div class="section-card-body">
+                                <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.55;margin-bottom:1.5rem">
+                                    These can't be wired in from the admin — Kanye signs up directly. Listed here for reference.
+                                </p>
+
+                                <div class="integration-card">
+                                    <div class="integration-icon" style="background:#0074e420;color:#0074e4">Z</div>
+                                    <div style="flex-grow:1">
+                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Zillow Premier Agent</div>
+                                        <div style="font-size:0.78rem;color:var(--text-secondary)">Show on listing pages people are already viewing. <span style="color:var(--bronze)">~$300–1,500/mo</span> per zip.</div>
+                                    </div>
+                                    <a href="https://www.zillow.com/premier-agent/" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Sign up ↗</a>
                                 </div>
                                 <div class="integration-card">
-                                    <div class="integration-icon" style="color:#00bd59">M</div>
+                                    <div class="integration-icon" style="background:#bf404020;color:#bf4040">R</div>
                                     <div style="flex-grow:1">
-                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Mailchimp</div>
-                                        <div style="font-size:0.8rem;color:var(--text-secondary)">Not connected.</div>
+                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">Realtor.com Connections+</div>
+                                        <div style="font-size:0.78rem;color:var(--text-secondary)">Same idea, slightly cheaper, slightly lower volume.</div>
                                     </div>
-                                    <button class="btn btn-primary btn-sm">Connect</button>
+                                    <a href="https://marketing.realtor.com/connectionsplus/" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Sign up ↗</a>
+                                </div>
+                                <div class="integration-card">
+                                    <div class="integration-icon" style="background:#a47c4820;color:var(--bronze)">MLS</div>
+                                    <div style="flex-grow:1">
+                                        <div style="font-weight:500;font-size:0.95rem;margin-bottom:0.15rem">SABOR MLS / IDX feed</div>
+                                        <div style="font-size:0.78rem;color:var(--text-secondary)">Real property search on the site. Requires broker (XSellence) approval + ~$50–200/mo IDX vendor.</div>
+                                    </div>
+                                    <a href="https://www.idxbroker.com/" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Compare vendors ↗</a>
                                 </div>
                             </div>
                         </div>
@@ -306,16 +392,207 @@
 <script src="admin.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Settings Tabs Logic
+    // ── Tab switcher ──────────────────────────────────────────
     const buttons = document.querySelectorAll('.settings-menu-btn');
-    const panels = document.querySelectorAll('.settings-panel');
+    const panels  = document.querySelectorAll('.settings-panel');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             buttons.forEach(b => b.classList.remove('active'));
             panels.forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById(btn.dataset.target).classList.add('active');
+            if (btn.dataset.target === 'panel-integrations') {
+                loadIntegrationStatus();
+                loadIntegrationSettings();
+            }
         });
+    });
+
+    // ── INTEGRATIONS ──────────────────────────────────────────
+    const apiHeaders = () => {
+        const h = { 'Content-Type': 'application/json' };
+        const t = sessionStorage.getItem('kl360_server_token');
+        if (t) h['Authorization'] = 'Bearer ' + t;
+        return h;
+    };
+
+    function badge(state, label) {
+        const el = document.createElement('span');
+        el.style.cssText = 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:99px;font-weight:500;';
+        const map = {
+            ok:    { bg: 'rgba(110,116,98,0.18)',  fg: '#9aa589', text: label || 'Connected' },
+            warn:  { bg: 'rgba(199,86,53,0.15)',   fg: '#d97a5b', text: label || 'Sandbox' },
+            off:   { bg: 'rgba(216,204,188,0.08)', fg: 'rgba(216,204,188,0.4)', text: label || 'Not configured' },
+            err:   { bg: 'rgba(185,87,87,0.15)',   fg: '#d97a7a', text: label || 'Error' },
+        };
+        const m = map[state] || map.off;
+        el.style.background = m.bg;
+        el.style.color = m.fg;
+        el.textContent = m.text;
+        return el;
+    }
+
+    function statusCard(name, subtitle, state, label, extra) {
+        const card = document.createElement('div');
+        card.className = 'integration-card';
+        const left = document.createElement('div');
+        left.style.flexGrow = '1';
+        const t = document.createElement('div');
+        t.style.cssText = 'font-weight:500;font-size:0.95rem;margin-bottom:0.15rem';
+        t.textContent = name;
+        const s = document.createElement('div');
+        s.style.cssText = 'font-size:0.78rem;color:var(--text-secondary);line-height:1.4';
+        s.innerHTML = subtitle + (extra ? `<br><span style="color:var(--text-dim)">${extra}</span>` : '');
+        left.appendChild(t);
+        left.appendChild(s);
+        card.appendChild(left);
+        card.appendChild(badge(state, label));
+        return card;
+    }
+
+    async function loadIntegrationStatus() {
+        const wrap = document.getElementById('status-cards');
+        if (!wrap) return;
+        wrap.innerHTML = '<div style="font-size:0.82rem;color:var(--text-secondary)">Loading status…</div>';
+        try {
+            const r = await fetch('/api/integration-status', { headers: apiHeaders(), cache: 'no-store' });
+            if (!r.ok) throw new Error('status ' + r.status);
+            const s = await r.json();
+            wrap.innerHTML = '';
+
+            // Supabase
+            if (s.supabase.connected)         wrap.appendChild(statusCard('Supabase Database', 'Lead persistence + agent settings', 'ok'));
+            else if (s.supabase.configured)   wrap.appendChild(statusCard('Supabase Database', 'Configured but not responding', 'err', 'Error', s.supabase.error || ''));
+            else                              wrap.appendChild(statusCard('Supabase Database', 'Not yet wired up — see SETUP.md', 'off'));
+
+            // Resend
+            if (s.resend.configured && !s.resend.sandboxMode) {
+                wrap.appendChild(statusCard('Resend Email', `Lead alerts → ${s.resend.notifyEmail || '(no recipient)'}`, 'ok'));
+            } else if (s.resend.configured && s.resend.sandboxMode) {
+                wrap.appendChild(statusCard('Resend Email',
+                    `Sandbox mode — alerts go to ${s.resend.notifyEmail || '(no recipient)'}. Sender shows as @resend.dev because the domain isn't verified yet.`,
+                    'warn', 'Sandbox'));
+            } else {
+                wrap.appendChild(statusCard('Resend Email', 'Lead alerts disabled — no API key set', 'off'));
+            }
+
+            // Twilio
+            if (s.twilio.configured) wrap.appendChild(statusCard('Twilio SMS', `SMS → ${s.twilio.notifyPhone || '(no recipient)'}`, 'ok'));
+            else                     wrap.appendChild(statusCard('Twilio SMS', 'Not configured. Gmail push notifications cover most of the value.', 'off'));
+
+            // Vercel Blob (videos)
+            if (s.vercelBlob.configured) wrap.appendChild(statusCard('Vercel Blob (videos)', 'Video upload storage', 'ok'));
+            else                         wrap.appendChild(statusCard('Vercel Blob (videos)', 'Not configured — video uploads will fail', 'err'));
+
+            // Admin Auth
+            if (s.adminAuth.configured) wrap.appendChild(statusCard('Admin Auth', 'Server-side password validation', 'ok'));
+            else                        wrap.appendChild(statusCard('Admin Auth', 'Falling back to local hash check (less secure)', 'warn', 'Fallback'));
+        } catch (err) {
+            wrap.innerHTML = `<div style="font-size:0.82rem;color:#d97a7a">Could not load status: ${err.message}</div>`;
+        }
+    }
+
+    async function loadIntegrationSettings() {
+        try {
+            const r = await fetch('/api/agent-settings', { headers: apiHeaders(), cache: 'no-store' });
+            if (!r.ok) return;
+            const j = await r.json();
+            const s = j.settings || {};
+            const cal = document.getElementById('setting-calendly-url');
+            const ga4 = document.getElementById('setting-ga4-id');
+            const px  = document.getElementById('setting-meta-pixel-id');
+            if (cal) cal.value = s.calendly_url   || '';
+            if (ga4) ga4.value = s.ga4_id         || '';
+            if (px)  px.value  = s.meta_pixel_id  || '';
+            updateIntegrationPills(s);
+        } catch (_) {}
+    }
+
+    function updateIntegrationPills(s) {
+        const set = (id, on) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (on) {
+                el.textContent = 'Connected';
+                el.style.background = 'rgba(110,116,98,0.18)';
+                el.style.color = '#9aa589';
+            } else {
+                el.textContent = 'Not set';
+                el.style.background = 'rgba(216,204,188,0.1)';
+                el.style.color = 'var(--text-dim)';
+            }
+        };
+        set('calendly-status', !!(s && s.calendly_url));
+        set('ga4-status',      !!(s && s.ga4_id));
+        set('pixel-status',    !!(s && s.meta_pixel_id));
+
+        const testLink = document.getElementById('calendly-test');
+        if (testLink) {
+            if (s && s.calendly_url) {
+                testLink.href = s.calendly_url;
+                testLink.target = '_blank';
+                testLink.style.display = '';
+            } else {
+                testLink.style.display = 'none';
+            }
+        }
+    }
+
+    const saveBtn = document.getElementById('save-integrations-btn');
+    if (saveBtn) saveBtn.addEventListener('click', async () => {
+        const msg = document.getElementById('save-integrations-msg');
+        const cal = (document.getElementById('setting-calendly-url').value || '').trim();
+        const ga4 = (document.getElementById('setting-ga4-id').value || '').trim();
+        const px  = (document.getElementById('setting-meta-pixel-id').value || '').trim();
+
+        // Light client-side validation so users get instant feedback.
+        if (cal && !/^https?:\/\/(\w+\.)?calendly\.com\//i.test(cal)) {
+            msg.style.color = '#d97a7a';
+            msg.textContent = 'Calendly URL must look like https://calendly.com/your-handle/30min';
+            return;
+        }
+        if (ga4 && !/^G-[A-Z0-9]{6,12}$/.test(ga4)) {
+            msg.style.color = '#d97a7a';
+            msg.textContent = 'GA4 ID should look like G-XXXXXXXXXX';
+            return;
+        }
+        if (px && !/^\d{8,20}$/.test(px)) {
+            msg.style.color = '#d97a7a';
+            msg.textContent = 'Meta Pixel ID is a 8–20 digit number';
+            return;
+        }
+
+        saveBtn.disabled = true;
+        const orig = saveBtn.textContent;
+        saveBtn.textContent = 'Saving…';
+        msg.style.color = 'var(--text-secondary)';
+        msg.textContent = '';
+
+        try {
+            const r = await fetch('/api/agent-settings', {
+                method: 'PUT',
+                headers: apiHeaders(),
+                body: JSON.stringify({
+                    calendly_url:  cal || null,
+                    ga4_id:        ga4 || null,
+                    meta_pixel_id: px  || null,
+                }),
+            });
+            if (!r.ok) {
+                const j = await r.json().catch(() => ({}));
+                throw new Error(j.error || ('HTTP ' + r.status));
+            }
+            const j = await r.json();
+            updateIntegrationPills(j.settings);
+            msg.style.color = '#9aa589';
+            msg.textContent = 'Saved. Public site will pick up new values within ~5 minutes.';
+        } catch (err) {
+            msg.style.color = '#d97a7a';
+            msg.textContent = 'Could not save: ' + err.message;
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = orig;
+        }
     });
 });
 </script>
