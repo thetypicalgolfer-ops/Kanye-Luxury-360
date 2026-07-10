@@ -1,5 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/((?!suspended\\.html).*)",
+      "destination": "/suspended.html",
+      "permanent": false
+    }
+  ],
   "functions": {
     "api/upload-url.js":     { "maxDuration": 30 },
     "api/videos.js":         { "maxDuration": 10 },
