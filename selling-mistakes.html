@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Checklist: 10 Red Flags Your Realtor Is Quietly Costing You Money | Kanye Concierge 360</title>
+<title>Free Checklist: 10 Mistakes That Scare Off Luxury Buyers | Kanye Concierge 360</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<meta name="description" content="Most home sellers never spot the warning signs until it&#x27;s already cost them thousands. Enter your email and we&#x27;ll send you the full checklist — free, no obligation.">
-<link rel="canonical" href="https://kanyeconcierge360.com/red-flags.html">
-<meta property="og:title" content="Free Checklist: 10 Red Flags Your Realtor Is Quietly Costing You Money"><meta property="og:description" content="Most home sellers never spot the warning signs until it&#x27;s already cost them thousands. Enter your email and we&#x27;ll send you the full checklist — free, no obligation."><meta property="og:type" content="website"><meta property="og:image" content="img-estate-2a.png">
+<meta name="description" content="Your luxury home isn&#x27;t selling — and it&#x27;s probably one of these ten mistakes. Get the checklist and fix them before you list. Free, no obligation.">
+<link rel="canonical" href="https://kanyeconcierge360.com/selling-mistakes.html">
+<meta property="og:title" content="Free Checklist: 10 Mistakes That Scare Off Luxury Buyers"><meta property="og:description" content="Your luxury home isn&#x27;t selling — and it&#x27;s probably one of these ten mistakes. Get the checklist and fix them before you list. Free, no obligation."><meta property="og:type" content="website"><meta property="og:image" content="img-fredericksburg.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -35,10 +35,10 @@
   <div class="sq">
     <div class="sq-left">
       <div class="sq-logo">Kanye Concierge <span>360°</span></div>
-      <div class="sq-kicker">Free San Antonio Seller Checklist</div>
-      <h1>10 Red Flags Your Realtor Is <em>Quietly</em> Costing You Money</h1>
-      <p class="sq-sub">Most home sellers never spot the warning signs until it&#x27;s already cost them thousands. Enter your email and we&#x27;ll send you the full checklist — free, no obligation.</p>
-      <ul class="sq-list"><li>Why “I'll just put it on the MLS” is a giant red flag for a luxury home</li><li>The pricing trick agents use to win your listing — and lose you money</li><li>The one question that exposes a part-time agent in ten seconds</li><li>What a real luxury marketing plan looks like (and what a fake one looks like)</li></ul>
+      <div class="sq-kicker">Free Luxury Seller Checklist</div>
+      <h1>10 Mistakes That <em>Scare Off</em> Luxury Buyers</h1>
+      <p class="sq-sub">Your luxury home isn&#x27;t selling — and it&#x27;s probably one of these ten mistakes. Get the checklist and fix them before you list. Free, no obligation.</p>
+      <ul class="sq-list"><li>The pricing mistake that makes your home sit for months</li><li>Why amateur photos lose luxury buyers in a single second</li><li>The staging misstep that quietly kills offers</li><li>The one agent choice that undoes everything else</li></ul>
       <form class="sq-form" id="optin" novalidate>
         <input type="email" placeholder="your@email.com" required aria-label="Email address">
         <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;" aria-hidden="true">
@@ -46,20 +46,20 @@
       </form>
       <div class="sq-trust">No spam. Unsubscribe anytime. Your email goes straight to a licensed local advisor — never sold.</div>
     </div>
-    <div class="sq-right"><img src="img-estate-2a.png" alt="Luxury San Antonio estate"></div>
+    <div class="sq-right"><img src="img-fredericksburg.png" alt="Luxury San Antonio estate"></div>
   </div>
 <script>
 (function(){
-  var TARGET="article-9.html", f=document.getElementById('optin');
+  var TARGET="article-12.html", f=document.getElementById('optin');
   f.addEventListener('submit', async function(e){
     e.preventDefault();
     var email=(f.querySelector('input[type=email]').value||'').trim();
     var hp=(f.querySelector('input[name=website]').value||'');
     var btn=f.querySelector('button'); btn.disabled=true; btn.textContent='Sending…';
     if(hp){ location.href=TARGET; return; }   // bot honeypot -> just move on
-    var payload={name:email.split('@')[0]||'Subscriber', email:email, intent:"Red Flags Checklist", source:"red-flags.html", source_page:location.href, website:hp};
+    var payload={name:email.split('@')[0]||'Subscriber', email:email, intent:"Luxury Selling Mistakes Checklist", source:"selling-mistakes.html", source_page:location.href, website:hp};
     try{ await fetch('/api/leads',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}); }
-    catch(_){ try{ var fd=new FormData(); fd.append('email',email); fd.append('_subject','Checklist opt-in: Red Flags Checklist'); await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com',{method:'POST',body:fd}); }catch(e2){} }
+    catch(_){ try{ var fd=new FormData(); fd.append('email',email); fd.append('_subject','Checklist opt-in: Luxury Selling Mistakes Checklist'); await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com',{method:'POST',body:fd}); }catch(e2){} }
     location.href=TARGET;   // deliver the checklist instantly (the full article)
   });
 })();
