@@ -119,21 +119,7 @@ document.addEventListener('keydown', e => {
 });
 
 // ── AUTH ───────────────────────────────────────────────────
-// Default credentials: kanye@360.com / admin77
-const DEFAULT_EMAIL = 'kanye@360.com';
-const DEFAULT_PASS_HASH = 'd1cb6800649969380c1bbb67fa7210e198438e3ec6c94667ecd1a476ceec887b'; // SHA-256 of 'admin77'
-
-async function hashPassword(pass) {
-    const data = new TextEncoder().encode(pass);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function getStoredCredentials() {
-    const stored = localStorage.getItem('kl360_credentials');
-    if (stored) return JSON.parse(stored);
-    return { email: DEFAULT_EMAIL, passHash: DEFAULT_PASS_HASH };
-}
+// One password, checked on the server (/api/auth against ADMIN_PASSWORD_HASH). No email.
 
 function checkAuth() {
     // Mobile is fully supported now — the agent needs to read leads from his phone.
@@ -177,19 +163,13 @@ function logout() {
 }
 
 // ── PAGE: LOGIN ───────────────────────────────────────────
-// Auth flow:
-//  1. Try the server-side /api/auth endpoint with the password. Server compares
-//     against ADMIN_PASSWORD_HASH (env var). If it accepts, we store both the
-//     session token AND the local sessionStorage flag — done.
-//  2. If the server returns 500 (env not configured yet), fall back to the
-//     legacy local hash check so the UI still works during initial deploy.
-//  3. Any other failure → invalid credentials.
+// Password only (Bart, 2026-10-13): the server checks it against ADMIN_PASSWORD_HASH and
+// returns a session token. You're either in or you're not.
 function initLogin() {
     const form = $('login-form');
     if (!form) return;
     form.addEventListener('submit', async e => {
         e.preventDefault();
-        const email = $('login-email').value.trim().toLowerCase();
         const pass  = $('login-pass').value;
         const btn   = form.querySelector('button[type=submit]');
         const errEl = $('login-error');
@@ -199,52 +179,28 @@ function initLogin() {
 
         const fail = msg => {
             if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
-            btn.textContent = 'Sign In to Dashboard';
+            btn.textContent = 'Sign In';
             btn.disabled = false;
         };
 
-        let serverOk = false;
-        let serverConfigured = true;
         try {
             const r = await fetch('/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password: pass }),
             });
-            if (r.ok) {
-                const data = await r.json();
-                if (data && data.token) {
-                    sessionStorage.setItem('kl360_server_token', data.token);
-                    serverOk = true;
-                }
-            } else if (r.status === 500) {
-                serverConfigured = false;          // env not set on Vercel yet
-            } else {
-                sessionStorage.removeItem('kl360_server_token');
-            }
-        } catch {
-            serverConfigured = false;
-        }
-
-        if (serverOk) {
-            sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
-            window.location.href = 'inbox.html';
-            return;
-        }
-
-        if (!serverConfigured) {
-            // Fallback to legacy local check — only reached when /api/auth env is missing.
-            const creds = getStoredCredentials();
-            const inputHash = await hashPassword(pass);
-            if (email === creds.email.toLowerCase() && inputHash === creds.passHash) {
-                sessionStorage.setItem('kl360_auth', JSON.stringify({ email, name: email.split('@')[0] }));
-                sessionStorage.removeItem('kl360_server_token');
+            const data = await r.json().catch(() => ({}));
+            if (r.ok && data.token) {
+                sessionStorage.setItem('kl360_server_token', data.token);
+                sessionStorage.setItem('kl360_auth', JSON.stringify({ name: 'Agent' }));
                 window.location.href = 'inbox.html';
                 return;
             }
+            sessionStorage.removeItem('kl360_server_token');
+            fail(r.status === 500 ? 'Login is not set up on the server yet.' : 'Wrong password.');
+        } catch {
+            fail('Could not reach the server. Try again.');
         }
-
-        fail('Invalid email or password.');
     });
 }
 
@@ -2080,44 +2036,4 @@ function initSettings() {
         });
     }
 
-    // Change password
-    const passBtn = $('save-password-btn');
-    if (passBtn) {
-        passBtn.addEventListener('click', async () => {
-            const currentPass = $('setting-current-pass').value;
-            const newPass = $('setting-new-pass').value;
-            const confirmPass = $('setting-confirm-pass').value;
-
-            if (!currentPass || !newPass || !confirmPass) {
-                showToast('Please fill in all password fields.', 'error');
-                return;
-            }
-
-            const creds = getStoredCredentials();
-            const currentHash = await hashPassword(currentPass);
-
-            if (currentHash !== creds.passHash) {
-                showToast('Current password is incorrect.', 'error');
-                return;
-            }
-
-            if (newPass.length < 4) {
-                showToast('New password must be at least 4 characters.', 'error');
-                return;
-            }
-
-            if (newPass !== confirmPass) {
-                showToast('New passwords do not match.', 'error');
-                return;
-            }
-
-            const newHash = await hashPassword(newPass);
-            localStorage.setItem('kl360_credentials', JSON.stringify({ email: creds.email, passHash: newHash }));
-
-            $('setting-current-pass').value = '';
-            $('setting-new-pass').value = '';
-            $('setting-confirm-pass').value = '';
-            showToast('Password updated successfully ✓', 'success');
-        });
-    }
 }
