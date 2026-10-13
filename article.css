@@ -186,3 +186,30 @@
     .article-share { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
 @media (max-width: 500px) { .related-grid { grid-template-columns: 1fr; } }
+
+/* ── One fact per line (prices, dates, programs never buried in a paragraph) ── */
+.fact-list { list-style: none; padding: 0; margin: 0 0 1.75rem; }
+.fact-list li {
+    position: relative; padding: 0.55rem 0 0.55rem 1.25rem;
+    border-bottom: 1px solid var(--border); font-size: 1rem; line-height: 1.6; color: var(--charcoal);
+}
+.fact-list li::before { content: ""; position: absolute; left: 0; top: 1.1rem; width: 6px; height: 6px; background: var(--bronze); }
+.faq-q { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; margin: 1.75rem 0 0.5rem; color: var(--charcoal); }
+.article-sources { font-size: 0.8rem; color: var(--sage); line-height: 1.6; margin-top: 2.5rem; }
+.article-sources a { color: var(--sage); }
+
+/* ── Quick lead form (articles) ── */
+.quick-lead-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; max-width: 520px; margin: 1.25rem auto 0; text-align: left; }
+.quick-lead-form input, .quick-lead-form select {
+    width: 100%; padding: 0.85rem 0.9rem; font: 400 16px/1.2 var(--sans);
+    border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); color: #fff; border-radius: 0;
+}
+.quick-lead-form select option { color: #1B1B1A; }
+.quick-lead-form input::placeholder { color: rgba(255,255,255,0.55); }
+.quick-lead-form button { grid-column: 1 / -1; justify-content: center; background: var(--bronze); color: #fff; border: 0; padding: 1rem; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+.quick-lead-form .qlf-hp { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; }
+.quick-lead-form .qlf-note { grid-column: 1 / -1; margin: 0 !important; min-height: 1.2em; font-size: 0.85rem !important; color: #f3c9a0 !important; }
+.quick-lead .qlf-call { margin: 0.75rem 0 0 !important; font-size: 0.9rem !important; }
+.quick-lead .qlf-call a { color: #fff; }
+.qlf-done { color: #fff !important; font-size: 1.05rem !important; margin: 1rem 0 0 !important; }
+@media (max-width: 560px) { .quick-lead-form { grid-template-columns: 1fr; } .article-cta-inline { padding: 2rem 1.25rem; } }

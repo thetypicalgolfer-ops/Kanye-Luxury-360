@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice — PropellEdit LLC</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bronze: #A47C48;
+    --charcoal: #1B1B1A;
+    --ivory: #F3EFE8;
+    --sage: #6E7462;
+    --border: rgba(27,27,26,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page { size: letter; margin: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ═══════════ PAGE 1 — COVER ═══════════ */
+  .cover {
+    width: 100%;
+    height: 100vh;
+    background: var(--charcoal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    page-break-after: always;
+  }
+  .cover-card {
+    border: 1px solid rgba(164,124,72,0.2);
+    padding: 5rem 4.5rem;
+    text-align: center;
+    max-width: 560px;
+  }
+  .cover-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.1rem;
+    font-weight: 400;
+    color: var(--ivory);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+  }
+  .cover-brand span { color: var(--bronze); }
+  .cover-subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(243,239,232,0.35);
+    margin-bottom: 3rem;
+  }
+  .cover-divider {
+    width: 50px; height: 2px;
+    background: var(--bronze);
+    margin: 0 auto 2.5rem;
+  }
+  .cover-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--bronze);
+    line-height: 1.3;
+    margin-bottom: 2rem;
+  }
+  .cover-desc {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: rgba(243,239,232,0.5);
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+  .cover-divider-bottom {
+    width: 50px; height: 2px;
+    background: var(--bronze);
+    margin: 0 auto 1.8rem;
+  }
+  .cover-date {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(243,239,232,0.3);
+    margin-bottom: 0.8rem;
+  }
+  .cover-badge {
+    display: inline-block;
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(164,124,72,0.5);
+    border: 1px solid rgba(164,124,72,0.2);
+    padding: 0.4rem 1.2rem;
+    margin-bottom: 3.5rem;
+  }
+  .cover-prepared {
+    font-size: 0.45rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(243,239,232,0.25);
+    margin-bottom: 0.4rem;
+  }
+  .cover-company {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 0.3rem;
+  }
+  .cover-tagline {
+    font-size: 0.42rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(243,239,232,0.2);
+  }
+
+  /* ═══════════ PAGE 2 — INVOICE ═══════════ */
+  .invoice-page {
+    width: 100%;
+    height: 100vh;
+    padding: 2.5rem 3.5rem 2rem;
+    position: relative;
+    page-break-after: always;
+    overflow: hidden;
+  }
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .invoice-from h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 0.35rem;
+  }
+  .invoice-from p {
+    font-size: 0.65rem;
+    color: var(--sage);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .invoice-meta { text-align: right; }
+  .invoice-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.3rem;
+  }
+  .invoice-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--bronze);
+    margin-bottom: 0.8rem;
+  }
+  .meta-row {
+    font-size: 0.65rem;
+    color: var(--charcoal);
+    font-weight: 300;
+    margin-bottom: 0.2rem;
+  }
+  .meta-row strong {
+    font-weight: 500;
+    color: var(--sage);
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    margin-right: 0.6rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .bill-to { margin-bottom: 1.2rem; }
+  .bill-to-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.4rem;
+  }
+  .bill-to h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 0.15rem;
+  }
+  .bill-to p {
+    font-size: 0.65rem;
+    color: var(--sage);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Table */
+  .line-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  .line-items thead th {
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--sage);
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+    font-weight: 500;
+  }
+  .line-items thead th:last-child { text-align: right; }
+  .line-items tbody td {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .line-items tbody td:last-child {
+    text-align: right;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .item-title {
+    font-weight: 500;
+    font-size: 0.72rem;
+    margin-bottom: 0.15rem;
+  }
+  .item-desc {
+    font-size: 0.6rem;
+    color: var(--sage);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .item-ref {
+    font-size: 0.52rem;
+    color: var(--bronze);
+    font-weight: 400;
+    margin-top: 0.2rem;
+    font-style: italic;
+  }
+
+  /* Totals */
+  .totals {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+  .totals-box { width: 300px; }
+  .totals-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    border-bottom: 1px solid var(--border);
+  }
+  .totals-row.credit { color: var(--sage); }
+  .totals-row.credit .totals-amount { color: var(--sage); }
+  .totals-row.due {
+    border-bottom: none;
+    border-top: 2px solid var(--bronze);
+    padding-top: 0.7rem;
+    margin-top: 0.2rem;
+  }
+  .totals-row.due .totals-label {
+    font-weight: 500;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .totals-row.due .totals-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--bronze);
+  }
+
+  /* Callout */
+  .due-callout {
+    background: rgba(164,124,72,0.06);
+    border-left: 3px solid var(--bronze);
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .due-callout p {
+    font-size: 0.7rem;
+    color: var(--charcoal);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .due-callout strong { color: var(--bronze); font-weight: 600; }
+  .due-callout .sub {
+    font-size: 0.62rem;
+    color: var(--sage);
+    font-weight: 300;
+    margin-top: 0.3rem;
+  }
+
+  /* Rate reference box */
+  .rate-ref {
+    border: 1px solid var(--border);
+    padding: 1rem 1.2rem;
+    border-radius: 4px;
+  }
+  .rate-ref-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.5rem;
+  }
+  .rate-ref p {
+    font-size: 0.62rem;
+    color: var(--sage);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .rate-ref strong {
+    color: var(--charcoal);
+    font-weight: 500;
+  }
+
+  .page-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 2rem;
+    left: 3.5rem;
+    right: 3.5rem;
+  }
+  .page-footer span {
+    font-size: 0.55rem;
+    color: rgba(27,27,26,0.3);
+    letter-spacing: 0.08em;
+  }
+
+  /* ═══════════ PAGE 3 — SCOPE ═══════════ */
+  .scope-page {
+    width: 100%;
+    height: 100vh;
+    padding: 2.5rem 3.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .scope-eyebrow {
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.4rem;
+  }
+  .scope-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 0.3rem;
+  }
+  .scope-title em { font-style: italic; color: var(--bronze); }
+  .scope-subtitle {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--sage);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .scope-item {
+    margin-bottom: 1.2rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--bronze);
+  }
+  .scope-item-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--bronze);
+    margin-bottom: 0.1rem;
+  }
+  .scope-item h3 {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 0.3rem;
+  }
+  .scope-item p {
+    font-size: 0.62rem;
+    font-weight: 300;
+    color: var(--sage);
+    line-height: 1.6;
+  }
+  .scope-item ul {
+    list-style: none;
+    margin-top: 0.3rem;
+  }
+  .scope-item ul li {
+    font-size: 0.6rem;
+    font-weight: 300;
+    color: var(--sage);
+    line-height: 1.6;
+    padding-left: 0.8rem;
+    position: relative;
+  }
+  .scope-item ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.5em;
+    width: 3px; height: 3px;
+    background: var(--bronze);
+    border-radius: 50%;
+  }
+
+  .scope-summary {
+    background: var(--charcoal);
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .scope-summary-text {
+    color: rgba(243,239,232,0.6);
+    font-size: 0.68rem;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 380px;
+  }
+  .scope-summary-text strong { color: var(--ivory); font-weight: 500; }
+  .scope-summary-amount { text-align: right; }
+  .scope-summary-amount .label {
+    font-size: 0.45rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(243,239,232,0.3);
+    margin-bottom: 0.3rem;
+  }
+  .scope-summary-amount .amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--bronze);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PAGE 1 — COVER ═══════════ -->
+<div class="cover">
+  <div class="cover-card">
+    <div class="cover-brand">Kanye Concierge <span>360°</span></div>
+    <div class="cover-subtitle">L U X U R Y &nbsp; R E A L &nbsp; E S T A T E</div>
+    <div class="cover-divider"></div>
+    <div class="cover-title">Development Invoice<br>April 2026</div>
+    <div class="cover-desc">
+      First invoice for post-delivery development work — including a<br>
+      new builder listing page with third-party embed integration, QR code<br>
+      deployment across the full site footer, and SEO optimization.
+    </div>
+    <div class="cover-divider-bottom"></div>
+    <div class="cover-date">I S S U E D &nbsp; A P R I L &nbsp; 1 3 , &nbsp; 2 0 2 6</div>
+    <div class="cover-badge">P A Y M E N T &nbsp; D U E &nbsp; A P R I L &nbsp; 2 0 , &nbsp; 2 0 2 6</div>
+  </div>
+  <div style="text-align:center;">
+    <div class="cover-prepared">PREPARED BY</div>
+    <div class="cover-company">PROPELLEDIT LLC</div>
+    <div class="cover-tagline">C U S T O M &nbsp; W E B &nbsp; A R C H I T E C T U R E &nbsp; &amp; &nbsp; D I G I T A L &nbsp; S T R A T E G Y</div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 2 — INVOICE ═══════════ -->
+<div class="invoice-page">
+
+  <div class="invoice-header">
+    <div class="invoice-from">
+      <h2>PropellEdit LLC</h2>
+      <p>Custom Web Architecture &amp; Digital Strategy<br>San Antonio, Texas</p>
+    </div>
+    <div class="invoice-meta">
+      <div class="invoice-label">I N V O I C E</div>
+      <div class="invoice-number">INV-2026-0413</div>
+      <div class="meta-row"><strong>Issued</strong> April 13, 2026</div>
+      <div class="meta-row"><strong>Due</strong> April 20, 2026</div>
+      <div class="meta-row"><strong>Terms</strong> Net 7</div>
+    </div>
+  </div>
+
+  <div class="bill-to">
+    <div class="bill-to-label">B I L L &nbsp; T O</div>
+    <h3>Kanye Harris — Kanye Concierge 360</h3>
+    <p>XSellence Realty<br>Greater San Antonio, Texas</p>
+  </div>
+
+  <table class="line-items">
+    <thead>
+      <tr>
+        <th style="width:52%">Description</th>
+        <th style="width:15%">Rate Ref</th>
+        <th style="width:13%">Qty</th>
+        <th style="width:20%">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="item-title">New Homes Builder Listing Page</div>
+          <div class="item-desc">Full multi-section page build with custom design, animated toolbar with live status badge, loading states, CTA banner with dual action buttons, custom nav color scheme, and responsive mobile optimization.</div>
+        </td>
+        <td><span style="font-size:0.58rem;color:var(--bronze);font-style:italic;">New complex page<br>$1,500–$2,500</span></td>
+        <td>1 page</td>
+        <td>$1,800</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="item-title">Third-Party Integration — New Home Buddy</div>
+          <div class="item-desc">NHB iframe embed with live builder listing feed, cross-browser compatibility engineering, loading state with spinner transition, and fallback handling for restricted browsers.</div>
+        </td>
+        <td><span style="font-size:0.58rem;color:var(--bronze);font-style:italic;">Third-party integration<br>$1,500–$4,000</span></td>
+        <td>1 integration</td>
+        <td>$750</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="item-title">QR Code — Site-Wide Footer Deployment</div>
+          <div class="item-desc">Natural Handbook QR code deployed across all 23 public-facing pages. Custom CSS matching dark-theme footer aesthetic, "Scan to Connect" label, responsive layout.</div>
+        </td>
+        <td><span style="font-size:0.58rem;color:var(--bronze);font-style:italic;">Navigation update<br>$150/instance</span></td>
+        <td>23 pages</td>
+        <td>$450</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="item-title">SEO Content Refresh</div>
+          <div class="item-desc">Full-site optimization — meta descriptions, JSON-LD structured data, Open Graph + Twitter cards, canonical URLs, sitemap.xml, and robots.txt across all pages.</div>
+        </td>
+        <td><span style="font-size:0.58rem;color:var(--bronze);font-style:italic;">SEO content refresh<br>$500</span></td>
+        <td>32 pages</td>
+        <td>$500</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <div class="totals-box">
+      <div class="totals-row">
+        <span class="totals-label">Subtotal</span>
+        <span class="totals-amount">$3,500.00</span>
+      </div>
+      <div class="totals-row credit">
+        <span class="totals-label">First Payment Received</span>
+        <span class="totals-amount">– $500.00</span>
+      </div>
+      <div class="totals-row due">
+        <span class="totals-label">BALANCE DUE</span>
+        <span class="totals-amount">$3,000</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="due-callout">
+    <p>Remaining balance of <strong>$3,000.00</strong> is due by <strong>April 20, 2026</strong>.</p>
+    <p class="sub">All work has been completed, deployed, and is live on the production site. This invoice reflects the remaining balance after your initial payment of $500.</p>
+  </div>
+
+  <div class="rate-ref">
+    <div class="rate-ref-label">P R I C I N G &nbsp; R E F E R E N C E</div>
+    <p>All line items are priced per the <strong>PropellEdit LLC — Service &amp; Maintenance Rate Schedule</strong> provided on March 26, 2026. Rates reflect the task-based pricing guide for common requests. Complex or custom work is quoted individually.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>PROPELLEDIT LLC — DEVELOPMENT INVOICE</span>
+    <span>PAGE 2 OF 3</span>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 3 — SCOPE ═══════════ -->
+<div class="scope-page">
+
+  <div class="scope-eyebrow">S C O P E &nbsp; O F &nbsp; W O R K</div>
+  <div class="scope-title">Delivery <em>Details</em></div>
+  <div class="scope-subtitle">A breakdown of what was built, deployed, and tested during this billing cycle.</div>
+
+  <div class="scope-item">
+    <div class="scope-item-number">01</div>
+    <h3>New Homes Builder Listing Page — new-homes.html</h3>
+    <p>A dedicated multi-section page for browsing new construction homes, built from scratch to match the existing luxury site aesthetic.</p>
+    <ul>
+      <li>Custom page layout with branded title bar and section eyebrow</li>
+      <li>Sticky toolbar with animated "Live Listings" status badge and contact CTA</li>
+      <li>Loading state with branded spinner and transition animation</li>
+      <li>CTA banner section: "Interested in a New Build?" with dual action buttons</li>
+      <li>Custom nav color scheme (#0B425E) to differentiate the builder experience</li>
+      <li>Full responsive optimization for mobile and tablet breakpoints</li>
+    </ul>
+  </div>
+
+  <div class="scope-item">
+    <div class="scope-item-number">02</div>
+    <h3>Third-Party Integration — New Home Buddy Embed</h3>
+    <p>Live builder listing feed integrated from NHB platform with cross-browser compatibility handling.</p>
+    <ul>
+      <li>Embedded NHB iframe with live listing feed from a.nhb.app/u/kanye-harris</li>
+      <li>Cross-browser QA and compatibility engineering</li>
+      <li>Graceful fallback with hero image and direct CTA for restricted browsers</li>
+      <li>GSAP animation guard fixes for non-homepage routes</li>
+    </ul>
+  </div>
+
+  <div class="scope-item">
+    <div class="scope-item-number">03</div>
+    <h3>QR Code — Site-Wide Footer Deployment</h3>
+    <p>Natural Handbook QR code integrated into the footer of every public page, matching the dark luxury footer aesthetic.</p>
+    <ul>
+      <li>Deployed across all 23 public-facing HTML pages</li>
+      <li>Custom CSS: muted opacity, border separators, uppercase tracking label</li>
+      <li>Scan-only (non-clickable) per client specification</li>
+      <li>Responsive layout inheriting footer column behavior on mobile</li>
+    </ul>
+  </div>
+
+  <div class="scope-item">
+    <div class="scope-item-number">04</div>
+    <h3>SEO Content Refresh</h3>
+    <p>Full-site search engine optimization ensuring every page is indexed, structured, and discoverable.</p>
+    <ul>
+      <li>Meta descriptions and keyword tags optimized across all 32 pages</li>
+      <li>JSON-LD structured data: RealEstateAgent, WebSite, FAQPage, Article, and more</li>
+      <li>Open Graph + Twitter Card markup for social sharing previews</li>
+      <li>Canonical URLs, sitemap.xml, and robots.txt configuration</li>
+    </ul>
+  </div>
+
+  <div class="scope-summary">
+    <div class="scope-summary-text">
+      All deliverables have been <strong>built, tested, and deployed</strong> to the live production site at kanyeconcierge360.com. Source code committed to the client's GitHub repository with full version history.
+    </div>
+    <div class="scope-summary-amount">
+      <div class="label">BALANCE DUE BY APRIL 20</div>
+      <div class="amount">$3,000</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>PROPELLEDIT LLC — DEVELOPMENT INVOICE</span>
+    <span>PAGE 3 OF 3</span>
+  </div>
+</div>
+
+</body>
+</html>

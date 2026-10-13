@@ -488,3 +488,57 @@ if (relatedGrid && window.location.pathname.includes('article-')) {
         }
     });
 }
+
+// ── QUICK LEAD FORM (articles) ─────────────────────────────
+// Name + phone or email + buying/selling + price range, from any article. Posts to /api/leads;
+// falls back to FormSubmit if the API refuses, so a lead is never dropped.
+document.querySelectorAll('.quick-lead-form').forEach(form => {
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type=submit]');
+        if (btn.disabled) return;
+        const val = n => ((form.querySelector(`[name=${n}]`) || {}).value || '').trim();
+        const name = val('name'), contact = val('contact'), intent = val('intent'), budget = val('budget');
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+        const isPhone = contact.replace(/\D/g, '').length >= 10;
+        const note = form.querySelector('.qlf-note');
+        if (!name || (!isEmail && !isPhone)) {
+            if (note) note.textContent = 'Add your name and a phone number or email.';
+            return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        const payload = {
+            name,
+            email: isEmail ? contact : '',
+            phone: isEmail ? '' : contact,
+            intent, budget,
+            message: val('message'),
+            source: 'article',
+            source_page: location.href,
+            website: val('website'),
+        };
+        let delivered = false;
+        try {
+            const r = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            delivered = r.ok;
+        } catch (_) {}
+        if (!delivered) {
+            try {
+                const fd = new FormData();
+                Object.entries(payload).forEach(([k, v]) => { if (k !== 'website') fd.append(k, v); });
+                fd.append('_subject', `New ${intent || 'website'} lead from ${name} — Kanye Concierge 360`);
+                const r = await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com', { method: 'POST', body: fd });
+                const data = await r.json().catch(() => ({}));
+                delivered = String(data.success) === 'true';
+            } catch (_) {}
+        }
+        if (delivered) {
+            form.innerHTML = '<p class="qlf-done">Got it, ' + name.replace(/[<>&"]/g, '') + '. Kanye will reach out personally within 24 hours.</p>';
+        } else {
+            btn.disabled = false;
+            btn.textContent = 'Send';
+            if (note) note.textContent = 'That didn’t go through. Please call or text 830-699-6542.';
+        }
+    });
+});

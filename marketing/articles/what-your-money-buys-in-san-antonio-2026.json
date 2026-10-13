@@ -1,0 +1,128 @@
+{
+  "slug": "what-your-money-buys-in-san-antonio-2026",
+  "title": "$250K, $450K or $1 Million: What Your Money Buys in San Antonio in 2026",
+  "seo_title": "What $250K, $450K or $1M Buys in San Antonio (2026) | Kanye Concierge 360",
+  "description": "Where every budget lands in San Antonio in 2026: the neighborhoods and suburbs at $250,000, $450,000 and $1 million, with typical values and yearly property taxes.",
+  "keywords": [
+    "San Antonio home prices 2026",
+    "what can I afford in San Antonio",
+    "San Antonio neighborhoods by price",
+    "homes for sale San Antonio",
+    "San Antonio luxury homes",
+    "San Antonio real estate agent"
+  ],
+  "category": "Buyer Guide",
+  "date": "2026-10-13",
+  "read_min": 6,
+  "hero": "img-stone-oak.png",
+  "hero_alt": "San Antonio homes at every price point",
+  "intro": [
+    "The same budget buys a very different life depending on where you land in Greater San Antonio. Here are the three budgets people ask about most, and exactly where each one fits."
+  ],
+  "sections": [
+    {
+      "h2": "Around $250,000",
+      "paras": [
+        "This is right around the typical home value in the city itself. It buys an established home in much of San Antonio and several suburbs."
+      ],
+      "items": [
+        "Live Oak: about $242,900",
+        "Converse: about $240,600",
+        "Leon Valley: about $263,100",
+        "Universal City: about $264,500",
+        "Seguin: about $271,900"
+      ]
+    },
+    {
+      "h2": "Around $450,000",
+      "paras": [
+        "This budget opens up the north side and the edge of the Hill Country, with newer homes and top-rated districts."
+      ],
+      "items": [
+        "Stone Oak: about $444,400",
+        "78259 (North Central): about $402,400",
+        "Castroville: about $425,600",
+        "Helotes: about $466,300",
+        "78258 (Stone Oak area): about $503,900",
+        "78260 (Far North): about $517,700"
+      ]
+    },
+    {
+      "h2": "$1 million and up",
+      "paras": [
+        "San Antonio's most established addresses sit right around this level."
+      ],
+      "items": [
+        "Hill Country Village: about $1,269,000",
+        "The Dominion: about $1,072,600",
+        "Shavano Park: about $926,600",
+        "Terrell Hills: about $918,500",
+        "Olmos Park: about $913,900",
+        "Alamo Heights: about $733,600",
+        "Boerne: about $557,400"
+      ],
+      "after": [
+        "Above $832,750, most buyers move from a conforming loan to a jumbo loan, which has different down payment and credit rules. Plan for it early.",
+        "Typical home values are the Zillow Home Value Index for August 2026, not sale prices. A specific home can sell well above or below its area's typical value."
+      ]
+    },
+    {
+      "h2": "What property taxes look like at each budget",
+      "paras": [
+        "Texas has no state income tax, so property taxes do the heavy lifting. Inside the City of San Antonio, combined 2025 rates run about:"
+      ],
+      "items": [
+        "Northside ISD area: about 2.29% of value a year",
+        "North East ISD area: about 2.27%",
+        "San Antonio ISD area: about 2.44%",
+        "Boerne (Kendall County): about 1.86%",
+        "New Braunfels in Comal ISD: about 1.79%"
+      ],
+      "after": [
+        "On a $250,000 home in Northside ISD, that's roughly $5,700 a year before exemptions. Your homestead exemption takes $140,000 off the value for school taxes, which lowers the bill."
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "q": "How much do I need to buy a house in San Antonio?",
+      "a": "The metro median sale price was $302,999 in September 2026. Several San Antonio ZIP codes and suburbs have typical values under $250,000."
+    },
+    {
+      "q": "What San Antonio neighborhoods cost about $1 million?",
+      "a": "Hill Country Village, The Dominion, Shavano Park, Terrell Hills and Olmos Park all had typical home values around or above $900,000 in August 2026."
+    },
+    {
+      "q": "What is the property tax rate in San Antonio?",
+      "a": "Combined 2025 rates inside the city run roughly 2.27% to 2.44% of value a year before exemptions, depending on the school district."
+    }
+  ],
+  "sources": [
+    {
+      "name": "Zillow Home Value Index, August 2026",
+      "url": "https://www.zillow.com/research/data/"
+    },
+    {
+      "name": "SABOR September 2026 market report",
+      "url": "https://sabor.com/market-research-and-statistics/market-statistics/south-texas-market-report/"
+    },
+    {
+      "name": "Texas Comptroller: 2025 tax rates",
+      "url": "https://comptroller.texas.gov/taxes/property-tax/rates/"
+    },
+    {
+      "name": "Texas Comptroller: property tax exemptions",
+      "url": "https://comptroller.texas.gov/taxes/property-tax/exemptions/"
+    },
+    {
+      "name": "FHFA 2026 conforming loan limits",
+      "url": "https://www.fhfa.gov/news/news-release/fhfa-announces-conforming-loan-limit-values-for-2026"
+    }
+  ],
+  "cta_intent": "Buying",
+  "related": [
+    "cheapest-places-to-buy-a-house-in-san-antonio-2026",
+    "million-dollar-neighborhoods-san-antonio-2026",
+    "san-antonio-property-taxes-2026-homestead-exemption"
+  ]
+}
