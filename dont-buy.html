@@ -58,7 +58,7 @@
     var btn=f.querySelector('button'); btn.disabled=true; btn.textContent='Sending…';
     if(hp){ location.href=TARGET; return; }   // bot honeypot -> just move on
     var payload={name:email.split('@')[0]||'Subscriber', email:email, intent:"Buyer Deal-Breakers Checklist", source:"dont-buy.html", source_page:location.href, website:hp};
-    try{ await fetch('/api/leads',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}); }
+    try{ var r=await fetch('/api/leads',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}); if(!r.ok) throw new Error('lead api '+r.status); }
     catch(_){ try{ var fd=new FormData(); fd.append('email',email); fd.append('_subject','Checklist opt-in: Buyer Deal-Breakers Checklist'); await fetch('https://formsubmit.co/ajax/info@kanyeconcierge360.com',{method:'POST',body:fd}); }catch(e2){} }
     location.href=TARGET;   // deliver the checklist instantly (the full article)
   });

@@ -7,7 +7,7 @@
 //
 // Cached for 5 min via CDN to keep Supabase quiet on traffic spikes.
 
-import { getSupabase, supabaseConfigured } from '../lib/supabase.js';
+import { getSupabase, supabaseConfigured, withTimeout } from '../lib/supabase.js';
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,11 +24,11 @@ export default async function handler(req, res) {
     }
 
     const supa = getSupabase();
-    const { data, error } = await supa
+    const { data, error } = await withTimeout(supa
         .from('agent_settings')
         .select('calendly_url, ga4_id, meta_pixel_id')
         .eq('id', 1)
-        .maybeSingle();
+        .maybeSingle(), 2500);
 
     if (error) {
         // Fail soft — public site keeps working without integrations.

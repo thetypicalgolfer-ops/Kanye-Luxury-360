@@ -18,7 +18,7 @@
 //
 // Falls back to a 503 explanation if Supabase env vars aren't set.
 
-import { getSupabase, supabaseConfigured } from '../lib/supabase.js';
+import { getSupabase, supabaseConfigured, withTimeout } from '../lib/supabase.js';
 import { notifyAgentNewLead, sendAutoAcknowledgement } from '../lib/notify.js';
 import { requireAuth } from '../lib/auth.js';
 
@@ -95,37 +95,25 @@ export default async function handler(req, res) {
         let insertedId = null;
         let agentSettings = null;
 
+        // Save it if the database answers. If it doesn't, the lead still goes out by email:
+        // a lead is never lost because the database is down.
         if (supa) {
-            const { data, error } = await supa
-                .from('leads')
-                .insert(lead)
-                .select('id')
-                .single();
+            const { data, error } = await withTimeout(supa.from('leads').insert(lead).select('id').single());
             if (error) {
-                console.error('[leads] insert failed:', error);
-                return bad(res, 500, 'Could not save lead. Please try again or call us directly.');
+                console.error('[leads] insert failed, emailing the lead anyway:', error.message || error);
+            } else {
+                insertedId = data.id;
+                await withTimeout(supa.from('lead_events').insert({
+                    lead_id: insertedId,
+                    kind: 'system',
+                    actor: 'system',
+                    body: `Lead captured from ${lead.source}${lead.source_page ? ' (' + lead.source_page + ')' : ''}.`,
+                    meta: {},
+                }), 2000);
+                const { data: settings } = await withTimeout(supa.from('agent_settings').select('*').eq('id', 1).maybeSingle(), 2000);
+                agentSettings = settings || null;
             }
-            insertedId = data.id;
-
-            // Initial timeline event
-            await supa.from('lead_events').insert({
-                lead_id: insertedId,
-                kind: 'system',
-                actor: 'system',
-                body: `Lead captured from ${lead.source}${lead.source_page ? ' (' + lead.source_page + ')' : ''}.`,
-                meta: {},
-            });
-
-            // Load agent settings for auto-reply personalization
-            const { data: settings } = await supa
-                .from('agent_settings')
-                .select('*')
-                .eq('id', 1)
-                .maybeSingle();
-            agentSettings = settings || null;
         } else {
-            // Supabase not yet configured — we still send notifications so
-            // leads aren't lost during the initial deploy window.
             console.warn('[leads] Supabase not configured — lead will be emailed only, not persisted.');
         }
 
@@ -147,13 +135,13 @@ export default async function handler(req, res) {
             if (ackRes.status === 'fulfilled' && ackRes.value && ackRes.value.ok) {
                 events.push({ lead_id: insertedId, kind: 'email_sent', actor: 'system', body: 'Auto-acknowledgement sent to prospect.', meta: { resend_id: ackRes.value.id } });
             }
-            if (events.length) await supa.from('lead_events').insert(events);
+            if (events.length) await withTimeout(supa.from('lead_events').insert(events), 2000);
         }
 
         return res.status(200).json({
             ok: true,
             id: insertedId,
-            persisted: !!supa,
+            persisted: !!insertedId,
         });
     }
 
